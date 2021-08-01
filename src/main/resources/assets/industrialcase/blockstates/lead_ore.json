@@ -1,7 +1,7 @@
 {
     "variants": {
         "": {
-            "model": "industrialcase:block/resource/lead_ore"
+            "model": "industrialcase:block/resource/ore/lead_ore"
         }
     }
 }

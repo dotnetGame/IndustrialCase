@@ -18,6 +18,8 @@ public class BlockRegister {
         event.getRegistry().register(ResourceBlock.COPPER_ORE);
         event.getRegistry().register(ResourceBlock.LEAD_ORE);
         event.getRegistry().register(ResourceBlock.TIN_ORE);
+        event.getRegistry().register(ResourceBlock.PLATINUM_ORE);
+        event.getRegistry().register(ResourceBlock.SILVER_ORE);
     }
 
     @SubscribeEvent
@@ -25,5 +27,7 @@ public class BlockRegister {
         event.getRegistry().register(ResourceBlock.ITEM_COPPER_ORE);
         event.getRegistry().register(ResourceBlock.ITEM_LEAD_ORE);
         event.getRegistry().register(ResourceBlock.ITEM_TIN_ORE);
+        event.getRegistry().register(ResourceBlock.ITEM_PLATINUM_ORE);
+        event.getRegistry().register(ResourceBlock.ITEM_SILVER_ORE);
     }
 }
