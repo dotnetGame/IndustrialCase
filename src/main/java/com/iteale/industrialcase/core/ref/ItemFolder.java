@@ -20,6 +20,7 @@ public enum ItemFolder {
     resourceDust("resource/dust"),
     resourceIngot("resource/ingot"),
     resourceNuclear("resource/nuclear"),
+    resourceOre("resource/ore"),
     resourcePlate("resource/plate"),
     resourcePurified("resource/purified"),
     rotor,

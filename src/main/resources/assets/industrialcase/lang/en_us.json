@@ -1,5 +1,5 @@
 {
-    "itemGroup.ic": "Industrial Case",
+    "itemGroup.IC": "Industrial Case",
     "item.industrialcase.copper": "Copper",
     "block.industrialcase.copper_ore": "Copper Ore",
     "block.industrialcase.lead_ore": "Lead Ore",

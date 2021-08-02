@@ -1,6 +1,7 @@
 package com.iteale.industrialcase.core.ref;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public enum ItemName {
     boat(ItemFolder.boat, PathStyle.FolderAndNameWithPrefix),
@@ -245,7 +246,6 @@ public enum ItemName {
     public boolean hasInstance() {
         return (this.instance != null);
     }
-
 
     private enum PathStyle
     {
