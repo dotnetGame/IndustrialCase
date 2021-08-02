@@ -1,6 +1,6 @@
 {
 	"parent": "block/cube_all",
 	"textures": {
-		"all": "industrialcase:blocks/resource/tin_ore"
+		"all": "industrialcase:blocks/resource/ore/tin_ore"
 	}
 }

@@ -26,7 +26,6 @@ public class RubberLog extends Block {
                         .harvestTool(ToolType.AXE)
         );
         setRegistryName("rubber_log");
-        registerDefaultState(stateDefinition.any().setValue(AXIS, Direction.Axis.Y));
     }
 
     /**
@@ -52,7 +51,7 @@ public class RubberLog extends Block {
         }
     }
 
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
         builder.add(AXIS);
     }
 

@@ -1,6 +1,6 @@
 {
 	"parent": "block/cube_all",
 	"textures": {
-		"all": "industrialcase:blocks/resource/lead_block"
+		"all": "industrialcase:blocks/resource/block/lead_block"
 	}
 }

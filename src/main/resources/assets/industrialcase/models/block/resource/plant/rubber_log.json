@@ -1,7 +1,7 @@
 {
 	"parent": "minecraft:block/cube_column",
 	"textures": {
-		"side": "industrialcase:blocks/resource/rubber_log_sides",
-		"end": "industrialcase:blocks/resource/rubber_log_bottomtop"
+		"side": "industrialcase:blocks/resource/plant/rubber_log_sides",
+		"end": "industrialcase:blocks/resource/plant/rubber_log_bottomtop"
 	}
 }
