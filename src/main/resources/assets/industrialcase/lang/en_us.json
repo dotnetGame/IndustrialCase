@@ -1,8 +1,17 @@
 {
     "itemGroup.IC": "Industrial Case",
-    "item.industrialcase.copper": "Copper",
     "block.industrialcase.copper_ore": "Copper Ore",
     "block.industrialcase.lead_ore": "Lead Ore",
     "block.industrialcase.tin_ore": "Tin Ore",
-    "block.industrialcase.platinum_ore": "Platinum Ore"
+    "block.industrialcase.silver_ore": "Silver Ore",
+    "block.industrialcase.platinum_ore": "Platinum Ore",
+    "item.industrialcase.tool.forge_hammer": "Forge Hammer",
+    "item.industrialcase.resource.ingot.copper": "Copper Ingot",
+    "item.industrialcase.resource.ingot.lead": "Lead Ingot",
+    "item.industrialcase.resource.ingot.tin": "Tin Ingot",
+    "item.industrialcase.resource.ingot.platinum": "Platinum Ingot",
+    "item.industrialcase.resource.Plate.copper": "Copper Plate",
+    "item.industrialcase.resource.Plate.lead": "Lead Plate",
+    "item.industrialcase.resource.Plate.tin": "Tin Plate",
+    "item.industrialcase.resource.Plate.platinum": "Platinum Plate"
 }

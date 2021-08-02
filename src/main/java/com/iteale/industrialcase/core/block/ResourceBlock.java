@@ -1,6 +1,7 @@
 package com.iteale.industrialcase.core.block;
 
 import com.iteale.industrialcase.core.ICItemGroup;
+import com.iteale.industrialcase.core.IndustrialCase;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -10,7 +11,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ToolType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = IndustrialCase.MODID)
 public class ResourceBlock extends Block{
     public static final Block COPPER_ORE = new ResourceBlock(3.0F, 5.0F, false).setRegistryName("copper_ore");
     public static final Block LEAD_ORE = new ResourceBlock(2.0F, 4.0F, false).setRegistryName("lead_ore");
@@ -33,5 +38,23 @@ public class ResourceBlock extends Block{
                 .harvestLevel(1)
                 .harvestTool(ToolType.PICKAXE)
         );
+    }
+
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        event.getRegistry().register(ResourceBlock.COPPER_ORE);
+        event.getRegistry().register(ResourceBlock.LEAD_ORE);
+        event.getRegistry().register(ResourceBlock.TIN_ORE);
+        event.getRegistry().register(ResourceBlock.PLATINUM_ORE);
+        event.getRegistry().register(ResourceBlock.SILVER_ORE);
+    }
+
+    @SubscribeEvent
+    public static void registerBlockItems(RegistryEvent.Register<Item> event) {
+        event.getRegistry().register(ResourceBlock.ITEM_COPPER_ORE);
+        event.getRegistry().register(ResourceBlock.ITEM_LEAD_ORE);
+        event.getRegistry().register(ResourceBlock.ITEM_TIN_ORE);
+        event.getRegistry().register(ResourceBlock.ITEM_PLATINUM_ORE);
+        event.getRegistry().register(ResourceBlock.ITEM_SILVER_ORE);
     }
 }

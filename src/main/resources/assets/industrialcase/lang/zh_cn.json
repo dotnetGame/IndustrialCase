@@ -1,8 +1,17 @@
 {
     "itemGroup.IC": "工业",
-    "item.industrialcase.copper": "铜",
     "block.industrialcase.copper_ore": "铜矿石",
     "block.industrialcase.lead_ore": "铅矿石",
     "block.industrialcase.tin_ore": "锡矿石",
-    "block.industrialcase.platinum_ore": "铂金矿石"
+    "block.industrialcase.silver_ore": "银矿石",
+    "block.industrialcase.platinum_ore": "铂金矿石",
+    "item.industrialcase.tool.forge_hammer": "锻造锤",
+    "item.industrialcase.resource.ingot.copper": "铜锭",
+    "item.industrialcase.resource.ingot.lead": "铅锭",
+    "item.industrialcase.resource.ingot.tin": "锡锭",
+    "item.industrialcase.resource.ingot.platinum": "铂金锭",
+    "item.industrialcase.resource.Plate.copper": "铜板",
+    "item.industrialcase.resource.Plate.lead": "铅板",
+    "item.industrialcase.resource.Plate.tin": "锡板",
+    "item.industrialcase.resource.Plate.platinum": "铂金板"
 }

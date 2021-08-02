@@ -1,7 +1,7 @@
 {
 	"parent": "block/cross",
 	"textures": {
-		"cross": "ic2:blocks/resource/rubber_sapling"
+		"cross": "industrialcase:blocks/resource/rubber_sapling"
 	},
 	"display": {
 		"thirdperson_righthand": {

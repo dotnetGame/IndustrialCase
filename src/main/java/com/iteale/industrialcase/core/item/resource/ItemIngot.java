@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = IndustrialCase.MODID)
-public class OreDictionaryEntries {
+public class ItemIngot {
     public static Item create(String name) {
         return new Item(
                 new Item.Properties().stacksTo(64).tab(ICItemGroup.TAB_IC)

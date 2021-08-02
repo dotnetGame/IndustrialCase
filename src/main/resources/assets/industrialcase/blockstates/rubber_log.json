@@ -1,0 +1,16 @@
+{
+    "variants": {
+        "axis=x": {
+            "model": "industrialcase:block/resource/plant/rubber_log_horizontal",
+            "x": 90,
+            "y": 90
+        },
+        "axis=y": {
+            "model": "industrialcase:block/resource/plant/rubber_log"
+        },
+        "axis=z": {
+            "model": "industrialcase:block/resource/plant/rubber_log_horizontal",
+            "x": 90
+        }
+    }
+}

@@ -1,0 +1,12 @@
+{
+	"parent": "block/cube",
+	"textures": {
+		"particle": "industrialcase:blocks/resource/rubber_wood_dry_leftrightback",
+		"down": "industrialcase:blocks/resource/rubber_wood_dry_bottomtop",
+		"up": "industrialcase:blocks/resource/rubber_wood_dry_bottomtop",
+		"north": "industrialcase:blocks/resource/rubber_wood_dry_front",
+		"east": "industrialcase:blocks/resource/rubber_wood_dry_leftrightback",
+		"south": "industrialcase:blocks/resource/rubber_wood_dry_leftrightback",
+		"west": "industrialcase:blocks/resource/rubber_wood_dry_leftrightback"
+	}
+}
