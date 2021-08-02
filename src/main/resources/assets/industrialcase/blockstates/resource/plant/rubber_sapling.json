@@ -1,0 +1,6 @@
+{
+    "parent": "minecraft:block/cross",
+    "textures": {
+      "cross": "industrialcase:block/resource/plant/rubber_sapling"
+    }
+  }
