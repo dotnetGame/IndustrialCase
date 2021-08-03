@@ -25,11 +25,11 @@ public class ResourceBlock extends Block{
     public static final Block PLATINUM_ORE = new ResourceBlock(3.0F, 5.0F, false).setRegistryName(BASE_PATH + "platinum_ore");
     public static final Block SILVER_ORE = new ResourceBlock(3.0F, 5.0F, false).setRegistryName(BASE_PATH + "silver_ore");
 
-    public static final Item ITEM_COPPER_ORE = new BlockItem(COPPER_ORE,new Item.Properties().tab(ICItemGroup.TAB_IC)).setRegistryName(BASE_PATH + "copper_ore");
-    public static final Item ITEM_LEAD_ORE = new BlockItem(LEAD_ORE,new Item.Properties().tab(ICItemGroup.TAB_IC)).setRegistryName(BASE_PATH + "lead_ore");
-    public static final Item ITEM_TIN_ORE = new BlockItem(TIN_ORE,new Item.Properties().tab(ICItemGroup.TAB_IC)).setRegistryName(BASE_PATH + "tin_ore");
-    public static final Item ITEM_PLATINUM_ORE = new BlockItem(PLATINUM_ORE,new Item.Properties().tab(ICItemGroup.TAB_IC)).setRegistryName(BASE_PATH + "platinum_ore");
-    public static final Item ITEM_SILVER_ORE = new BlockItem(SILVER_ORE,new Item.Properties().tab(ICItemGroup.TAB_IC)).setRegistryName(BASE_PATH + "silver_ore");
+    public static final Item ITEM_COPPER_ORE = new BlockItem(COPPER_ORE,new Item.Properties().tab(IndustrialCase.TAB_IC)).setRegistryName(BASE_PATH + "copper_ore");
+    public static final Item ITEM_LEAD_ORE = new BlockItem(LEAD_ORE,new Item.Properties().tab(IndustrialCase.TAB_IC)).setRegistryName(BASE_PATH + "lead_ore");
+    public static final Item ITEM_TIN_ORE = new BlockItem(TIN_ORE,new Item.Properties().tab(IndustrialCase.TAB_IC)).setRegistryName(BASE_PATH + "tin_ore");
+    public static final Item ITEM_PLATINUM_ORE = new BlockItem(PLATINUM_ORE,new Item.Properties().tab(IndustrialCase.TAB_IC)).setRegistryName(BASE_PATH + "platinum_ore");
+    public static final Item ITEM_SILVER_ORE = new BlockItem(SILVER_ORE,new Item.Properties().tab(IndustrialCase.TAB_IC)).setRegistryName(BASE_PATH + "silver_ore");
 
     public ResourceBlock(float hardness, float explosionResistance, boolean metal) {
         super(

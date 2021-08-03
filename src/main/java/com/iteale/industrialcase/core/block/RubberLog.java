@@ -25,7 +25,6 @@ public class RubberLog extends Block {
                         .harvestLevel(1)
                         .harvestTool(ToolType.AXE)
         );
-        setRegistryName("resource/plant/rubber_log");
     }
 
     /**

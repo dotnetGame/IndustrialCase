@@ -1,17 +1,24 @@
 {
     "itemGroup.IC": "工业",
-    "block.industrialcase.copper_ore": "铜矿石",
-    "block.industrialcase.lead_ore": "铅矿石",
-    "block.industrialcase.tin_ore": "锡矿石",
-    "block.industrialcase.silver_ore": "银矿石",
-    "block.industrialcase.platinum_ore": "铂金矿石",
+
+    "block.industrialcase.resource.plant.rubber_log": "橡胶木",
+    "block.industrialcase.resource.plant.rubber_leaves": "橡胶树叶",
+
+    "block.industrialcase.resource.ore.copper_ore": "铜矿石",
+    "block.industrialcase.resource.ore.lead_ore": "铅矿石",
+    "block.industrialcase.resource.ore.tin_ore": "锡矿石",
+    "block.industrialcase.resource.ore.silver_ore": "银矿石",
+    "block.industrialcase.resource.ore.platinum_ore": "铂金矿石",
+
     "item.industrialcase.tool.forge_hammer": "锻造锤",
+
     "item.industrialcase.resource.ingot.copper": "铜锭",
     "item.industrialcase.resource.ingot.lead": "铅锭",
     "item.industrialcase.resource.ingot.tin": "锡锭",
     "item.industrialcase.resource.ingot.platinum": "铂金锭",
-    "item.industrialcase.resource.Plate.copper": "铜板",
-    "item.industrialcase.resource.Plate.lead": "铅板",
-    "item.industrialcase.resource.Plate.tin": "锡板",
-    "item.industrialcase.resource.Plate.platinum": "铂金板"
+
+    "item.industrialcase.resource.plate.copper": "铜板",
+    "item.industrialcase.resource.plate.lead": "铅板",
+    "item.industrialcase.resource.plate.tin": "锡板",
+    "item.industrialcase.resource.plate.platinum": "铂金板"
 }

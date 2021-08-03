@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ItemPlate {
     public static Item create(String name) {
         return new Item(
-                new Item.Properties().stacksTo(64).tab(ICItemGroup.TAB_IC)
+                new Item.Properties().stacksTo(64).tab(IndustrialCase.TAB_IC)
         ).setRegistryName(name);
     }
 
