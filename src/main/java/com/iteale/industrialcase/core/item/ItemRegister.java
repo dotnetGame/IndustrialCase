@@ -11,11 +11,21 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public class ItemRegister {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, IndustrialCase.MODID);
+
     public static Item FORGE_HAMMER = register("tool/forge_hammer", new ItemToolHammer());
     public static Item TREETAP = register("tool/treetap", new ItemTreetap());
+
+    public static Item RESIN = register("resource/resin");
+
+    public static Item RUBBER = register("crafting/rubber");
 
     public static Item register(String name, Item item) {
         ITEMS.register(name, () -> item);
         return item;
+    }
+
+    public static Item register(String name) {
+        Item item = new Item(new Item.Properties().tab(IndustrialCase.TAB_IC));
+        return register(name, item);
     }
 }

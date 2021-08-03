@@ -25,6 +25,10 @@ public class RubberLog extends Block {
                         .harvestLevel(1)
                         .harvestTool(ToolType.AXE)
         );
+        this.registerDefaultState(
+                this.stateDefinition.any()
+                        .setValue(AXIS, Direction.Axis.Y)
+        );
     }
 
     /**
@@ -51,6 +55,7 @@ public class RubberLog extends Block {
     }
 
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
+
         builder.add(AXIS);
     }
 
