@@ -32,6 +32,9 @@ public class BlockRegister {
     public static final Block PLATINUM_ORE = register("resource/ore/platinum_ore", new ResourceBlock(3.0F, 5.0F, false));
     public static final Block SILVER_ORE = register("resource/ore/silver_ore", new ResourceBlock(3.0F, 5.0F, false));
 
+    // cable
+    public static final Block COPPER_CABLE = register("wiring/cable/copper_cable", new Cable());
+
     // register methods
     public static Block register(String name, Block block) {
         Item item = new BlockItem(

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "industrialcase:tool/forge_hammer"
+    },
+    {
+      "item": "industrialcase:resource/ingot/tin"
+    }
+  ],
+  "result": {
+    "item": "industrialcase:resource/plate/tin"
+  }
+}

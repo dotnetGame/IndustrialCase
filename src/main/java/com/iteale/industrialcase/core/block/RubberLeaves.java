@@ -8,7 +8,10 @@ import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.ToolType;
+
+import java.util.Random;
 
 public class RubberLeaves extends LeavesBlock {
     public RubberLeaves() {
@@ -22,6 +25,11 @@ public class RubberLeaves extends LeavesBlock {
                         .isSuffocating(RubberLeaves::never)
                         .isViewBlocking(RubberLeaves::never)
         );
+    }
+
+    @Override
+    public void randomTick(BlockState p_225542_1_, ServerWorld p_225542_2_, BlockPos p_225542_3_, Random p_225542_4_) {
+        super.randomTick(p_225542_1_, p_225542_2_, p_225542_3_, p_225542_4_);
     }
 
     private static boolean never(BlockState blockState, IBlockReader iBlockReader, BlockPos blockPos) {
