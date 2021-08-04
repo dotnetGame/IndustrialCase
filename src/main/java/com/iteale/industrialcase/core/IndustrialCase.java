@@ -1,6 +1,7 @@
 package com.iteale.industrialcase.core;
 
 import com.iteale.industrialcase.core.block.BlockRegister;
+import com.iteale.industrialcase.core.block.TileEntityRegister;
 import com.iteale.industrialcase.core.item.ItemRegister;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.fml.common.Mod;
@@ -21,6 +22,7 @@ public class IndustrialCase
     public IndustrialCase() {
         BlockRegister.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         BlockRegister.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TileEntityRegister.TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         ItemRegister.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

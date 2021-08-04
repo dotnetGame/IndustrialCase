@@ -1,11 +1,14 @@
 package com.iteale.industrialcase.core.block;
 
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.block.machine.IronFurnace;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.world.FoliageColors;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -44,7 +47,7 @@ public class BlockRegister {
 
     // detector(0, 2147483647, 0.5F, 0.5D, 8192),
     // splitter(0, 2147483647, 0.5F, 0.5D, 8192);
-    // register methods
+
     public static Block register(String name, Block block) {
         Item item = new BlockItem(
                 block, new Item.Properties().tab(IndustrialCase.TAB_IC)

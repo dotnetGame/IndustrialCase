@@ -91,6 +91,10 @@ public class CableBase extends Block {
 
         return voxelShapeAll;
     }
+    @Override
+    public VoxelShape getBlockSupportShape(BlockState state, IBlockReader worldIn, BlockPos pos) {
+        return this.shapes[getShapeIndex(state)];
+    }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
