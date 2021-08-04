@@ -1,0 +1,7 @@
+{
+	"parent": "industrialcase:block/wiring/cable/cable_core_large",
+	"textures": {
+        "particle": "industrialcase:blocks/wiring/cable/copper_cable_insulated_blue",
+        "line": "industrialcase:blocks/wiring/cable/copper_cable_insulated_blue"
+    }
+}

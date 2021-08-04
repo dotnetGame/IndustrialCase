@@ -33,8 +33,17 @@ public class BlockRegister {
     public static final Block SILVER_ORE = register("resource/ore/silver_ore", new ResourceBlock(3.0F, 5.0F, false));
 
     // cable
-    public static final Block COPPER_CABLE = register("wiring/cable/copper_cable", new Cable());
+    public static final Block COPPER_CABLE = register("wiring/cable/copper_cable", new CableBlock(0, 0.25F, 0.2D, 128));
+    public static final Block GOLD_CABLE = register("wiring/cable/gold_cable", new CableBlock( 0, 0.1875F, 0.4D, 512));
+    public static final Block IRON_CABLE = register("wiring/cable/iron_cable", new CableBlock( 0, 0.375F, 0.8D, 2048));
+    public static final Block TIN_CABLE = register("wiring/cable/tin_cable", new CableBlock( 0, 0.25F, 0.2D, 32));
+    public static final Block GLASS_CABLE = register("wiring/cable/glass_cable", new CableBlock( 0, 0.25F, 0.025D, 8192));
 
+    public static final Block COPPER_CABLE_INSULATED = register("wiring/cable/copper_cable_insulated", new CableBlock(1, 0.375F, 0.2D, 128));
+    public static final Block COPPER_CABLE_INSULATED_BLUE = register("wiring/cable/copper_cable_insulated_blue", new CableBlock(1, 0.375F, 0.2D, 128));
+
+    // detector(0, 2147483647, 0.5F, 0.5D, 8192),
+    // splitter(0, 2147483647, 0.5F, 0.5D, 8192);
     // register methods
     public static Block register(String name, Block block) {
         Item item = new BlockItem(

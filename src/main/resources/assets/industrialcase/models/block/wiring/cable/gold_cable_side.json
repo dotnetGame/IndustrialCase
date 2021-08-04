@@ -1,0 +1,7 @@
+{
+	"parent": "industrialcase:block/wiring/cable/cable_side_small",
+	"textures": {
+        "particle": "industrialcase:blocks/wiring/cable/gold_cable",
+        "line": "industrialcase:blocks/wiring/cable/gold_cable"
+    }
+}

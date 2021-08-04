@@ -1,0 +1,18 @@
+{
+	"parent": "industrialcase:block/wiring/cable/cable_core",
+    "elements": [
+        {   
+            "from": [ 6.5, 6.5, 6.5 ],
+            "to": [ 9.5, 9.5, 9.5 ],
+            "shade": true,
+            "faces": {
+                "up": { "texture": "#line" },
+                "down": { "texture": "#line" },
+                "north": { "texture": "#line" },
+				"south": { "texture": "#line" },
+				"west":  { "texture": "#line" },
+				"east":  { "texture": "#line" }
+            }
+        }
+    ]
+}

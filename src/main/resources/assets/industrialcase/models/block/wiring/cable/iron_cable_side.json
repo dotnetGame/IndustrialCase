@@ -1,0 +1,7 @@
+{
+	"parent": "industrialcase:block/wiring/cable/cable_side_large",
+	"textures": {
+        "particle": "industrialcase:blocks/wiring/cable/iron_cable",
+        "line": "industrialcase:blocks/wiring/cable/iron_cable"
+    }
+}
