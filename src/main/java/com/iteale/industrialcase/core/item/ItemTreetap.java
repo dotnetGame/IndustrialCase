@@ -1,7 +1,7 @@
 package com.iteale.industrialcase.core.item;
 
 import com.iteale.industrialcase.core.IndustrialCase;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class ItemTreetap extends ItemIC {
     public ItemTreetap() {

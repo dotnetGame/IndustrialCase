@@ -1,8 +1,8 @@
 package com.iteale.industrialcase.core.block;
 
-import net.minecraft.util.IStringSerializable;
+import net.minecraft.util.StringRepresentable;
 
-public enum CableColor implements IStringSerializable {
+public enum CableColor implements StringRepresentable {
     black,
     blue,
     brown,

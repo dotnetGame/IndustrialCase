@@ -3,7 +3,7 @@ package com.iteale.industrialcase.core;
 import com.iteale.industrialcase.core.block.BlockRegister;
 import com.iteale.industrialcase.core.block.TileEntityRegister;
 import com.iteale.industrialcase.core.item.ItemRegister;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
@@ -17,12 +17,12 @@ public class IndustrialCase
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final ItemGroup TAB_IC = new ICItemGroup();
+    public static final CreativeModeTab TAB_IC = new ICTab();
 
     public IndustrialCase() {
         BlockRegister.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         BlockRegister.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        TileEntityRegister.TILE_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TileEntityRegister.BLOCK_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         ItemRegister.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

@@ -1,17 +1,16 @@
 package com.iteale.industrialcase.core.block;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.properties.BlockStateProperties;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 
 public class CableBlock extends CableBase {
     public final int insulation;
@@ -20,16 +19,16 @@ public class CableBlock extends CableBase {
     public final int capacity;
 
     public CableBlock(int insulation, float thickness, double loss, int capacity) {
-        super(AbstractBlock.Properties.of(Material.DECORATION).noCollission().instabreak(), thickness);
+        super(BlockBehaviour.Properties.of(Material.DECORATION).noCollission().instabreak(), thickness);
         this.insulation = insulation;
         this.thickness = thickness;
         this.loss = loss;
         this.capacity = capacity;
     }
 
-    protected boolean canConnect(IWorld world, BlockPos pos, Direction direction) {
+    protected boolean canConnect(LevelAccessor world, BlockPos pos, Direction direction) {
         BlockState neighbour = world.getBlockState(pos);
-        ITag<Block> cablesTag = BlockTags.getAllTags().getTag(new ResourceLocation("industrialcase", "cables"));
+        Tag<Block> cablesTag = BlockTags.getAllTags().getTag(new ResourceLocation("industrialcase", "cables"));
         if (cablesTag.contains(neighbour.getBlock())) {
             return true;
         } else {

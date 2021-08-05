@@ -1,7 +1,6 @@
 package com.iteale.industrialcase.core.ref;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
 
 public enum ItemName {
     boat(ItemFolder.boat, PathStyle.FolderAndNameWithPrefix),
