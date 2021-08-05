@@ -2,7 +2,9 @@ package com.iteale.industrialcase.core.block;
 
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.machine.IronFurnace;
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.BlockItem;
@@ -44,6 +46,10 @@ public class BlockRegister {
 
     public static final Block COPPER_CABLE_INSULATED = register("wiring/cable/copper_cable_insulated", new CableBlock(1, 0.375F, 0.2D, 128));
     public static final Block COPPER_CABLE_INSULATED_BLUE = register("wiring/cable/copper_cable_insulated_blue", new CableBlock(1, 0.375F, 0.2D, 128));
+
+    // explosive
+    public static final Block ITNT = register("explosive/itnt", new Block(AbstractBlock.Properties.of(Material.STONE)));
+    public static final Block NUKE = register("explosive/nuke", new Block(AbstractBlock.Properties.of(Material.STONE)));
 
     // detector(0, 2147483647, 0.5F, 0.5D, 8192),
     // splitter(0, 2147483647, 0.5F, 0.5D, 8192);

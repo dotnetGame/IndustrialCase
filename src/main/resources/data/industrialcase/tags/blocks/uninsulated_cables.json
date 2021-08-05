@@ -1,0 +1,10 @@
+{
+    "replace": false,
+    "values": [
+        "industrialcase:wiring/cable/copper_cable",
+        "industrialcase:wiring/cable/glass_cable",
+        "industrialcase:wiring/cable/gold_cable",
+        "industrialcase:wiring/cable/iron_cable",
+        "industrialcase:wiring/cable/tin_cable"
+    ]
+}
