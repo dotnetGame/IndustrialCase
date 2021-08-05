@@ -90,6 +90,11 @@ public class CableBase extends Block {
     }
 
     @Override
+    public VoxelShape getInteractionShape(BlockState state, BlockGetter worldIn, BlockPos pos) {
+        return this.shapes[getShapeIndex(state)];
+    }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
         return this.shapes[getShapeIndex(state)];
     }
