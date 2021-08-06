@@ -1,8 +1,0 @@
-{
-	"parent": "block/cube_bottom_top",
-	"textures": {
-		"side": "industrialcase:blocks/explosive/nuke_sides",
-		"bottom": "industrialcase:blocks/explosive/nuke_bottom",
-		"top": "industrialcase:blocks/explosive/nuke_top"
-	}
-}

@@ -1,4 +1,4 @@
-package com.iteale.industrialcase.core.datagen.recipes;
+package com.iteale.industrialcase.core.datagen.recipe;
 
 
 import com.iteale.industrialcase.core.IndustrialCase;
