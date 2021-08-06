@@ -18,7 +18,7 @@ public class ItemToolHammer extends ItemToolCrafting {
 
     @Override
     public boolean hasContainerItem(ItemStack stack) {
-        if (stack.is(ItemRegistry.FORGE_HAMMER)) {
+        if (stack.is(ItemRegistry.FORGE_HAMMER.get())) {
             return true;
         } else {
             return false;

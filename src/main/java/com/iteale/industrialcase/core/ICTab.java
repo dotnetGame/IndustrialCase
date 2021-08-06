@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ICTab extends CreativeModeTab {
     public ICTab() {
-        super("IC");
+        super("industrialcase");
     }
 
     @OnlyIn(Dist.CLIENT)

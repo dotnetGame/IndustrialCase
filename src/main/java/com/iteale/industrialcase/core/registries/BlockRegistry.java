@@ -38,6 +38,10 @@ public class BlockRegistry {
     public static final RegistryObject<Block> PLATINUM_ORE = register("resource/ore/platinum_ore", new ResourceBlock(3.0F, 5.0F, false));
     public static final RegistryObject<Block> SILVER_ORE = register("resource/ore/silver_ore", new ResourceBlock(3.0F, 5.0F, false));
 
+    // block
+    public static final RegistryObject<Block> LEAD_BLOCK = register("resource/ore/lead_block", new ResourceBlock(2.0F, 4.0F, true));
+    public static final RegistryObject<Block> TIN_BLOCK = register("resource/ore/tin_block", new ResourceBlock(3.0F, 5.0F, true));
+
     // cable
     public static final RegistryObject<Block> COPPER_CABLE = register("wiring/cable/copper_cable", new CableBlock(0, 0.25F, 0.2D, 128));
     public static final RegistryObject<Block> GOLD_CABLE = register("wiring/cable/gold_cable", new CableBlock( 0, 0.1875F, 0.4D, 512));

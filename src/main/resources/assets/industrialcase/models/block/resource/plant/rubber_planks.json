@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:block/leaves",
     "textures": {
-        "all": "industrialcase:blocks/resource/plant/planks"
+        "all": "industrialcase:blocks/resource/plant/rubber_planks"
     }
 }
