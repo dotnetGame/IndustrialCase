@@ -1,6 +1,0 @@
-{
-	"parent": "industrialcase:item/default",
-	"textures": {
-		"layer0": "industrialcase:items/resource/iodine"
-	}
-}

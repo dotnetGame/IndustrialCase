@@ -1,7 +1,0 @@
-{
-	"parent": "block/cube_column",
-	"textures": {
-		"side": "industrialcase:blocks/resource/block/uranium_block_sides",
-		"end": "industrialcase:blocks/resource/block/uranium_block_bottomtop"
-	}
-}

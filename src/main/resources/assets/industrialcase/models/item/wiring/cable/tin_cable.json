@@ -1,6 +1,0 @@
-{
-	"parent": "industrialcase:item/tool/default",
-	"textures": {
-		"layer0": "industrialcase:items/wiring/cable/tin_cable"
-	}
-}
