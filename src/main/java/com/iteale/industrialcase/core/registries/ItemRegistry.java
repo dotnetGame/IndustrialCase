@@ -1,13 +1,14 @@
-package com.iteale.industrialcase.core.item;
+package com.iteale.industrialcase.core.registries;
 
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.item.ItemTreetap;
 import com.iteale.industrialcase.core.item.tool.ItemToolHammer;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 
-public class ItemRegister {
+public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, IndustrialCase.MODID);
 
     public static Item FORGE_HAMMER = register("tool/forge_hammer", new ItemToolHammer());
@@ -16,10 +17,13 @@ public class ItemRegister {
 
     public static Item RESIN = register("resource/resin");
 
-    public static Item COPPER_INGOT = register("resource/ingot/copper");
+    // ingot
+    // 1.17.1 copper
+    // public static Item COPPER_INGOT = register("resource/ingot/copper");
     public static Item LEAD_INGOT = register("resource/ingot/lead");
     public static Item TIN_INGOT = register("resource/ingot/tin");
 
+    // plate
     public static Item IRON_PLATE = register("resource/plate/iron");
     public static Item GOLD_PLATE = register("resource/plate/gold");
     public static Item COPPER_PLATE = register("resource/plate/copper");

@@ -1,4 +1,4 @@
-package com.iteale.industrialcase.core.block;
+package com.iteale.industrialcase.core.registries;
 
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.machine.IronFurnace;
@@ -17,7 +17,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = IndustrialCase.MODID)
-public class TileEntityRegister {
+public class TileEntityRegistry {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, IndustrialCase.MODID);
 
     // machine

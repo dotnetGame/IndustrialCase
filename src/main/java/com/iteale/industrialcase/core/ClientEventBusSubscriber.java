@@ -1,8 +1,7 @@
 package com.iteale.industrialcase.core;
 
-import com.iteale.industrialcase.core.block.BlockRegister;
+import com.iteale.industrialcase.core.registries.BlockRegistry;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -13,6 +12,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 public class ClientEventBusSubscriber {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event){
-        ItemBlockRenderTypes.setRenderLayer(BlockRegister.RUBBER_SAPLING, RenderType.cutout());
+        ItemBlockRenderTypes.setRenderLayer(BlockRegistry.RUBBER_SAPLING.get(), RenderType.cutout());
     }
 }

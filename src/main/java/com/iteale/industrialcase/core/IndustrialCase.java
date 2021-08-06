@@ -1,8 +1,8 @@
 package com.iteale.industrialcase.core;
 
-import com.iteale.industrialcase.core.block.BlockRegister;
-import com.iteale.industrialcase.core.block.TileEntityRegister;
-import com.iteale.industrialcase.core.item.ItemRegister;
+import com.iteale.industrialcase.core.registries.BlockRegistry;
+import com.iteale.industrialcase.core.registries.TileEntityRegistry;
+import com.iteale.industrialcase.core.registries.ItemRegistry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -20,9 +20,9 @@ public class IndustrialCase
     public static final CreativeModeTab TAB_IC = new ICTab();
 
     public IndustrialCase() {
-        BlockRegister.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        BlockRegister.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        TileEntityRegister.BLOCK_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
-        ItemRegister.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        BlockRegistry.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        BlockRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        TileEntityRegistry.BLOCK_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 }

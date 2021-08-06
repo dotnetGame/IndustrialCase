@@ -61,6 +61,7 @@ public class RubberLog extends Block {
         }
     }
 
+
     @Override
     public void randomTick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
         if (random.nextInt(7) == 0) {

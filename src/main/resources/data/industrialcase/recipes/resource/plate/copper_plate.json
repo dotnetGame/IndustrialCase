@@ -5,7 +5,7 @@
         "item": "industrialcase:tool/forge_hammer"
       },
       {
-        "item": "industrialcase:resource/ingot/copper"
+        "item": "minecraft:copper_ingot"
       }
     ],
     "result": {

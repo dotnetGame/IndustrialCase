@@ -1,5 +1,6 @@
 package com.iteale.industrialcase.core.block;
 
+import com.iteale.industrialcase.core.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -90,12 +92,13 @@ public class CableBase extends Block {
     }
 
     @Override
-    public VoxelShape getInteractionShape(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        return this.shapes[getShapeIndex(state)];
+    public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        Vec3 vec3 = state.getOffset(world, pos);
+        return this.shapes[getShapeIndex(state)].move(vec3.x, vec3.y, vec3.z);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return this.shapes[getShapeIndex(state)];
     }
 
@@ -122,7 +125,7 @@ public class CableBase extends Block {
             BlockState neighborBlockstate = world.getBlockState(blockpos$mutable);
 
             BlockState newMyBlockState = blockState.setValue(FACING_TO_PROPERTY_MAP.get(direction), false);
-            if (neighborBlockstate.is(BlockRegister.COPPER_CABLE)) {
+            if (neighborBlockstate.is(BlockRegistry.COPPER_CABLE.get())) {
                 newMyBlockState = blockState.setValue(FACING_TO_PROPERTY_MAP.get(direction), true);
             }
         }
