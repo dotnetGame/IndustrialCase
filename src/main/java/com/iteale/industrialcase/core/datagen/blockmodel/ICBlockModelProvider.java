@@ -12,7 +12,7 @@ public abstract class ICBlockModelProvider extends BlockModelProvider {
         super(generator, modid, existingFileHelper);
     }
 
-    protected void registerSimple(Block block) {
+    protected void registerCubeAll(Block block) {
         String name = "block/" + block.getRegistryName().getPath();
         cubeAll(name, new ResourceLocation(IndustrialCase.MODID, name));
     }

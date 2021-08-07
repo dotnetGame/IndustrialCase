@@ -2,6 +2,7 @@ package com.iteale.industrialcase.core.datagen.itemmodel;
 
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.registries.BlockRegistry;
+import com.iteale.industrialcase.core.registries.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -15,18 +16,24 @@ public class ResourceItemModel extends ICItemModelProvider {
 
     @Override
     protected void registerModels() {
-        // plants
-        registerItemBlock(BlockRegistry.RUBBER_LEAVES.get());
-        registerItemBlock(BlockRegistry.RUBBER_PLANKS.get());
+        registerItemBlock(BlockRegistry.RUBBER_LOG.get());
 
-        // ore
-        registerItemBlock(BlockRegistry.LEAD_ORE.get());
-        registerItemBlock(BlockRegistry.TIN_ORE.get());
-        registerItemBlock(BlockRegistry.PLATINUM_ORE.get());
-        registerItemBlock(BlockRegistry.SILVER_ORE.get());
+        registerItem(ItemRegistry.BRONZE_PLATE.get());
+        registerItem(ItemRegistry.COPPER_PLATE.get());
+        registerItem(ItemRegistry.GOLD_PLATE.get());
+        registerItem(ItemRegistry.IRON_PLATE.get());
+        registerItem(ItemRegistry.LEAD_PLATE.get());
+        registerItem(ItemRegistry.TIN_PLATE.get());
 
-        // block
-        registerItemBlock(BlockRegistry.LEAD_BLOCK.get());
-        registerItemBlock(BlockRegistry.TIN_BLOCK.get());
+        registerItem(ItemRegistry.TIN_INGOT.get());
+        registerItem(ItemRegistry.LEAD_INGOT.get());
+
+        registerItem(ItemRegistry.RUBBER.get());
+        registerItem(ItemRegistry.TREETAP.get());
+
+        registerItem(ItemRegistry.RESIN.get());
+        registerItem(ItemRegistry.CUTTER.get());
+        registerItem(ItemRegistry.FORGE_HAMMER.get());
+
     }
 }
