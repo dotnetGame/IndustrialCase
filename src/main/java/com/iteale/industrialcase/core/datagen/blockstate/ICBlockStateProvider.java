@@ -1,14 +1,14 @@
 package com.iteale.industrialcase.core.datagen.blockstate;
 
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.block.CableBase;
 import com.iteale.industrialcase.core.registries.ItemRegistry;
+import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.client.model.generators.ModelProvider;
+import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public abstract class ICBlockStateProvider extends BlockStateProvider {
@@ -82,5 +82,59 @@ public abstract class ICBlockStateProvider extends BlockStateProvider {
         registerSimpleBlock(block);
         ModelFile blockModel = models().cubeBottomTop(blockModelname(block), textureSideName(block), textureBottomName(block), textureTopName(block));
         itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
+    }
+
+    public void registerCube(Block block, ResourceLocation down, ResourceLocation up, ResourceLocation north, ResourceLocation south, ResourceLocation east, ResourceLocation west) {
+        registerSimpleBlock(block);
+        ModelFile blockModel = models().cube(blockModelname(block), down, up, north, south, east, west);
+        itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
+    }
+
+    public void registerCable(Block block, float thickness) {
+        ResourceLocation cableTexture = new ResourceLocation(IndustrialCase.MODID, blockModelname(block));
+
+        float inner = 16 * (0.5F - thickness / 2);
+        float outer = 16 * (0.5F + thickness / 2);
+        ModelFile cableCoreModel = models().getBuilder(blockModelname(block) + "_core")
+                .ao(true)
+                .element().shade(true).from(inner, inner, inner).to(outer, outer, outer)
+                .face(Direction.DOWN).texture("#line").end()
+                .face(Direction.UP).texture("#line").end()
+                .face(Direction.NORTH).texture("#line").end()
+                .face(Direction.SOUTH).texture("#line").end()
+                .face(Direction.EAST).texture("#line").end()
+                .face(Direction.WEST).texture("#line").end()
+                .end().texture("line", cableTexture).texture("particle", cableTexture);
+
+        ModelFile cableSideModel = models().getBuilder(blockModelname(block) + "_side")
+                .ao(true)
+                .element().shade(true).from(inner, inner, 0).to(outer, outer, inner)
+                .face(Direction.DOWN).texture("#line").end()
+                .face(Direction.UP).texture("#line").end()
+                .face(Direction.NORTH).texture("#line").end()
+                .face(Direction.SOUTH).texture("#line").end()
+                .face(Direction.EAST).texture("#line").end()
+                .face(Direction.WEST).texture("#line").end()
+                .end().texture("line", cableTexture).texture("particle", cableTexture);
+
+        getMultipartBuilder(block)
+                .part().modelFile(cableCoreModel).addModel().end()
+                .part().modelFile(cableSideModel).rotationX(-90).uvLock(true).addModel()
+                .condition(CableBase.UP, true).end()
+                .part().modelFile(cableSideModel).rotationX(90).uvLock(true).addModel()
+                .condition(CableBase.DOWN, true).end()
+                .part().modelFile(cableSideModel).uvLock(true).addModel()
+                .condition(CableBase.NORTH, true).end()
+                .part().modelFile(cableSideModel).rotationY(180).uvLock(true).addModel()
+                .condition(CableBase.SOUTH, true).end()
+                .part().modelFile(cableSideModel).rotationY(90).uvLock(true).addModel()
+                .condition(CableBase.EAST, true).end()
+                .part().modelFile(cableSideModel).rotationY(270).uvLock(true).addModel()
+                .condition(CableBase.WEST, true).end();
+
+
+        itemModels().withExistingParent(itemModelname(block),
+                new ResourceLocation("minecraft", "item/generated"))
+                .texture("layer0", new ResourceLocation(IndustrialCase.MODID, itemModelname(block)));
     }
 }

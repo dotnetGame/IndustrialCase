@@ -44,6 +44,7 @@ public class RubberLog extends Block {
      * @deprecated call via @link IBlockState#withRotation(Rotation) whenever possible. Implementing/overriding is
      * fine.
      */
+    @Deprecated
     public BlockState rotate(BlockState state, Rotation rot) {
         switch(rot) {
             case COUNTERCLOCKWISE_90:
