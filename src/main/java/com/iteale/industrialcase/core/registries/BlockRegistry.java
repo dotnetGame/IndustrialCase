@@ -2,24 +2,16 @@ package com.iteale.industrialcase.core.registries;
 
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.*;
-import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.client.event.ColorHandlerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = IndustrialCase.MODID)
+
 public class BlockRegistry {
     // Deferred register
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, IndustrialCase.MODID);
@@ -68,21 +60,5 @@ public class BlockRegistry {
         RegistryObject<Block> blockRegistry = BLOCKS.register(name, () -> block);
         RegistryObject<Item> itemBlockRegistry = ITEMS.register(name, () -> item);
         return blockRegistry;
-    }
-
-    @SubscribeEvent
-    public static void registerBlockColors(ColorHandlerEvent.Block event){
-        BlockColor blockColorHandler = (blockState, blockDisplayReader, blockPos, i) -> {
-            return FoliageColor.getEvergreenColor();
-        };
-        event.getBlockColors().register(blockColorHandler, RUBBER_LEAVES.get());
-    }
-
-    @SubscribeEvent
-    public static void registerItemColors(ColorHandlerEvent.Item event){
-        ItemColor itemColorHandler = (itemStack, i) -> {
-            return FoliageColor.getEvergreenColor();
-        };
-        event.getItemColors().register(itemColorHandler, RUBBER_LEAVES.get().asItem());
     }
 }

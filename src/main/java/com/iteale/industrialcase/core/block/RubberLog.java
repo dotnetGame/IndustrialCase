@@ -1,11 +1,19 @@
 package com.iteale.industrialcase.core.block;
 
 
+import com.iteale.industrialcase.core.registries.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
@@ -15,9 +23,13 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.ToolType;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class RubberLog extends Block {
     public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
@@ -30,6 +42,7 @@ public class RubberLog extends Block {
                         .sound(SoundType.WOOD)
                         .harvestLevel(1)
                         .harvestTool(ToolType.AXE)
+                        .randomTicks()
         );
         this.registerDefaultState(
                 this.stateDefinition.any()
@@ -62,15 +75,42 @@ public class RubberLog extends Block {
         }
     }
 
-
     @Override
     public void randomTick(BlockState state, ServerLevel world, BlockPos pos, Random random) {
         if (random.nextInt(7) == 0) {
             RubberLogState rwState = state.getValue(STATE);
             if (!rwState.canRegenerate())
                 return;
-            state.setValue(STATE, rwState.getWet());
+
+            world.setBlock(pos, state.setValue(STATE, rwState.getWet()), 2);
         }
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        RubberLogState logState = state.getValue(RubberLog.STATE);
+        if (player.getItemInHand(hand).is(ItemRegistry.TREETAP.get())) {
+            if (!logState.isPlain() && logState.wet) {
+                Random random = new Random();
+                int dropCount = ThreadLocalRandom.current().nextInt(1, 4);
+
+                // change log state
+                BlockPos dropPos = pos.relative(hit.getDirection());
+                state = state.setValue(RubberLog.STATE, logState.getDry());
+                level.setBlock(pos, state, 2);
+
+                // drop resin
+                ItemStack dropResin = ItemRegistry.RESIN.get().getDefaultInstance();
+                dropResin.setCount(dropCount);
+                ItemEntity resin = new ItemEntity(level,
+                        dropPos.getX(), dropPos.getY(), dropPos.getZ(),
+                        dropResin);
+
+                level.addFreshEntity(resin);
+            }
+        }
+
+        return InteractionResult.SUCCESS;
     }
 
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

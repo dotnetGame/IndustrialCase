@@ -88,14 +88,5 @@ public class ResourceBlockState extends ICBlockStateProvider {
         registerCubeAll(BlockRegistry.TIN_BLOCK.get());
         registerCubeAll(BlockRegistry.SILVER_BLOCK.get());
         registerCubeAll(BlockRegistry.STEEL_BLOCK.get());
-
-        registerCable(BlockRegistry.COPPER_CABLE.get(), 0.25F);
-        registerCable(BlockRegistry.TIN_CABLE.get(), 0.25F);
-        registerCable(BlockRegistry.IRON_CABLE.get(), 0.375F);
-        registerCable(BlockRegistry.GLASS_CABLE.get(), 0.25F);
-        registerCable(BlockRegistry.GOLD_CABLE.get(), 0.1875F);
-
-        registerCable(BlockRegistry.COPPER_CABLE_INSULATED.get(), 0.375F);
-        registerCable(BlockRegistry.COPPER_CABLE_INSULATED_BLUE.get(), 0.375F);
     }
 }

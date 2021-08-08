@@ -116,21 +116,6 @@ public class CableBase extends Block {
         return i;
     }
 
-    @Override
-    public void onPlace(BlockState blockState, Level world, BlockPos pos, BlockState oldBlockState, boolean p_220082_5_) {
-        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
-
-        for (Direction direction : Direction.values()) {
-            blockpos$mutable.setWithOffset(pos, direction);
-            BlockState neighborBlockstate = world.getBlockState(blockpos$mutable);
-
-            BlockState newMyBlockState = blockState.setValue(FACING_TO_PROPERTY_MAP.get(direction), false);
-            if (neighborBlockstate.is(BlockRegistry.COPPER_CABLE.get())) {
-                newMyBlockState = blockState.setValue(FACING_TO_PROPERTY_MAP.get(direction), true);
-            }
-        }
-    }
-
     protected boolean canConnect(LevelAccessor world, BlockPos pos, Direction direction) {
         return false;
     }

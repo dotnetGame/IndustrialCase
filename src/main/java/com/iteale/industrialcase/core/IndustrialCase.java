@@ -1,5 +1,6 @@
 package com.iteale.industrialcase.core;
 
+import com.iteale.industrialcase.core.init.ICConfig;
 import com.iteale.industrialcase.core.registries.BlockRegistry;
 import com.iteale.industrialcase.core.registries.TileEntityRegistry;
 import com.iteale.industrialcase.core.registries.ItemRegistry;
@@ -17,6 +18,7 @@ public class IndustrialCase
     // Directly reference a log4j logger.
     private static final Logger LOGGER = LogManager.getLogger();
 
+    public static final ICConfig MAIN_CONFIG = new ICConfig();
     public static final CreativeModeTab TAB_IC = new ICTab();
 
     public IndustrialCase() {

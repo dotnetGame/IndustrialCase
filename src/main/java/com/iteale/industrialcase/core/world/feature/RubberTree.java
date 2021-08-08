@@ -23,8 +23,7 @@ import javax.annotation.Nullable;
 import java.util.Random;
 
 public class RubberTree extends AbstractTreeGrower {
-    @Nullable
-    protected ConfiguredFeature<TreeConfiguration, ?> getConfiguredFeature(Random rand, boolean p_225546_2_) {
+    public static TreeConfiguration getTreeConfig() {
         BlockState rubberLog = BlockRegistry.RUBBER_LOG.get().defaultBlockState();
         BlockState rubberLogNorthWet = BlockRegistry.RUBBER_LOG.get().defaultBlockState()
                 .setValue(RubberLog.STATE, RubberLog.RubberLogState.wet_north);
@@ -34,32 +33,29 @@ public class RubberTree extends AbstractTreeGrower {
                 .setValue(RubberLog.STATE, RubberLog.RubberLogState.wet_east);
         BlockState rubberLogWestWet = BlockRegistry.RUBBER_LOG.get().defaultBlockState()
                 .setValue(RubberLog.STATE, RubberLog.RubberLogState.wet_west);
+        return (new TreeConfiguration.TreeConfigurationBuilder(
+                new WeightedStateProvider(
+                        new SimpleWeightedRandomList.Builder<BlockState>()
+                                .add(rubberLog, 8)
+                                .add(rubberLogNorthWet, 1)
+                                .add(rubberLogSouthWet, 1)
+                                .add(rubberLogEastWet, 1)
+                                .add(rubberLogWestWet, 1)
+                                .build()
+                ),
+                new StraightTrunkPlacer(4, 2, 0),
+                new SimpleStateProvider(BlockRegistry.RUBBER_LEAVES.get().defaultBlockState()),
+                new SimpleStateProvider(BlockRegistry.RUBBER_SAPLING.get().defaultBlockState()),
+                new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
+                new TwoLayersFeatureSize(1, 0, 1)
+        )).ignoreVines().build();
+    }
+
+    @Nullable
+    protected ConfiguredFeature<TreeConfiguration, ?> getConfiguredFeature(Random rand, boolean p_225546_2_) {
+
         ConfiguredFeature<TreeConfiguration, ?> RUBBER_FEATURE =
-                Feature.TREE.configured((
-                        new TreeConfiguration.TreeConfigurationBuilder(
-                                new WeightedStateProvider(
-                                        new SimpleWeightedRandomList.Builder<BlockState>()
-                                                .add(rubberLog, 8)
-                                                .add(rubberLogNorthWet, 1)
-                                                .add(rubberLogSouthWet, 1)
-                                                .add(rubberLogEastWet, 1)
-                                                .add(rubberLogWestWet, 1)
-                                                .build()
-                                ),
-                                new StraightTrunkPlacer(4, 2, 0),
-                                new SimpleStateProvider(BlockRegistry.RUBBER_LEAVES.get().defaultBlockState()),
-                                new SimpleStateProvider(BlockRegistry.RUBBER_LEAVES.get().defaultBlockState()),
-                                new BlobFoliagePlacer(ConstantInt.of(2), ConstantInt.of(0), 3),
-                                new TwoLayersFeatureSize(1, 0, 1)
-                        )
-                ).ignoreVines().build());
-        SimpleWeightedRandomList<BlockState> a = new SimpleWeightedRandomList.Builder<BlockState>()
-                .add(rubberLog, 8)
-                .add(rubberLogNorthWet, 1)
-                .add(rubberLogSouthWet, 1)
-                .add(rubberLogEastWet, 1)
-                .add(rubberLogWestWet, 1)
-                .build();
+                Feature.TREE.configured(getTreeConfig());
         return RUBBER_FEATURE;
     }
 
