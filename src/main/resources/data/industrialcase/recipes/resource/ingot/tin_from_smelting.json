@@ -1,9 +1,0 @@
-{
-    "type": "minecraft:smelting",
-    "ingredient": {
-        "item": "industrialcase:resource/ore/tin_ore"
-    },
-    "result": "industrialcase:resource/ingot/tin",
-    "experience": 0.7,
-    "cookingtime": 200
-}
