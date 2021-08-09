@@ -2,6 +2,7 @@ package com.iteale.industrialcase.core.registries;
 
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.item.ItemTreetap;
+import com.iteale.industrialcase.core.item.tool.ItemToolCutter;
 import com.iteale.industrialcase.core.item.tool.ItemToolHammer;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.fmllegacy.RegistryObject;
@@ -14,7 +15,7 @@ public class ItemRegistry {
 
     public static RegistryObject<Item> FORGE_HAMMER = register("tool/forge_hammer", new ItemToolHammer());
     public static RegistryObject<Item> TREETAP = register("tool/treetap", new ItemTreetap());
-    public static RegistryObject<Item> CUTTER = register("tool/cutter");
+    public static RegistryObject<Item> CUTTER = register("tool/cutter", new ItemToolCutter());
 
     public static RegistryObject<Item> RESIN = register("resource/resin");
 

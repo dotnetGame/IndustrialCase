@@ -1,11 +1,9 @@
 package com.iteale.industrialcase.core.world.feature;
 
 import com.iteale.industrialcase.core.registries.BlockRegistry;
-import com.iteale.industrialcase.core.block.RubberLog;
-import net.minecraft.resources.ResourceLocation;
+import com.iteale.industrialcase.core.block.resource.RubberLog;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantInt;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -16,8 +14,6 @@ import net.minecraft.world.level.levelgen.feature.foliageplacers.BlobFoliagePlac
 import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
 import net.minecraft.world.level.levelgen.feature.stateproviders.WeightedStateProvider;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.StraightTrunkPlacer;
-import net.minecraftforge.fmllegacy.RegistryObject;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Random;

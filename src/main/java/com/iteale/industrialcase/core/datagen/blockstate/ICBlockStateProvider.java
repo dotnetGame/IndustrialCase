@@ -1,13 +1,11 @@
 package com.iteale.industrialcase.core.datagen.blockstate;
 
 import com.iteale.industrialcase.core.IndustrialCase;
-import com.iteale.industrialcase.core.block.CableBase;
-import com.iteale.industrialcase.core.registries.ItemRegistry;
+import com.iteale.industrialcase.core.block.wiring.CableBase;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 

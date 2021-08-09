@@ -1,7 +1,8 @@
 package com.iteale.industrialcase.core.registries;
 
 import com.iteale.industrialcase.core.IndustrialCase;
-import com.iteale.industrialcase.core.block.*;
+import com.iteale.industrialcase.core.block.resource.*;
+import com.iteale.industrialcase.core.block.wiring.CableBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
