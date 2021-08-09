@@ -12,6 +12,8 @@ import com.iteale.industrialcase.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.WorldData;
+import net.minecraftforge.server.permission.context.WorldContext;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -44,14 +46,14 @@ public class EnergyNetGlobal implements IEnergyNet
   }
 
   
-  public <T extends BlockEntity & IEnergyTile> void addTile(T tile) {
+  public <T extends BlockEntity> void addTile(T tile) {
     if (tile == null) throw new NullPointerException("null tile");
     
-    addTile((IEnergyTile)tile, tile.getWorld(), tile.getPos());
+    addTile((IEnergyTile)tile, tile.getLevel(), tile.getBlockPos());
   }
 
   
-  public <T extends ILocatable & IEnergyTile> void addTile(T tile) {
+  public <T extends ILocatable> void addTile(T tile) {
     if (tile == null) throw new NullPointerException("null tile");
     
     addTile((IEnergyTile)tile, tile.getWorldObj(), tile.getPosition());
@@ -59,7 +61,7 @@ public class EnergyNetGlobal implements IEnergyNet
   
   private static void addTile(IEnergyTile tile, Level world, BlockPos pos) {
     if (EnergyNetSettings.logEnetApiAccessTraces) {
-      IndustrialCase.log.debug(LogCategory.EnergyNet, new Throwable("Called from:"), "API addTile %s.", new Object[] { Util.toString(tile, (IBlockAccess)world, pos) });
+      IndustrialCase.log.debug(LogCategory.EnergyNet, new Throwable("Called from:"), "API addTile %s.", Util.toString(tile, world, pos));
     } else if (EnergyNetSettings.logEnetApiAccesses) {
       IndustrialCase.log.debug(LogCategory.EnergyNet, "API addTile %s.", Util.toString(tile, world, pos));
     } 
@@ -71,13 +73,13 @@ public class EnergyNetGlobal implements IEnergyNet
   public void removeTile(IEnergyTile tile) {
     if (tile == null) throw new NullPointerException("null tile");
     
-    World world = getWorld(tile);
+    Level world = getWorld(tile);
     BlockPos pos = getPos(tile);
     
     if (EnergyNetSettings.logEnetApiAccessTraces) {
-      Level.log.debug(LogCategory.EnergyNet, new Throwable("Called from:"), "API removeTile %s.", Util.toString(tile, world, pos));
+      IndustrialCase.log.debug(LogCategory.EnergyNet, new Throwable("Called from:"), "API removeTile %s.", Util.toString(tile, world, pos));
     } else if (EnergyNetSettings.logEnetApiAccesses) {
-      Level.log.debug(LogCategory.EnergyNet, "API removeTile %s.", Util.toString(tile, world, pos) );
+      IndustrialCase.log.debug(LogCategory.EnergyNet, "API removeTile %s.", Util.toString(tile, world, pos) );
     } 
     
     getLocal(world).removeTile(tile, pos);
@@ -155,12 +157,14 @@ public class EnergyNetGlobal implements IEnergyNet
   static IEnergyCalculator getCalculator() {
     return calculator;
   }
-  
+
   public static EnergyNetLocal getLocal(Level world) {
     if (world.isClientSide()) throw new IllegalStateException("not applicable clientside");
-    assert world.getServer().isCallingFromMinecraftThread();
-    
-    return (WorldData.get(world)).energyNet;
+    assert world.getServer().isSameThread();
+
+    // FIXME
+    // return (WorldData.get(world)).energyNet;
+    return null;
   }
   
   private static final List<IEnergyNetEventReceiver> eventReceivers = new CopyOnWriteArrayList<>();

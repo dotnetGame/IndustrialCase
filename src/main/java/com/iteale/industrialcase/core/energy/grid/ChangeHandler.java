@@ -8,6 +8,7 @@ import com.iteale.industrialcase.core.util.LogCategory;
 import com.iteale.industrialcase.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,25 +32,29 @@ class ChangeHandler
     BlockPos pos = change.pos;
     
     if (EnergyNet.instance.getWorld(ioTile) != world) {
-      if (EnergyNetSettings.logGridUpdateIssues) IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s had the wrong world in grid update (%s)", new Object[] { Util.toString(ioTile, (IBlockAccess)enet.getWorld(), pos), type });
+      if (EnergyNetSettings.logGridUpdateIssues)
+        IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s had the wrong world in grid update (%s)", Util.toString(ioTile, enet.getWorld(), pos), type);
       return false;
     }  if (type != GridChange.Type.REMOVAL && !EnergyNet.instance.getPos(ioTile).equals(pos)) {
-      if (EnergyNetSettings.logGridUpdateIssues) IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s has the wrong position in grid update (%s)", new Object[] { Util.toString(ioTile, (IBlockAccess)enet.getWorld(), pos), type }); 
+      if (EnergyNetSettings.logGridUpdateIssues)
+        IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s has the wrong position in grid update (%s)", Util.toString(ioTile, enet.getWorld(), pos), type);
       return false;
     }  if (type != GridChange.Type.REMOVAL && !world.isLoaded(pos)) {
-      if (EnergyNetSettings.logGridUpdateIssues) IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s was unloaded in grid update (%s)", new Object[] { Util.toString(ioTile, (IBlockAccess)enet.getWorld(), pos), type }); 
+      if (EnergyNetSettings.logGridUpdateIssues)
+        IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s was unloaded in grid update (%s)", Util.toString(ioTile, enet.getWorld(), pos), type);
       return false;
-    }  if (type != GridChange.Type.REMOVAL && ioTile instanceof BlockEntity && ((BlockEntity)ioTile).isInvalid()) {
-      if (EnergyNetSettings.logGridUpdateIssues) IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s was invalidated in grid update (%s)", new Object[] { Util.toString(ioTile, (IBlockAccess)enet.getWorld(), pos), type }); 
+    }  if (type != GridChange.Type.REMOVAL && ioTile instanceof BlockEntity && ((BlockEntity)ioTile).isRemoved()) {
+      if (EnergyNetSettings.logGridUpdateIssues)
+        IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s was invalidated in grid update (%s)", Util.toString(ioTile, enet.getWorld(), pos), type );
       return false;
     } 
     
-    if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Considering tile %s for grid update (%s)", new Object[] { Util.toString(ioTile, (IBlockAccess)enet.getWorld(), pos), type });
+    if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Considering tile %s for grid update (%s)", Util.toString(ioTile, enet.getWorld(), pos), type);
     
     if (type == GridChange.Type.ADDITION) {
       if (ioTile instanceof IMetaDelegate) {
         change.subTiles = new ArrayList<>(((IMetaDelegate)ioTile).getSubTiles());
-        if (change.subTiles.isEmpty()) throw new RuntimeException(String.format("Tile %s must return at least 1 sub tile for IMetaDelegate.getSubTiles().", new Object[] { Util.toString(ioTile, enet.getWorld(), pos) })); 
+        if (change.subTiles.isEmpty()) throw new RuntimeException(String.format("Tile %s must return at least 1 sub tile for IMetaDelegate.getSubTiles().", Util.toString(ioTile, enet.getWorld(), pos)));
       } else {
         change.subTiles = Arrays.asList(new IEnergyTile[] { ioTile });
       } 
@@ -60,7 +65,7 @@ class ChangeHandler
   
   static void applyAddition(EnergyNetLocal enet, IEnergyTile ioTile, BlockPos pos, List<IEnergyTile> subTiles, Collection<GridChange> pendingChanges) {
     if (enet.registeredIoTiles.containsKey(ioTile)) {
-      if (EnergyNetSettings.logGridUpdateIssues) IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s is already registered", new Object[] { Util.toString(ioTile, (IBlockAccess)enet.getWorld(), pos) });
+      if (EnergyNetSettings.logGridUpdateIssues) IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s is already registered", Util.toString(ioTile, enet.getWorld(), pos));
       
       return;
     } 
@@ -76,7 +81,8 @@ class ChangeHandler
           GridChange change = it.next();
           
           if (change.type == GridChange.Type.REMOVAL && change.ioTile == prevIoTile) {
-            if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Expediting pending removal of %s due to addition conflict.", new Object[] { Util.toString(change.ioTile, (IBlockAccess)enet.getWorld(), change.pos) });
+            if (EnergyNetSettings.logGridUpdatesVerbose)
+              IndustrialCase.log.debug(LogCategory.EnergyNet, "Expediting pending removal of %s due to addition conflict.", Util.toString(change.ioTile, enet.getWorld(), change.pos));
             
             found = true;
             it.remove();
@@ -90,13 +96,13 @@ class ChangeHandler
 
         
         if (!found) {
-          if (EnergyNetSettings.logGridUpdateIssues) IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s, sub tile %s addition is conflicting with a previous registration at the same location: %s.", new Object[] { Util.toString(ioTile, (IBlockAccess)enet.getWorld(), pos), Util.toString(subTile, (IBlockAccess)enet.getWorld(), subPos), prevIoTile });
+          if (EnergyNetSettings.logGridUpdateIssues) IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s, sub tile %s addition is conflicting with a previous registration at the same location: %s.", Util.toString(ioTile, enet.getWorld(), pos), Util.toString(subTile, enet.getWorld(), subPos), prevIoTile);
           
           return;
         } 
       } 
     } 
-    if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Adding tile %s.", new Object[] { Util.toString(ioTile, (IBlockAccess)enet.getWorld(), pos) });
+    if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Adding tile %s.", Util.toString(ioTile, enet.getWorld(), pos));
     
     Tile tile = new Tile(enet, ioTile, subTiles);
     
@@ -122,14 +128,19 @@ class ChangeHandler
     IEnergyTile ioTile = tile.getMainTile();
     
     for (Node node : tile.nodes) {
-      Grid grid; List<List<Node>> neighborGroups; Map<Node, Node> neighborReplacements; int i; ListIterator<Node> it; if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Adding node %s.", new Object[] { node });
+      Grid grid;
+      List<List<Node>> neighborGroups;
+      Map<Node, Node> neighborReplacements;
+      int i;
+      ListIterator<Node> it;
+      if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Adding node %s.", new Object[] { node });
 
       
       List<Node> neighbors = new ArrayList<>();
       
       for (IEnergyTile subTile : tile.subTiles) {
         for (Direction dir : Direction.values()) {
-          BlockPos coords = EnergyNet.instance.getPos(subTile).offset(dir);
+          BlockPos coords = EnergyNet.instance.getPos(subTile).relative(dir);
           Tile neighborTile = enet.registeredTiles.get(coords);
           if (neighborTile != null && neighborTile != node.tile)
           {

@@ -9,7 +9,9 @@ public class GridCalculation implements Callable<Iterable<Node>> {
 
   
   public Iterable<Node> call() throws Exception {
-    return this.grid.calculate();
+    // FIXME
+    // return this.grid.calculate();
+    return null;
   }
   
   private final Grid grid;

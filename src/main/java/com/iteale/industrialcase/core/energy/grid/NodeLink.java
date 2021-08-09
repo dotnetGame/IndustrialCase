@@ -86,9 +86,9 @@ public class NodeLink {
         BlockPos delta = EnergyNet.instance.getPos(posA).subtract(EnergyNet.instance.getPos(posB));
         
         for (Direction dir : Direction.values()) {
-          if (dir.getFrontOffsetX() == delta.getX() && dir
-            .getFrontOffsetY() == delta.getY() && dir
-            .getFrontOffsetZ() == delta.getZ()) {
+          if (dir.getStepX() == delta.getX() && dir
+            .getStepY() == delta.getY() && dir
+            .getStepZ() == delta.getZ()) {
             this.dirFromA = dir;
             this.dirFromB = dir.getOpposite();
             

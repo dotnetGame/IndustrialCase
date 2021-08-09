@@ -48,8 +48,8 @@ public interface IEnergyNet {
 	 */
 	IEnergyTile getSubTile(Level world, BlockPos pos);
 
-	<T extends BlockEntity & IEnergyTile> void addTile(T tile);
-	<T extends ILocatable & IEnergyTile> void addTile(T tile);
+	<T extends BlockEntity> void addTile(T tile);
+	<T extends ILocatable> void addTile(T tile);
 
 	void removeTile(IEnergyTile tile);
 

@@ -22,7 +22,7 @@ public class TileEntityRegistry {
 
     // machine
     public static final RegistryObject<BlockEntityType<BlockEntityIronFurnace>> IRON_FURNACE = register("machine/processing/basic/iron_furnace", BlockEntityType.Builder.of(BlockEntityIronFurnace::new, new IronFurnace()));
-    public static final RegistryObject<BlockEntityType<FurnaceBlockEntity>> FURNACE = register("furnace", BlockEntityType.Builder.of(FurnaceBlockEntity::new, Blocks.FURNACE));
+    // public static final RegistryObject<BlockEntityType<FurnaceBlockEntity>> FURNACE = register("furnace", BlockEntityType.Builder.of(FurnaceBlockEntity::new, Blocks.FURNACE));
     // register methods
     public static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, BlockEntityType.Builder<T>  builer) {
         RegistryObject<BlockEntityType<T>> registry = BLOCK_ENTITY_TYPES.register(name, () -> {

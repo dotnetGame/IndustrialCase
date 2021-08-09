@@ -37,30 +37,6 @@ public final class EnergyNetLocal implements IEnergyCalculator {
   public EnergyNetLocal() {
     throw new UnsupportedOperationException();
   }
-
-  public void handleGridChange(Grid grid) {
-    throw new UnsupportedOperationException();
-  }
-  
-  public boolean runSyncStep(EnergyNetLocal enet) {
-    throw new UnsupportedOperationException();
-  }
-  
-  public boolean runSyncStep(Grid grid) {
-    throw new UnsupportedOperationException();
-  }
-
-  public void runAsyncStep(Grid grid) {
-    throw new UnsupportedOperationException();
-  }
-
-  public NodeStats getNodeStats(Tile tile) {
-    throw new UnsupportedOperationException();
-  }
-
-  public void dumpNodeInfo(Node node, String prefix, PrintStream console, PrintStream chat) {
-    throw new UnsupportedOperationException();
-  }
   
   protected void addTile(IEnergyTile mainTile) {
     addTile(mainTile, 0);
@@ -802,4 +778,34 @@ public final class EnergyNetLocal implements IEnergyCalculator {
   public static final double sourceCurrent = 17.0D;
   public static final boolean enableCache = true;
   private static final long logSuppressionTimeout = 300000000000L;
+
+  @Override
+  public void handleGridChange(com.iteale.industrialcase.core.energy.grid.Grid paramGrid) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean runSyncStep(com.iteale.industrialcase.core.energy.grid.EnergyNetLocal paramEnergyNetLocal) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public boolean runSyncStep(com.iteale.industrialcase.core.energy.grid.Grid paramGrid) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void runAsyncStep(com.iteale.industrialcase.core.energy.grid.Grid paramGrid) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public NodeStats getNodeStats(com.iteale.industrialcase.core.energy.grid.Tile paramTile) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void dumpNodeInfo(com.iteale.industrialcase.core.energy.grid.Node paramNode, String paramString, PrintStream paramPrintStream1, PrintStream paramPrintStream2) {
+    throw new UnsupportedOperationException();
+  }
 }

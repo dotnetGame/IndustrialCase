@@ -1,11 +1,14 @@
 package com.iteale.industrialcase.core.registries;
 
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.block.machine.IronFurnace;
+import com.iteale.industrialcase.core.block.machine.blockentity.BlockEntityIronFurnace;
 import com.iteale.industrialcase.core.block.resource.*;
 import com.iteale.industrialcase.core.block.wiring.CableBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.fmllegacy.RegistryObject;
@@ -51,6 +54,8 @@ public class BlockRegistry {
     public static final RegistryObject<Block> ITNT = register("explosive/itnt", new Block(BlockBehaviour.Properties.of(Material.STONE)));
     public static final RegistryObject<Block> NUKE = register("explosive/nuke", new Block(BlockBehaviour.Properties.of(Material.STONE)));
 
+    // machine
+    public static final RegistryObject<Block> IRON_FURNACE = register("machine/processing/basic/iron_furnace", new IronFurnace());
     // detector(0, 2147483647, 0.5F, 0.5D, 8192),
     // splitter(0, 2147483647, 0.5F, 0.5D, 8192);
 

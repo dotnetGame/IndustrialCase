@@ -6,6 +6,7 @@ import com.iteale.industrialcase.api.energy.NodeStats;
 import com.iteale.industrialcase.api.energy.tile.IEnergyTile;
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.util.LogCategory;
+import com.iteale.industrialcase.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -91,7 +92,7 @@ public class EnergyNetLocal
     if ((prev = this.gridAdditionsMap.put(ioTile, change)) != null) {
       this.gridAdditionsMap.put(ioTile, prev);
       if (EnergyNetSettings.logGridUpdateIssues)
-        IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s was attempted to be queued twice for addition.", new Object[] { Util.toString(ioTile, (IBlockAccess)getWorld(), pos) }); 
+        IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s was attempted to be queued twice for addition.", Util.toString(ioTile, getWorld(), pos));
     } else {
       this.gridChangesQueue.add(change);
     } 
@@ -101,7 +102,7 @@ public class EnergyNetLocal
     GridChange addition = this.gridAdditionsMap.remove(ioTile);
     if (addition != null) {
       if (EnergyNetSettings.logGridUpdatesVerbose)
-        IndustrialCase.log.debug(LogCategory.EnergyNet, "Removing tile %s by cancelling a pending addition.", new Object[] { Util.toString(ioTile, (IBlockAccess)getWorld(), pos) });
+        IndustrialCase.log.debug(LogCategory.EnergyNet, "Removing tile %s by cancelling a pending addition.", Util.toString(ioTile, getWorld(), pos));
       this.gridChangesQueue.remove(addition);
     } else {
       this.gridChangesQueue.add(new GridChange(GridChange.Type.REMOVAL, pos, ioTile));
@@ -109,9 +110,9 @@ public class EnergyNetLocal
       if (tile != null) {
         tile.setDisabled();
         if (EnergyNetSettings.logGridUpdatesVerbose)
-          IndustrialCase.log.debug(LogCategory.EnergyNet, "Disabled tile %s.", new Object[] { Util.toString(ioTile, (IBlockAccess)getWorld(), pos) }); 
+          IndustrialCase.log.debug(LogCategory.EnergyNet, "Disabled tile %s.", Util.toString(ioTile, getWorld(), pos));
       } else if (EnergyNetSettings.logGridUpdatesVerbose) {
-        IndustrialCase.log.warn(LogCategory.EnergyNet, "Missing tile %s.", new Object[] { Util.toString(ioTile, (IBlockAccess)getWorld(), pos) });
+        IndustrialCase.log.warn(LogCategory.EnergyNet, "Missing tile %s.", Util.toString(ioTile, getWorld(), pos));
       } 
     } 
   }
@@ -163,11 +164,12 @@ public class EnergyNetLocal
     if (this.updater.isInChangeStep()) {
       this.updater.awaitCompletion();
       if (!this.positionsToNotify.isEmpty()) {
-        Block block = BlockName.te.getInstance();
+        // FIXME
+        // Block block = BlockName.te.getInstance();
         for (BlockPos pos : this.positionsToNotify) {
-          if (!this.world.isBlockLoaded(pos))
+          if (!this.world.isLoaded(pos))
             continue; 
-          this.world.getBlockState(pos).neighborChanged(this.world, pos, block, pos);
+          // this.world.getBlockState(pos).neighborChanged(this.world, pos, block, pos, true);
         } 
         this.positionsToNotify.clear();
       } 
@@ -202,7 +204,7 @@ public class EnergyNetLocal
   void addPositionToNotify(BlockPos pos) {
     this.positionsToNotify.add(pos);
     for (Direction facing : Direction.values())
-      this.positionsToNotify.add(pos.offset(facing)); 
+      this.positionsToNotify.add(pos.relative(facing));
   }
   
   boolean hasGrid(Grid grid) {

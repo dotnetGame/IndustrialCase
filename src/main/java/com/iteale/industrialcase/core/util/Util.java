@@ -204,9 +204,57 @@ public final class Util
     return result;
   }
 
+
+  public static String toString(BlockEntity te) {
+    if (te == null) return "null";
+
+    return toString(te, te.getLevel(), te.getBlockPos());
+  }
+
+  public static String toString(Object o, BlockGetter world, BlockPos pos) {
+    return toString(o, world, pos.getX(), pos.getY(), pos.getZ());
+  }
+
+  public static String toString(Object o, BlockGetter world, int x, int y, int z) {
+    StringBuilder ret = new StringBuilder(64);
+
+    if (o == null) {
+      ret.append("null");
+    } else {
+      ret.append(o.getClass().getName());
+      ret.append('@');
+      ret.append(Integer.toHexString(System.identityHashCode(o)));
+    }
+
+    ret.append(" (");
+    ret.append(formatPosition(world, x, y, z));
+    ret.append(")");
+
+    return ret.toString();
+  }
   
   public static String formatPosition(int dimId, int x, int y, int z) {
     return "dim " + dimId + ": " + x + "/" + y + "/" + z;
+  }
+
+  public static String formatPosition(BlockEntity te) {
+    return formatPosition(te.getLevel(), te.getBlockPos());
+  }
+
+  public static String formatPosition(BlockGetter world, BlockPos pos) {
+    return formatPosition(world, pos.getX(), pos.getY(), pos.getZ());
+  }
+
+
+  public static String formatPosition(BlockGetter world, int x, int y, int z) {
+    String dimId;
+    if (world instanceof Level && ((Level)world).dimension() != null) {
+      dimId = ((Level)world).dimension().location().toString();
+    } else {
+      dimId = "None";
+    }
+
+    return String.format("dim %d (@%x): %d/%d/%d", new Object[] { Integer.valueOf(dimId), Integer.valueOf(System.identityHashCode(world)), Integer.valueOf(x), Integer.valueOf(y), Integer.valueOf(z) });
   }
   
   public static String formatPosition(BlockPos pos) {

@@ -1,6 +1,7 @@
 package com.iteale.industrialcase.core.energy.grid;
 
 import com.iteale.industrialcase.api.energy.tile.IEnergyTile;
+import com.iteale.industrialcase.core.IndustrialCase;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ class GridUpdater
       } 
     } 
     prepareUpdate();
-    (IC2.getInstance()).threadPool.execute(this);
+    (IndustrialCase.getInstance()).threadPool.execute(this);
   }
   
   void startTransferCalc() {
@@ -66,7 +67,7 @@ class GridUpdater
             task = new GridCalcTask();
           } 
           task.grid = grid;
-          (IC2.getInstance()).threadPool.execute(task);
+          (IndustrialCase.getInstance()).threadPool.execute(task);
           continue;
         } 
         this.pendingCalculations.decrementAndGet();
@@ -135,7 +136,7 @@ class GridUpdater
       for (int i = 1; i < dirtyGrids.size(); i++) {
         GridUpdateTask task = new GridUpdateTask();
         task.grid = dirtyGrids.get(i);
-        (IC2.getInstance()).threadPool.execute(task);
+        (IndustrialCase.getInstance()).threadPool.execute(task);
       }  
     EnergyNetGlobal.getCalculator().handleGridChange(dirtyGrids.get(0));
     onTaskDone();

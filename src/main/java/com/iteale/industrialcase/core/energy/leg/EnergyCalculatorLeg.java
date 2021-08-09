@@ -3,6 +3,7 @@ package com.iteale.industrialcase.core.energy.leg;
 import com.iteale.industrialcase.api.energy.EnergyNet;
 import com.iteale.industrialcase.api.energy.NodeStats;
 import com.iteale.industrialcase.api.energy.tile.*;
+import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.energy.grid.*;
 
 import java.io.PrintStream;
@@ -20,7 +21,10 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 
+import com.iteale.industrialcase.core.util.LogCategory;
+import com.iteale.industrialcase.core.util.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -53,7 +57,7 @@ public class EnergyCalculatorLeg implements IEnergyCalculator
         
         if (tier < 0) {
           if (EnergyNetSettings.logGridCalculationIssues) {
-            IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s reported an invalid tier (%d).", new Object[] { Util.toString(source, (IBlockAccess)enet.getWorld(), EnergyNet.instance.getPos((IEnergyTile)source)), Integer.valueOf(tier) });
+            IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s reported an invalid tier (%d).", new Object[] { Util.toString(source, enet.getWorld(), EnergyNet.instance.getPos((IEnergyTile)source)), Integer.valueOf(tier) });
           }
           
           tile.setSourceData(0.0D, 0);
@@ -514,13 +518,16 @@ public class EnergyCalculatorLeg implements IEnergyCalculator
   }
   
   private static void applyCableEffects(Collection<EnergyPath> eventPaths, Level world) {
+    // FIXME
+    /*
     if (!MainConfig.get().get("misc/enableEnetCableMeltdown").getBool()) {
       return;
     }
+    */
     Set<Tile> cablesToRemove = Collections.newSetFromMap(new IdentityHashMap<>());
     Set<Tile> cablesToStrip = Collections.newSetFromMap(new IdentityHashMap<>());
     Map<Tile, MutableDouble> sinksToExplode = new IdentityHashMap<>();
-    Map<EntityLivingBase, MutableDouble> shockEnergyMap = new IdentityHashMap();
+    Map<LivingEntity, MutableDouble> shockEnergyMap = new IdentityHashMap();
     
     for (EnergyPath path : eventPaths) {
       double amount = path.maxPacketConducted;
@@ -564,7 +571,7 @@ public class EnergyCalculatorLeg implements IEnergyCalculator
                 MutableDouble prev = localShockEnergyMap.get(entity);
                 if (prev != null && prev.doubleValue() >= shockEnergy)
                   continue; 
-                if (!entity.getEntityBoundingBox().intersects(new AABB((pos
+                if (!entity.getBoundingBox().intersects(new AABB((pos
                       .getX() - 1), (pos
                       .getY() - 1), (pos
                       .getZ() - 1), (pos
@@ -621,14 +628,16 @@ public class EnergyCalculatorLeg implements IEnergyCalculator
     }
     
     for (Map.Entry<Tile, MutableDouble> entry : sinksToExplode.entrySet()) {
-      explodeTile(world, entry.getKey(), ((MutableDouble)entry.getValue()).doubleValue());
+      // FIXME
+      // explodeTile(world, entry.getKey(), ((MutableDouble)entry.getValue()).doubleValue());
     }
     
     for (Map.Entry<LivingEntity, MutableDouble> entry : shockEnergyMap.entrySet()) {
       LivingEntity target = entry.getKey();
       int damage = (int)Math.ceil(((MutableDouble)entry.getValue()).doubleValue() / 64.0D);
-      
-      if (target.isEntityAlive() && damage > 0) target.attackEntityFrom((DamageSource)IC2DamageSource.electricity, damage); 
+
+      // FIXME electric hurt
+      if (target.isAlive() && damage > 0) target.hurt(DamageSource.FALL, damage);
     } 
   }
   
@@ -652,48 +661,6 @@ public class EnergyCalculatorLeg implements IEnergyCalculator
     final Set<EnergyPath> eventPaths = Collections.newSetFromMap(new IdentityHashMap<>());
     
     final Map<Node, List<EnergyPath>> pathCache = new IdentityHashMap<>();
-    int currentCalcId = -1; }
-
-  
-  private static void explodeTile(Level world, Tile tile, double maxPower) {
-    if (!MainConfig.get().get("misc/enableEnetExplosions").getBool()) {
-      return;
-    }
-    int tier = EnergyNet.instance.getTierFromPower(maxPower);
-    
-    for (IEnergyTile subTile : tile.getSubTiles()) {
-      IEnergySink mainTile = (IEnergySink)tile.getMainTile();
-      BlockPos pos = EnergyNet.instance.getPos(subTile);
-      BlockEntity realTe = world.getBlockEntity(pos);
-      
-      if ((mainTile instanceof IOverloadHandler && ((IOverloadHandler)mainTile).onOverload(tier)) || (realTe instanceof IOverloadHandler && ((IOverloadHandler)realTe)
-        .onOverload(tier))) {
-        continue;
-      }
-      float power = 2.5F;
-      
-      if (mainTile instanceof IExplosionPowerOverride) {
-        IExplosionPowerOverride override = (IExplosionPowerOverride)mainTile;
-        if (!override.shouldExplode())
-          continue; 
-        power = override.getExplosionPower(tier, power);
-      } else if (realTe instanceof IExplosionPowerOverride) {
-        IExplosionPowerOverride override = (IExplosionPowerOverride)realTe;
-        if (!override.shouldExplode())
-          continue; 
-        power = override.getExplosionPower(tier, power);
-      }
-
-      Player closestPlayer = world.getNearestPlayer(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 20.0D, false);
-      
-      if (closestPlayer != null) {
-        IC2.achievements.issueAchievement(closestPlayer, "explodeMachine");
-      }
-      
-      world.setBlockToAir(pos);
-      
-      ExplosionIC2 explosion = new ExplosionIC2(world, null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, power, 0.75F, ExplosionIC2.Type.Electrical);
-      explosion.doExplosion();
-    } 
+    int currentCalcId = -1;
   }
 }

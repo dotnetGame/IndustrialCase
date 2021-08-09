@@ -4,6 +4,9 @@ import com.iteale.industrialcase.api.energy.EnergyNet;
 import com.iteale.industrialcase.api.energy.event.EnergyTileLoadEvent;
 import com.iteale.industrialcase.api.energy.event.EnergyTileUnloadEvent;
 import com.iteale.industrialcase.api.info.ILocatable;
+import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.util.LogCategory;
+import com.iteale.industrialcase.core.util.Util;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -26,7 +29,7 @@ public class EventHandler
   @SubscribeEvent
   public void onEnergyTileLoad(EnergyTileLoadEvent event) {
     if (event.getWorld().isClientSide()) {
-      IndustrialCase.log.warn(LogCategory.EnergyNet, "EnergyTileLoadEvent: posted for %s client-side, aborting", new Object[] { Util.toString(event.tile, (IBlockAccess)event.getWorld(), EnergyNet.instance.getPos(event.tile)) });
+      IndustrialCase.log.warn(LogCategory.EnergyNet, "EnergyTileLoadEvent: posted for %s client-side, aborting", Util.toString(event.tile, event.getWorld(), EnergyNet.instance.getPos(event.tile)));
       
       return;
     } 
@@ -42,7 +45,7 @@ public class EventHandler
   @SubscribeEvent
   public void onEnergyTileUnload(EnergyTileUnloadEvent event) {
     if ((event.getWorld()).isClientSide()) {
-      IndustrialCase.log.warn(LogCategory.EnergyNet, "EnergyTileUnloadEvent: posted for %s client-side, aborting", new Object[] { Util.toString(event.tile, (IBlockAccess)event.getWorld(), EnergyNet.instance.getPos(event.tile)) });
+      IndustrialCase.log.warn(LogCategory.EnergyNet, "EnergyTileUnloadEvent: posted for %s client-side, aborting", new Object[] { Util.toString(event.tile, event.getWorld(), EnergyNet.instance.getPos(event.tile)) });
       
       return;
     } 
