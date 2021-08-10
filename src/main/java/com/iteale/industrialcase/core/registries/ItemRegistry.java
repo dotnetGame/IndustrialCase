@@ -1,6 +1,7 @@
 package com.iteale.industrialcase.core.registries;
 
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.item.ItemBattery;
 import com.iteale.industrialcase.core.item.ItemTreetap;
 import com.iteale.industrialcase.core.item.tool.ItemToolCutter;
 import com.iteale.industrialcase.core.item.tool.ItemToolHammer;
@@ -33,7 +34,12 @@ public class ItemRegistry {
     public static RegistryObject<Item> TIN_PLATE = register("resource/plate/tin");
     public static RegistryObject<Item> BRONZE_PLATE = register("resource/plate/bronze");
 
+    // crafting
     public static RegistryObject<Item> RUBBER = register("crafting/rubber");
+
+    // battery
+    public static RegistryObject<Item> RE_BATTERY = register("battery/re_battery", new ItemBattery(new Item.Properties(),10000.0D, 100.0D, 1));
+    public static RegistryObject<Item> ADVANCED_RE_BATTERY = register("battery/advanced_re_battery", new ItemBattery(new Item.Properties(),100000.0D, 256.0D, 2));
 
     public static RegistryObject<Item> register(String name, Item item) {
         RegistryObject<Item> registry = ITEMS.register(name, () -> item);

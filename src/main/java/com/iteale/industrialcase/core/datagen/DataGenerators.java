@@ -8,12 +8,16 @@ import com.iteale.industrialcase.core.datagen.blockstate.MachineBlockState;
 import com.iteale.industrialcase.core.datagen.blockstate.ResourceBlockState;
 import com.iteale.industrialcase.core.datagen.blockmodel.ResourceBlockModel;
 import com.iteale.industrialcase.core.datagen.blockstate.WiringBlockState;
+import com.iteale.industrialcase.core.datagen.itemmodel.BatteryItemModel;
 import com.iteale.industrialcase.core.datagen.itemmodel.MachineItemModel;
 import com.iteale.industrialcase.core.datagen.itemmodel.ResourceItemModel;
 import com.iteale.industrialcase.core.datagen.itemmodel.WiringItemModel;
 import com.iteale.industrialcase.core.datagen.language.ENUSLanguage;
 import com.iteale.industrialcase.core.datagen.language.ZHCNLanguage;
+import com.iteale.industrialcase.core.datagen.recipe.MachineRecipes;
 import com.iteale.industrialcase.core.datagen.recipe.OresRecipes;
+import com.iteale.industrialcase.core.datagen.recipe.ToolRecipes;
+import com.iteale.industrialcase.core.datagen.recipe.WiringRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,7 +32,10 @@ public class DataGenerators {
         ExistingFileHelper exfh = event.getExistingFileHelper();
 
         if (event.includeServer()) {
+            generator.addProvider(new MachineRecipes(generator));
             generator.addProvider(new OresRecipes(generator));
+            generator.addProvider(new ToolRecipes(generator));
+            generator.addProvider(new WiringRecipes(generator));
             // generator.addProvider(new LootTables(generator));
         }
 
@@ -46,6 +53,7 @@ public class DataGenerators {
             generator.addProvider(new MachineItemModel(generator, IndustrialCase.MODID, exfh));
             generator.addProvider(new ResourceItemModel(generator, IndustrialCase.MODID, exfh));
             generator.addProvider(new WiringItemModel(generator, IndustrialCase.MODID, exfh));
+            generator.addProvider(new BatteryItemModel(generator, IndustrialCase.MODID, exfh));
 
             // blockstates
             generator.addProvider(new MachineBlockState(generator, IndustrialCase.MODID, exfh));

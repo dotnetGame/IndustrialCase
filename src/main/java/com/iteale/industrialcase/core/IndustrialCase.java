@@ -2,14 +2,12 @@ package com.iteale.industrialcase.core;
 
 import com.iteale.industrialcase.core.init.ICConfig;
 import com.iteale.industrialcase.core.registries.BlockRegistry;
-import com.iteale.industrialcase.core.registries.TileEntityRegistry;
+import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
 import com.iteale.industrialcase.core.registries.ItemRegistry;
 import com.iteale.industrialcase.core.util.Log;
 import com.iteale.industrialcase.core.util.PriorityExecutor;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +34,7 @@ public class IndustrialCase
 
         BlockRegistry.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         BlockRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
-        TileEntityRegistry.BLOCK_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
+        BlockEntityRegistry.BLOCK_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         threadPool = new PriorityExecutor(Math.max(Runtime.getRuntime().availableProcessors(), 2));

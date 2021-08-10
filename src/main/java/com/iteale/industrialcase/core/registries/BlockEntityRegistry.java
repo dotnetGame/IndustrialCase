@@ -17,16 +17,17 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = IndustrialCase.MODID)
-public class TileEntityRegistry {
+public class BlockEntityRegistry {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, IndustrialCase.MODID);
 
     // machine
-    public static final RegistryObject<BlockEntityType<BlockEntityIronFurnace>> IRON_FURNACE = register("machine/processing/basic/iron_furnace", BlockEntityType.Builder.of(BlockEntityIronFurnace::new, new IronFurnace()));
+    public static final RegistryObject<BlockEntityType<BlockEntityIronFurnace>> IRON_FURNACE = register("machine/processing/basic/iron_furnace", BlockEntityIronFurnace::new, BlockRegistry.IRON_FURNACE);
     // public static final RegistryObject<BlockEntityType<FurnaceBlockEntity>> FURNACE = register("furnace", BlockEntityType.Builder.of(FurnaceBlockEntity::new, Blocks.FURNACE));
     // register methods
-    public static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, BlockEntityType.Builder<T>  builer) {
+    public static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, BlockEntityType.BlockEntitySupplier<? extends T> supplier, RegistryObject<Block> block) {
         RegistryObject<BlockEntityType<T>> registry = BLOCK_ENTITY_TYPES.register(name, () -> {
-            return builer.build(null);
+            BlockEntityType.Builder<T> builder = BlockEntityType.Builder.of(supplier, block.get());
+            return builder.build(null);
         });
         return registry;
     }

@@ -1,11 +1,13 @@
 package com.iteale.industrialcase.core.datagen.blockstate;
 
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.block.resource.RubberLog;
 import com.iteale.industrialcase.core.block.wiring.CableBase;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -32,7 +34,7 @@ public abstract class ICBlockStateProvider extends BlockStateProvider {
         return new ResourceLocation(IndustrialCase.MODID, "block/" + block.getRegistryName().getPath() + "_top");
     }
 
-    protected void registerSimpleBlock(Block block) {
+    protected void registerSimpleBlockState(Block block) {
         simpleBlock(
                 block,
                 new ModelFile.ExistingModelFile(
@@ -42,8 +44,59 @@ public abstract class ICBlockStateProvider extends BlockStateProvider {
         );
     }
 
+    protected void registerHorizontalFaceBlockState(Block block) {
+        horizontalFaceBlock(block,
+                new ModelFile.ExistingModelFile(
+                        new ResourceLocation(IndustrialCase.MODID, "block/" + block.getRegistryName().getPath()),
+                        models().existingFileHelper
+                )
+        );
+    }
+
+    protected void registerHorizontalBlockState(Block block) {
+        horizontalBlock(block,
+                new ModelFile.ExistingModelFile(
+                        new ResourceLocation(IndustrialCase.MODID, "block/" + block.getRegistryName().getPath()),
+                        models().existingFileHelper
+                )
+        );
+    }
+
+    protected void registerMachineBlockState(Block block) {
+        ModelFile empty = models().getExistingFile(new ResourceLocation("block/air"));
+        this.getVariantBuilder(block).forAllStates(s->{
+            ConfiguredModel.Builder<?> builder = ConfiguredModel.builder();
+            ResourceLocation blockModel = new ResourceLocation(IndustrialCase.MODID, blockModelname(block));
+            if (s.getValue(BlockStateProperties.FACING) == Direction.NORTH) {
+                return builder.modelFile(
+                        new ModelFile.ExistingModelFile(blockModel, models().existingFileHelper)
+                ).build();
+            } else if (s.getValue(BlockStateProperties.FACING) == Direction.SOUTH) {
+                return builder.modelFile(
+                        new ModelFile.ExistingModelFile(blockModel, models().existingFileHelper)
+                ).rotationY(180).build();
+            } else if (s.getValue(BlockStateProperties.FACING) == Direction.EAST) {
+                return builder.modelFile(
+                        new ModelFile.ExistingModelFile(blockModel, models().existingFileHelper)
+                ).rotationY(90).build();
+            } else if (s.getValue(BlockStateProperties.FACING) == Direction.WEST) {
+                return builder.modelFile(
+                        new ModelFile.ExistingModelFile(blockModel, models().existingFileHelper)
+                ).rotationY(270).build();
+            } else {
+                return builder.modelFile(empty).build();
+            }
+        });
+        horizontalBlock(block,
+                new ModelFile.ExistingModelFile(
+                        new ResourceLocation(IndustrialCase.MODID, "block/" + block.getRegistryName().getPath()),
+                        models().existingFileHelper
+                )
+        );
+    }
+
     public void registerCross(Block block) {
-        registerSimpleBlock(block);
+        registerSimpleBlockState(block);
         ModelFile blockModel = models().withExistingParent(
                         blockModelname(block),
                         new ResourceLocation("minecraft", "block/cross"))
@@ -52,7 +105,7 @@ public abstract class ICBlockStateProvider extends BlockStateProvider {
     }
 
     public void registerLeaves(Block block) {
-        registerSimpleBlock(block);
+        registerSimpleBlockState(block);
         ModelFile blockModel = models().withExistingParent(
                     blockModelname(block),
                     new ResourceLocation("minecraft", "block/leaves"))
@@ -65,26 +118,38 @@ public abstract class ICBlockStateProvider extends BlockStateProvider {
     }
 
     public void registerCubeAll(Block block, ResourceLocation texture) {
-        registerSimpleBlock(block);
+        registerSimpleBlockState(block);
         ModelFile blockModel = models().cubeAll(blockModelname(block), texture);
         itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
     }
 
     public void registerCubeBottomTop(Block block, ResourceLocation side, ResourceLocation bottom, ResourceLocation top) {
-        registerSimpleBlock(block);
+        registerSimpleBlockState(block);
         ModelFile blockModel = models().cubeBottomTop(blockModelname(block), side, bottom, top);
         itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
     }
 
     public void registerCubeBottomTop(Block block) {
-        registerSimpleBlock(block);
+        registerSimpleBlockState(block);
         ModelFile blockModel = models().cubeBottomTop(blockModelname(block), textureSideName(block), textureBottomName(block), textureTopName(block));
         itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
     }
 
     public void registerCube(Block block, ResourceLocation down, ResourceLocation up, ResourceLocation north, ResourceLocation south, ResourceLocation east, ResourceLocation west) {
-        registerSimpleBlock(block);
+        registerSimpleBlockState(block);
         ModelFile blockModel = models().cube(blockModelname(block), down, up, north, south, east, west);
+        itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
+    }
+
+    public void registerHorizontalFaceBlock(Block block, ResourceLocation down, ResourceLocation up, ResourceLocation north, ResourceLocation south, ResourceLocation east, ResourceLocation west) {
+        registerHorizontalFaceBlockState(block);
+        ModelFile blockModel = models().cube(blockModelname(block), down, up, north, south, east, west).texture("particle", north);
+        itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
+    }
+
+    public void registerHorizontalBlock(Block block, ResourceLocation down, ResourceLocation up, ResourceLocation north, ResourceLocation south, ResourceLocation east, ResourceLocation west) {
+        registerHorizontalBlockState(block);
+        ModelFile blockModel = models().cube(blockModelname(block), down, up, north, south, east, west).texture("particle", north);
         itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
     }
 
