@@ -1,4 +1,4 @@
-package ic2.api.info;
+package com.iteale.industrialcase.api.info;
 
 import net.minecraftforge.common.MinecraftForge;
 

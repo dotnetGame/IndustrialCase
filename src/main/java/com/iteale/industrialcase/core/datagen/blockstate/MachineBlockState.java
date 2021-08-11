@@ -13,14 +13,7 @@ public class MachineBlockState extends ICBlockStateProvider {
 
     @Override
     protected void registerStatesAndModels() {
-        registerHorizontalBlock(
-                BlockRegistry.IRON_FURNACE.get(),
-                new ResourceLocation(IndustrialCase.MODID, "block/machine/processing/basic/iron_furnace_bottom"),
-                new ResourceLocation(IndustrialCase.MODID, "block/machine/processing/basic/iron_furnace_top"),
-                new ResourceLocation(IndustrialCase.MODID, "block/machine/processing/basic/iron_furnace_front"),
-                new ResourceLocation(IndustrialCase.MODID, "block/machine/processing/basic/iron_furnace_leftrightback"),
-                new ResourceLocation(IndustrialCase.MODID, "block/machine/processing/basic/iron_furnace_leftrightback"),
-                new ResourceLocation(IndustrialCase.MODID, "block/machine/processing/basic/iron_furnace_leftrightback")
-                );
+        registerMachine(BlockRegistry.IRON_FURNACE.get());
+        registerMachine(BlockRegistry.GENERATOR.get());
     }
 }

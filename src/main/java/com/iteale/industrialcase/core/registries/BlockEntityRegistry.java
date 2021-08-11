@@ -1,6 +1,7 @@
 package com.iteale.industrialcase.core.registries;
 
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.block.generator.blockentity.BlockEntityGenerator;
 import com.iteale.industrialcase.core.block.machine.IronFurnace;
 import com.iteale.industrialcase.core.block.machine.blockentity.BlockEntityIronFurnace;
 import net.minecraft.core.BlockPos;
@@ -22,6 +23,8 @@ public class BlockEntityRegistry {
 
     // machine
     public static final RegistryObject<BlockEntityType<BlockEntityIronFurnace>> IRON_FURNACE = register("machine/processing/basic/iron_furnace", BlockEntityIronFurnace::new, BlockRegistry.IRON_FURNACE);
+    public static final RegistryObject<BlockEntityType<BlockEntityGenerator>> GENERATOR = register("generator/electric/generator", BlockEntityGenerator::new, BlockRegistry.GENERATOR);
+
     // public static final RegistryObject<BlockEntityType<FurnaceBlockEntity>> FURNACE = register("furnace", BlockEntityType.Builder.of(FurnaceBlockEntity::new, Blocks.FURNACE));
     // register methods
     public static <T extends BlockEntity> RegistryObject<BlockEntityType<T>> register(String name, BlockEntityType.BlockEntitySupplier<? extends T> supplier, RegistryObject<Block> block) {

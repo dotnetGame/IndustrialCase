@@ -3,6 +3,7 @@ package com.iteale.industrialcase.core.datagen.blockstate;
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.resource.RubberLog;
 import com.iteale.industrialcase.core.block.wiring.CableBase;
+import com.iteale.industrialcase.core.registries.BlockRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -151,6 +152,18 @@ public abstract class ICBlockStateProvider extends BlockStateProvider {
         registerHorizontalBlockState(block);
         ModelFile blockModel = models().cube(blockModelname(block), down, up, north, south, east, west).texture("particle", north);
         itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
+    }
+
+    public void registerMachine(Block block) {
+        registerHorizontalBlock(
+                block,
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_bottom"),
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_top"),
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_front"),
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_leftrightback"),
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_leftrightback"),
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_leftrightback")
+        );
     }
 
     public void registerCable(Block block, float thickness) {

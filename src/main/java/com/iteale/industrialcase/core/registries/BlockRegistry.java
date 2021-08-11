@@ -1,6 +1,7 @@
 package com.iteale.industrialcase.core.registries;
 
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.block.generator.Generator;
 import com.iteale.industrialcase.core.block.machine.IronFurnace;
 import com.iteale.industrialcase.core.block.resource.*;
 import com.iteale.industrialcase.core.block.wiring.CableBlock;
@@ -57,6 +58,9 @@ public class BlockRegistry {
     // explosive
     public static final RegistryObject<Block> ITNT = register("explosive/itnt", new Block(BlockBehaviour.Properties.of(Material.STONE)));
     public static final RegistryObject<Block> NUKE = register("explosive/nuke", new Block(BlockBehaviour.Properties.of(Material.STONE)));
+
+    // generator
+    public static final RegistryObject<Block> GENERATOR = register("generator/electric/generator", new Generator());
 
     // machine
     public static final RegistryObject<Block> IRON_FURNACE = register("machine/processing/basic/iron_furnace", new IronFurnace());
