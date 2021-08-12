@@ -1,17 +1,11 @@
 package com.iteale.industrialcase.core.registries;
 
 import com.iteale.industrialcase.core.IndustrialCase;
-import com.iteale.industrialcase.core.block.generator.blockentity.BlockEntityGenerator;
-import com.iteale.industrialcase.core.block.machine.IronFurnace;
-import com.iteale.industrialcase.core.block.machine.blockentity.BlockEntityIronFurnace;
-import net.minecraft.core.BlockPos;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
+import com.iteale.industrialcase.core.block.generator.blockentity.GeneratorBlockEntity;
+import com.iteale.industrialcase.core.block.machine.blockentity.IronFurnaceBlockEntity;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -22,8 +16,8 @@ public class BlockEntityRegistry {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, IndustrialCase.MODID);
 
     // machine
-    public static final RegistryObject<BlockEntityType<BlockEntityIronFurnace>> IRON_FURNACE = register("machine/processing/basic/iron_furnace", BlockEntityIronFurnace::new, BlockRegistry.IRON_FURNACE);
-    public static final RegistryObject<BlockEntityType<BlockEntityGenerator>> GENERATOR = register("generator/electric/generator", BlockEntityGenerator::new, BlockRegistry.GENERATOR);
+    public static final RegistryObject<BlockEntityType<IronFurnaceBlockEntity>> IRON_FURNACE = register("machine/processing/basic/iron_furnace", IronFurnaceBlockEntity::new, BlockRegistry.IRON_FURNACE);
+    public static final RegistryObject<BlockEntityType<GeneratorBlockEntity>> GENERATOR = register("generator/electric/generator", GeneratorBlockEntity::new, BlockRegistry.GENERATOR);
 
     // public static final RegistryObject<BlockEntityType<FurnaceBlockEntity>> FURNACE = register("furnace", BlockEntityType.Builder.of(FurnaceBlockEntity::new, Blocks.FURNACE));
     // register methods

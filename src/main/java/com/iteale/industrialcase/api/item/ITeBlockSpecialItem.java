@@ -1,7 +1,6 @@
 package com.iteale.industrialcase.api.item;
 
 
-import ic2.api.info.ITeBlock;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.item.ItemStack;
 

@@ -1,10 +1,9 @@
 package com.iteale.industrialcase.core.block;
 
-import com.iteale.industrialcase.core.block.invslot.InvSlot;
-import net.minecraft.world.Container;
+import com.iteale.industrialcase.core.block.inventory.InvSlot;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public interface IInventorySlotHolder<P extends BlockEntity & Container> {
+public interface IInventorySlotHolder<P extends BlockEntity> {
     P getParent();
 
     InvSlot getInventorySlot(String paramString);

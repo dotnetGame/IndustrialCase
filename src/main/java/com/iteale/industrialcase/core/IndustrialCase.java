@@ -4,6 +4,7 @@ import com.iteale.industrialcase.core.init.ICConfig;
 import com.iteale.industrialcase.core.registries.BlockRegistry;
 import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
 import com.iteale.industrialcase.core.registries.ItemRegistry;
+import com.iteale.industrialcase.core.registries.MenuTypeRegistry;
 import com.iteale.industrialcase.core.util.Log;
 import com.iteale.industrialcase.core.util.PriorityExecutor;
 import net.minecraft.world.item.CreativeModeTab;
@@ -36,6 +37,7 @@ public class IndustrialCase
         BlockRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         BlockEntityRegistry.BLOCK_ENTITY_TYPES.register(FMLJavaModLoadingContext.get().getModEventBus());
         ItemRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        MenuTypeRegistry.MENUS.register(FMLJavaModLoadingContext.get().getModEventBus());
 
         threadPool = new PriorityExecutor(Math.max(Runtime.getRuntime().availableProcessors(), 2));
         instance = this;

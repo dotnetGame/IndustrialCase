@@ -1,7 +1,7 @@
 package com.iteale.industrialcase.core.block.machine;
 
 
-import com.iteale.industrialcase.core.block.machine.blockentity.BlockEntityIronFurnace;
+import com.iteale.industrialcase.core.block.machine.blockentity.IronFurnaceBlockEntity;
 import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,22 +9,18 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -32,7 +28,7 @@ import java.util.function.ToIntFunction;
 
 public class IronFurnace extends AbstractFurnaceBlock {
     public IronFurnace() {
-        super(Properties.of(Material.STONE)
+        super(Properties.of(Material.METAL)
                 .requiresCorrectToolForDrops().strength(3.5F)
                 .lightLevel(litBlockEmission(13)));
     }
@@ -44,9 +40,14 @@ public class IronFurnace extends AbstractFurnaceBlock {
     }
 
     @Override
+    public RenderShape getRenderShape(BlockState p_49232_) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
     protected void openContainer(Level level, BlockPos pos, Player player) {
         BlockEntity blockentity = level.getBlockEntity(pos);
-        if (blockentity instanceof BlockEntityIronFurnace) {
+        if (blockentity instanceof IronFurnaceBlockEntity) {
             player.openMenu((MenuProvider)blockentity);
             player.awardStat(Stats.INTERACT_WITH_FURNACE);
         }
@@ -55,7 +56,7 @@ public class IronFurnace extends AbstractFurnaceBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new BlockEntityIronFurnace(pos, state);
+        return new IronFurnaceBlockEntity(pos, state);
     }
 
     @Nullable
