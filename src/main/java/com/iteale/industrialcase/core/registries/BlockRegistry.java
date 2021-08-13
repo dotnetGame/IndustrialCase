@@ -75,4 +75,10 @@ public class BlockRegistry {
         RegistryObject<Item> itemBlockRegistry = ITEMS.register(name, () -> item);
         return blockRegistry;
     }
+
+    public static RegistryObject<Block> register(String name, Block block, Item item) {
+        RegistryObject<Block> blockRegistry = BLOCKS.register(name, () -> block);
+        RegistryObject<Item> itemBlockRegistry = ITEMS.register(name, () -> item);
+        return blockRegistry;
+    }
 }

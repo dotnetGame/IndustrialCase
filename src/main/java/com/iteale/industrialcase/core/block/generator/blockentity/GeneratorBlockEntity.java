@@ -1,6 +1,8 @@
 package com.iteale.industrialcase.core.block.generator.blockentity;
 
 import com.iteale.industrialcase.core.block.comp.Energy;
+import com.iteale.industrialcase.core.block.container.ChargeContainer;
+import com.iteale.industrialcase.core.block.container.FuelContainer;
 import com.iteale.industrialcase.core.block.generator.Generator;
 import com.iteale.industrialcase.core.block.generator.menu.GeneratorMenu;
 import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
@@ -9,36 +11,21 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.util.Mth;
-import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractFurnaceBlock;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.Tags;
 
 public class GeneratorBlockEntity extends BaseContainerBlockEntity {
-    private Container items;
+    private ChargeContainer chargeSlot;
+    private FuelContainer fuelSlot;
     private Energy energy;
     public int fuel; // 燃料值
+    public int totalFuel; // 总燃料值
     protected double production; // 转换率
 
     public ContainerData dataAccess = new ContainerData() {
@@ -50,6 +37,8 @@ public class GeneratorBlockEntity extends BaseContainerBlockEntity {
                 return (int) GeneratorBlockEntity.this.energy.getStorage();
             } else if (index == GeneratorDataType.CAPACITY.value) {
                 return (int) GeneratorBlockEntity.this.energy.getCapacity();
+            } else if (index == GeneratorDataType.TOTAL_FUEL.value) {
+                return GeneratorBlockEntity.this.totalFuel;
             } else {
                 throw new IndexOutOfBoundsException("Generator container data out of range.");
             }
@@ -63,6 +52,8 @@ public class GeneratorBlockEntity extends BaseContainerBlockEntity {
                 GeneratorBlockEntity.this.energy.setStorage(value);
             } else if (index == GeneratorDataType.CAPACITY.value) {
                 GeneratorBlockEntity.this.energy.setCapacity(value);
+            } else if (index == GeneratorDataType.TOTAL_FUEL.value) {
+                GeneratorBlockEntity.this.totalFuel = value;
             } else {
                 throw new IndexOutOfBoundsException("Generator container data out of range.");
             }
@@ -76,12 +67,14 @@ public class GeneratorBlockEntity extends BaseContainerBlockEntity {
 
     public GeneratorBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.GENERATOR.get(), pos, state);
+        chargeSlot = new ChargeContainer(1);
+        fuelSlot = new FuelContainer(1, false);
         int maxStorage = 4000;
         int tier = 1;
         energy = Energy.asBasicSource(this, maxStorage, tier);
         fuel = 0;
+        totalFuel = 0;
         production = 10.0F;
-        items = new SimpleContainer(2);
     }
 
     @Override
@@ -109,37 +102,57 @@ public class GeneratorBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     public int getContainerSize() {
-        return items.getContainerSize();
+        return fuelSlot.getContainerSize() + chargeSlot.getContainerSize();
     }
 
     @Override
     public boolean isEmpty() {
-        return items.isEmpty();
+        return fuelSlot.isEmpty() && chargeSlot.isEmpty();
     }
 
     @Override
     public ItemStack getItem(int index) {
-        return items.getItem(index);
+        if (index == 0) {
+            return chargeSlot.getItem(0);
+        } else if (index == 1) {
+            return fuelSlot.getItem(0);
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack removeItem(int index, int p_18943_) {
-        return items.removeItem(index, p_18943_);
+    public ItemStack removeItem(int index, int splitCount) {
+        if (index == 0) {
+            return chargeSlot.removeItem(0, splitCount);
+        } else if (index == 1) {
+            return fuelSlot.removeItem(0, splitCount);
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int index) {
-        return items.removeItemNoUpdate(index);
+        if (index == 0) {
+            return chargeSlot.removeItemNoUpdate(0);
+        } else if (index == 1) {
+            return fuelSlot.removeItemNoUpdate(0);
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override
     public void setItem(int index, ItemStack itemStack) {
-        items.setItem(index, itemStack);
+        if (index == 0) {
+            chargeSlot.setItem(0, itemStack);
+        } else if (index == 1) {
+            fuelSlot.setItem(0, itemStack);
+        }
     }
 
     @Override
     public void clearContent() {
-        items.clearContent();
+        chargeSlot.clearContent();
+        fuelSlot.clearContent();
     }
 
     @Override
@@ -156,6 +169,21 @@ public class GeneratorBlockEntity extends BaseContainerBlockEntity {
         return false;
     }
 
+    public double getFuelRatio() {
+        if (this.fuel <= 0)
+            return 0.0D;
+        return this.fuel / this.totalFuel;
+    }
+
+    public boolean gainFuel() {
+        int fuelValue = this.fuelSlot.consumeFuel() / 4;
+        if (fuelValue == 0)
+            return false;
+        this.fuel += fuelValue;
+        this.totalFuel = fuelValue;
+        return true;
+    }
+
     public boolean isConverting() {
         return (!needsFuel() && this.energy.getFreeEnergy() >= this.production);
     }
@@ -165,15 +193,17 @@ public class GeneratorBlockEntity extends BaseContainerBlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, GeneratorBlockEntity blockEntity) {
-        if (blockEntity.items.getItem(1).is(Items.OAK_PLANKS)) {
-            blockEntity.fuel = 10;
-        }
+        boolean needsInvUpdate = false;
+        if (blockEntity.needsFuel())
+            needsInvUpdate = blockEntity.gainFuel();
+        boolean newActive = blockEntity.gainEnergy();
     }
 
     public enum GeneratorDataType {
         FUEL(0),
         STORAGE(1),
-        CAPACITY(2);
+        CAPACITY(2),
+        TOTAL_FUEL(3);
 
         private final int value;
         private GeneratorDataType(int value) {

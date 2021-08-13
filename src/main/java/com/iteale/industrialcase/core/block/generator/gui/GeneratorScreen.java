@@ -2,6 +2,7 @@ package com.iteale.industrialcase.core.block.generator.gui;
 
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.generator.menu.GeneratorMenu;
+import com.iteale.industrialcase.core.util.Util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.AbstractButton;
@@ -41,6 +42,16 @@ public class GeneratorScreen extends AbstractContainerScreen<GeneratorMenu> {
     }
 
     @Override
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+        super.renderLabels(poseStack, mouseX, mouseY);
+        int storage = this.menu.getStorage();
+        int capacity = this.menu.getCapacity();
+        this.font.draw(poseStack,
+                Util.toSiString(storage, 4) + "/" + Util.toSiString(capacity, 4),
+                110, 38, 4210752);
+    }
+
+    @Override
     protected void renderBg(PoseStack poseStack, float p_97788_, int p_97789_, int p_97790_) {
         // draw bg
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -50,8 +61,16 @@ public class GeneratorScreen extends AbstractContainerScreen<GeneratorMenu> {
         int j = (this.height - this.imageHeight) / 2;
         this.blit(poseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
 
+        // draw fuel gauge
+        int fuelPercent;
+        if (this.menu.getFuel() <= 0)
+            fuelPercent = 0;
+        else
+            fuelPercent = (int)(13.0F * this.menu.getFuel() / this.menu.getTotalFuel());
+        this.blit(poseStack, i + 56, j + 36 + 14 - fuelPercent, 176, 13 - fuelPercent, 14, fuelPercent + 1);
+
         // draw energy gauge
-        int energyPercent = (int)(100.0F * this.menu.getStorage() / this.menu.getCapacity());
-        this.blit(poseStack, i + 56, j + 36 + 12 - energyPercent, 176, 12 - energyPercent, 14, energyPercent + 1);
+        int energyPercent = (int)(24.0F * this.menu.getStorage() / this.menu.getCapacity());
+        this.blit(poseStack, i + 79, j + 35, 176, 15, energyPercent, 16);
     }
 }

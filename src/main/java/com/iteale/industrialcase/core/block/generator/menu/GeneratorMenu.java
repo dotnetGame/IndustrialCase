@@ -14,7 +14,7 @@ public class GeneratorMenu extends AbstractContainerMenu {
     private final Container container;
     private final ContainerData data;
     public GeneratorMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainer(2), new SimpleContainerData(3));
+        this(containerId, inventory, new SimpleContainer(2), new SimpleContainerData(4));
     }
 
     public GeneratorMenu(int containerId, Inventory inventory, Container containerIn, ContainerData dataIn) {
@@ -22,12 +22,13 @@ public class GeneratorMenu extends AbstractContainerMenu {
         container = containerIn;
         data = dataIn;
         initSlots(containerId, inventory);
+        addDataSlots(data);
     }
 
     private void initSlots(int containerId, Inventory inventory) {
-        this.addSlot(new Slot(container, 0, 56, 16));
+        this.addSlot(new Slot(container, 0, 56, 17));
 
-        this.addSlot(new Slot(container, 1, 56, 52));
+        this.addSlot(new Slot(container, 1, 56, 53));
 
         for(int k = 0; k < 3; ++k) {
             for(int i1 = 0; i1 < 9; ++i1) {
@@ -48,6 +49,10 @@ public class GeneratorMenu extends AbstractContainerMenu {
     // Container data
     public int getFuel() {
         return this.data.get(GeneratorBlockEntity.GeneratorDataType.FUEL.getValue());
+    }
+
+    public int getTotalFuel() {
+        return this.data.get(GeneratorBlockEntity.GeneratorDataType.TOTAL_FUEL.getValue());
     }
 
     public int getStorage() {

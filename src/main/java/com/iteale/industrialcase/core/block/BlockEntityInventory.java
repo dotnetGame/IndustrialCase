@@ -1,8 +1,9 @@
 package com.iteale.industrialcase.core.block;
 
-import com.iteale.industrialcase.core.block.inventory.InvSlot;
+import com.iteale.industrialcase.core.block.container.ICContainer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -10,20 +11,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BlockEntityInventory extends BlockEntity
-        implements IInventorySlotHolder<BlockEntityInventory> {
-    private final List<InvSlot> invSlots;
+public abstract class BlockEntityInventory extends BaseContainerBlockEntity
+        implements IContainerHolder<BlockEntityInventory> {
+    private final List<ICContainer> invSlots;
 
     public BlockEntityInventory(BlockEntityType<?> t, BlockPos pos, BlockState state) {
         super(t, pos, state);
         this.invSlots = new ArrayList();
     }
-
+    /*
     @Override
     public void load(CompoundTag nbtTagCompound) {
         super.load(nbtTagCompound);
         CompoundTag invSlotsTag = nbtTagCompound.getCompound("InvSlots");
-        for (InvSlot invSlot : this.invSlots)
+        for (ICContainer invSlot : this.invSlots)
             invSlot.load(invSlotsTag.getCompound(invSlot.name));
     }
 
@@ -39,4 +40,5 @@ public abstract class BlockEntityInventory extends BlockEntity
         nbt.put("InvSlots", invSlotsTag);
         return nbt;
     }
+     */
 }
