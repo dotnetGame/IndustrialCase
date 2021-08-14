@@ -1,14 +1,11 @@
 package com.iteale.industrialcase.core.gui;
 
 
-import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.systems.RenderSystem;
-import javafx.scene.input.MouseButton;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.core.NonNullList;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.event.GuiScreenEvent;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -40,127 +37,16 @@ public abstract class GuiElement<T extends GuiElement<T>>
         return (x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height);
     }
 
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){}
 
-    public T withEnableHandler(IEnableHandler enableHandler) {
-        this.enableHandler = enableHandler;
+    public void renderLabels(PoseStack poseStack, int mouseX, int mouseY){}
 
-        return (T)this;
-    }
+    public void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY){}
 
-    public T withTooltip(String tooltip) {
-        return withTooltip(Suppliers.ofInstance(tooltip));
-    }
-
-
-    public T withTooltip(Supplier<String> tooltipProvider) {
-        this.tooltipProvider = tooltipProvider;
-
-        return (T)this;
-    }
-
-
-    public void tick() {}
-
-    public void drawBackground(int mouseX, int mouseY) {}
-
-    public void drawForeground(int mouseX, int mouseY) {
-        if (contains(mouseX, mouseY) && !suppressTooltip(mouseX, mouseY)) {
-            List<String> lines = getToolTip();
-
-            if (this.tooltipProvider != null) {
-                String tooltip = (String)this.tooltipProvider.get();
-
-                if (tooltip != null && !tooltip.isEmpty()) {
-                    addLines(lines, tooltip);
-                }
-            }
-
-            if (!lines.isEmpty()) {
-                this.gui.drawTooltip(mouseX, mouseY, lines);
-            }
-        }
-    }
-
-    private static void addLines(List<String> list, String str) {
-        int startPos = 0;
-
-        int pos;
-        while ((pos = str.indexOf('\n', startPos)) != -1) {
-            list.add(str.substring(startPos, pos));
-            startPos = pos + 1;
-        }
-
-        if (startPos == 0) {
-            list.add(str);
-        } else {
-            list.add(str.substring(startPos));
-        }
-    }
-
-    public boolean onMouseClick(int mouseX, int mouseY, MouseButton button, boolean onThis) {
-        return (onThis && onMouseClick(mouseX, mouseY, button));
-    }
-
-    protected boolean onMouseClick(int mouseX, int mouseY, MouseButton button) {
-        return false;
-    }
-
-    public boolean onMouseDrag(int mouseX, int mouseY, MouseButton button, long timeFromLastClick, boolean onThis) {
-        return (onThis && onMouseDrag(mouseX, mouseY, button, timeFromLastClick));
-    }
-
-    protected boolean onMouseDrag(int mouseX, int mouseY, MouseButton button, long timeFromLastClick) {
-        return false;
-    }
-
-    public boolean onMouseRelease(int mouseX, int mouseY, MouseButton button, boolean onThis) {
-        return (onThis && onMouseRelease(mouseX, mouseY, button));
-    }
-
-    protected boolean onMouseRelease(int mouseX, int mouseY, MouseButton button) {
-        return false;
-    }
-
-    public void onMouseScroll(int mouseX, int mouseY, ScrollDirection direction) {}
-
-    public boolean onKeyTyped(char typedChar, int keyCode) {
-        return false;
-    }
-
-    protected boolean suppressTooltip(int mouseX, int mouseY) {
-        return false;
-    }
-
-    protected List<String> getToolTip() {
-        return new ArrayList<>();
-    }
-
-    protected final NonNullList<ItemStack> getBase() {
-        return (this.gui.getContainer()).getItems();
-    }
-
-    protected final Map<String, TextProvider.ITextProvider> getTokens() {
-        Map<String, TextProvider.ITextProvider> ret = new HashMap<>();
-
-        ret.put("name", TextProvider.ofTranslated(getBase().getName()));
-
-        return ret;
-    }
-
-    protected static void bindTexture(ResourceLocation texture) {
-        RenderSystem.bindTexture(texture);
-    }
-
-    public static void bindCommonTexture() {
-        (Minecraft.getInstance()).renderEngine.bindTexture(commonTexture);
-    }
-
-    protected static void bindBlockTexture() {
-        (Minecraft.getInstance()).renderEngine.bindTexture(TextureManager.INTENTIONAL_MISSING_TEXTURE);
-    }
-
-    protected static TextureManager getBlockTextureMap() {
-        return Minecraft.getInstance().getTextureManager();
+    public void bindTexture(int textureId, ResourceLocation texture) {
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(textureId, texture);
     }
 
     private static final Method hasMethod(Class<?> cls, String name, Class<?>... params) {
@@ -181,12 +67,12 @@ public abstract class GuiElement<T extends GuiElement<T>>
             while (cls != GuiElement.class && (!tick.hasSeen() || !background.hasSeen() || !mouseClick.hasSeen() || !mouseDrag.hasSeen() || !mouseRelease.hasSeen() || !mouseScroll.hasSeen() || !key.hasSeen())) {
                 if (!tick.hasSeen()) tick = hasMethod(cls, "tick");
                 if (!background.hasSeen()) background = hasMethod(cls, "drawBackground", int.class, int.class);
-                if (!mouseClick.hasSeen()) mouseClick = hasMethod(cls, "onMouseClick", int.class, int.class, MouseButton.class);
-                if (!mouseClick.hasSeen()) mouseClick = hasMethod(cls, "onMouseClick", int.class, int.class, MouseButton.class, boolean.class);
-                if (!mouseDrag.hasSeen()) mouseDrag = hasMethod(cls, "onMouseDrag", int.class, int.class, MouseButton.class, long.class);
-                if (!mouseDrag.hasSeen()) mouseDrag = hasMethod(cls, "onMouseDrag", int.class, int.class, MouseButton.class, long.class, boolean.class);
-                if (!mouseRelease.hasSeen()) mouseRelease = hasMethod(cls, "onMouseRelease", int.class, int.class, MouseButton.class);
-                if (!mouseRelease.hasSeen()) mouseRelease = hasMethod(cls, "onMouseRelease", int.class, int.class, MouseButton.class, boolean.class);
+                if (!mouseClick.hasSeen()) mouseClick = hasMethod(cls, "onMouseClick", int.class, int.class, GuiScreenEvent.MouseClickedEvent.class);
+                if (!mouseClick.hasSeen()) mouseClick = hasMethod(cls, "onMouseClick", int.class, int.class, GuiScreenEvent.MouseClickedEvent.class, boolean.class);
+                if (!mouseDrag.hasSeen()) mouseDrag = hasMethod(cls, "onMouseDrag", int.class, int.class, GuiScreenEvent.MouseDragEvent.class, long.class);
+                if (!mouseDrag.hasSeen()) mouseDrag = hasMethod(cls, "onMouseDrag", int.class, int.class, GuiScreenEvent.MouseDragEvent.class, long.class, boolean.class);
+                if (!mouseRelease.hasSeen()) mouseRelease = hasMethod(cls, "onMouseRelease", int.class, int.class, GuiScreenEvent.MouseReleasedEvent.class);
+                if (!mouseRelease.hasSeen()) mouseRelease = hasMethod(cls, "onMouseRelease", int.class, int.class, GuiScreenEvent.MouseReleasedEvent.class, boolean.class);
                 if (!mouseScroll.hasSeen()) mouseScroll = hasMethod(cls, "onMouseScroll", int.class, int.class, ScrollDirection.class);
                 if (!key.hasSeen()) key = hasMethod(cls, "onKeyTyped", char.class, int.class);
 
@@ -199,6 +85,10 @@ public abstract class GuiElement<T extends GuiElement<T>>
         }
 
         return subscriptions;
+    }
+
+    protected List<String> getToolTip() {
+        return new ArrayList<>();
     }
 
     @Retention(RetentionPolicy.RUNTIME)

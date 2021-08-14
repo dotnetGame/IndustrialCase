@@ -19,6 +19,7 @@ public class GeneratorMenu extends AbstractContainerMenu {
         super(MenuTypeRegistry.GENERATOR_MENU.get(), containerId);
         container = containerIn;
         data = dataIn;
+
         initSlots(containerId, inventory);
         addDataSlots(data);
     }
@@ -28,9 +29,9 @@ public class GeneratorMenu extends AbstractContainerMenu {
 
         this.addSlot(new Slot(container, 1, 56, 53));
 
-        for(int k = 0; k < 3; ++k) {
-            for(int i1 = 0; i1 < 9; ++i1) {
-                this.addSlot(new Slot(inventory, i1 + k * 9 + 9, 8 + i1 * 18, 79 + k * 18));
+        for(int y = 0; y < 3; ++y) {
+            for(int x = 0; x < 9; ++x) {
+                this.addSlot(new Slot(inventory, x + y * 9 + 9, 8 + x * 18, 79 + y * 18));
             }
         }
 
