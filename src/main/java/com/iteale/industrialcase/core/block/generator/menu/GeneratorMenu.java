@@ -9,8 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 
 public class GeneratorMenu extends AbstractContainerMenu {
-    // private final CraftingContainer craftSlots = new CraftingContainer(this, 3, 3);
-    // private final ResultContainer resultSlots = new ResultContainer();
     private final Container container;
     private final ContainerData data;
     public GeneratorMenu(int containerId, Inventory inventory) {

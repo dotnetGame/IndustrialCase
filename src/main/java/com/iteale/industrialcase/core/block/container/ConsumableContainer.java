@@ -1,5 +1,6 @@
 package com.iteale.industrialcase.core.block.container;
 
+import com.iteale.industrialcase.core.block.IContainerHolder;
 import com.iteale.industrialcase.core.util.StackUtil;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
@@ -8,6 +9,14 @@ import net.minecraft.world.item.ItemStack;
 public abstract class ConsumableContainer extends ICContainer {
     public ConsumableContainer(int sizeIn) {
         super(sizeIn);
+    }
+
+    public ConsumableContainer(IContainerHolder<?> base, String name, int count) {
+        super(base, name, ICContainer.Access.I, count, ICContainer.InvSide.TOP);
+    }
+
+    public ConsumableContainer(IContainerHolder<?> base, String name, ICContainer.Access access, int count, ICContainer.InvSide preferredSide) {
+        super(base, name, access, count, preferredSide);
     }
 
     public abstract boolean accepts(ItemStack paramItemStack);

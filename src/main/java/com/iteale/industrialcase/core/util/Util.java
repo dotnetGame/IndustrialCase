@@ -87,14 +87,6 @@ public final class Util
     
     return value / srcMax * dstMax;
   }
-
-
-
-
-
-
-
-
   
   public static double lerp(double start, double end, double fraction) {
     assert fraction >= 0.0D && fraction <= 1.0D;

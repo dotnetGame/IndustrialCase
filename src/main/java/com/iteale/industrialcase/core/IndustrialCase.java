@@ -1,14 +1,20 @@
 package com.iteale.industrialcase.core;
 
+import com.iteale.industrialcase.api.info.Info;
+import com.iteale.industrialcase.api.item.ElectricItem;
 import com.iteale.industrialcase.core.init.ICConfig;
+import com.iteale.industrialcase.core.item.ElectricItemManager;
+import com.iteale.industrialcase.core.item.GatewayElectricItemManager;
 import com.iteale.industrialcase.core.registries.BlockRegistry;
 import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
 import com.iteale.industrialcase.core.registries.ItemRegistry;
 import com.iteale.industrialcase.core.registries.MenuTypeRegistry;
+import com.iteale.industrialcase.core.util.ItemInfo;
 import com.iteale.industrialcase.core.util.Log;
 import com.iteale.industrialcase.core.util.PriorityExecutor;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +38,7 @@ public class IndustrialCase
     public static Random random = new Random();
 
     public IndustrialCase() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::load);
 
         BlockRegistry.BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         BlockRegistry.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -45,5 +52,11 @@ public class IndustrialCase
 
     public static IndustrialCase getInstance() {
         return instance;
+    }
+
+    public void load(FMLCommonSetupEvent event) {
+        ElectricItem.manager = new GatewayElectricItemManager();
+        ElectricItem.rawManager = new ElectricItemManager();
+        Info.itemInfo = new ItemInfo();
     }
 }

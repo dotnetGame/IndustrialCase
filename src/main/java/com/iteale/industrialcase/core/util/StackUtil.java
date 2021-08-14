@@ -135,4 +135,25 @@ public class StackUtil {
         }
         return true;
     }
+
+    public static CompoundTag getOrCreateNbtData(ItemStack stack) {
+        CompoundTag ret = stack.getTag();
+
+        if (ret == null) {
+            ret = new CompoundTag();
+
+            stack.setTag(ret);
+        }
+
+        return ret;
+    }
+
+    public static String toStringSafe(ItemStack stack) {
+        if (stack == null)
+            return "(null)";
+        if (stack.getItem() == null) {
+            return getSize(stack) + "x(null)@(unknown)";
+        }
+        return stack.toString();
+    }
 }

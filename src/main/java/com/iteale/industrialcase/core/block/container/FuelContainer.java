@@ -1,6 +1,7 @@
 package com.iteale.industrialcase.core.block.container;
 
 import com.iteale.industrialcase.api.info.Info;
+import com.iteale.industrialcase.core.block.IContainerHolder;
 import com.iteale.industrialcase.core.util.StackUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -15,9 +16,10 @@ import java.util.Optional;
 
 public class FuelContainer extends ConsumableContainer {
     public final boolean allowLava;
-    public FuelContainer(int sizeIn, boolean allowLava) {
-        super(sizeIn);
-        this.allowLava = allowLava;
+    public FuelContainer(IContainerHolder<?> base, String name, int count, boolean allowLava1) {
+        super(base, name, ICContainer.Access.I, count, ICContainer.InvSide.SIDE);
+
+        this.allowLava = allowLava1;
     }
 
     public boolean accepts(ItemStack stack) {

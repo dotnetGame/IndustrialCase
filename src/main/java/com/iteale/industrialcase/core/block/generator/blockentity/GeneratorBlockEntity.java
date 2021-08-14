@@ -5,6 +5,7 @@ import com.iteale.industrialcase.core.block.container.ChargeContainer;
 import com.iteale.industrialcase.core.block.container.FuelContainer;
 import com.iteale.industrialcase.core.block.generator.Generator;
 import com.iteale.industrialcase.core.block.generator.menu.GeneratorMenu;
+import com.iteale.industrialcase.core.network.GuiSynced;
 import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
 import com.iteale.industrialcase.core.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
@@ -20,13 +21,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class GeneratorBlockEntity extends BaseContainerBlockEntity {
-    private ChargeContainer chargeSlot;
-    private FuelContainer fuelSlot;
-    private Energy energy;
-    public int fuel; // 燃料值
-    public int totalFuel; // 总燃料值
-    protected double production; // 转换率
+import java.util.List;
+
+public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
+    public final FuelContainer fuelSlot;
+    @GuiSynced
+    public int totalFuel;
 
     public ContainerData dataAccess = new ContainerData() {
         @Override
@@ -66,15 +66,10 @@ public class GeneratorBlockEntity extends BaseContainerBlockEntity {
     };
 
     public GeneratorBlockEntity(BlockPos pos, BlockState state) {
-        super(BlockEntityRegistry.GENERATOR.get(), pos, state);
-        chargeSlot = new ChargeContainer(1);
-        fuelSlot = new FuelContainer(1, false);
-        int maxStorage = 4000;
-        int tier = 1;
-        energy = Energy.asBasicSource(this, maxStorage, tier);
-        fuel = 0;
-        totalFuel = 0;
-        production = 10.0F;
+        super(BlockEntityRegistry.GENERATOR.get(), pos, state,
+                Math.round(10.0F * 1.0F), 1, 4000);
+        this.totalFuel = 0;
+        this.fuelSlot = new FuelContainer(this, "fuel", 1, false);
     }
 
     @Override
@@ -98,66 +93,6 @@ public class GeneratorBlockEntity extends BaseContainerBlockEntity {
     @Override
     protected AbstractContainerMenu createMenu(int containerId, Inventory inventory) {
         return new GeneratorMenu(containerId, inventory, this, this.dataAccess);
-    }
-
-    @Override
-    public int getContainerSize() {
-        return fuelSlot.getContainerSize() + chargeSlot.getContainerSize();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return fuelSlot.isEmpty() && chargeSlot.isEmpty();
-    }
-
-    @Override
-    public ItemStack getItem(int index) {
-        if (index == 0) {
-            return chargeSlot.getItem(0);
-        } else if (index == 1) {
-            return fuelSlot.getItem(0);
-        }
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public ItemStack removeItem(int index, int splitCount) {
-        if (index == 0) {
-            return chargeSlot.removeItem(0, splitCount);
-        } else if (index == 1) {
-            return fuelSlot.removeItem(0, splitCount);
-        }
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public ItemStack removeItemNoUpdate(int index) {
-        if (index == 0) {
-            return chargeSlot.removeItemNoUpdate(0);
-        } else if (index == 1) {
-            return fuelSlot.removeItemNoUpdate(0);
-        }
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public void setItem(int index, ItemStack itemStack) {
-        if (index == 0) {
-            chargeSlot.setItem(0, itemStack);
-        } else if (index == 1) {
-            fuelSlot.setItem(0, itemStack);
-        }
-    }
-
-    @Override
-    public void clearContent() {
-        chargeSlot.clearContent();
-        fuelSlot.clearContent();
-    }
-
-    @Override
-    public boolean stillValid(Player player) {
-        return true;
     }
 
     public boolean gainEnergy() {
@@ -197,6 +132,16 @@ public class GeneratorBlockEntity extends BaseContainerBlockEntity {
         if (blockEntity.needsFuel())
             needsInvUpdate = blockEntity.gainFuel();
         boolean newActive = blockEntity.gainEnergy();
+    }
+
+    @Override
+    public List<String> getNetworkedFields() {
+        return null;
+    }
+
+    @Override
+    public void onNetworkUpdate(String field) {
+
     }
 
     public enum GeneratorDataType {

@@ -1,42 +1,44 @@
 package com.iteale.industrialcase.core.block.comp;
 
 
+import com.iteale.industrialcase.api.energy.tile.IChargingSlot;
+import com.iteale.industrialcase.api.energy.tile.IDischargingSlot;
+import com.iteale.industrialcase.core.block.BlockEntityBase;
+import com.iteale.industrialcase.core.block.container.ICContainer;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
-public class Energy {
+public class Energy extends BlockEntityComponent {
 
-    public static Energy asBasicSink(BlockEntity parent, double capacity) {
+    public static Energy asBasicSink(BlockEntityBase parent, double capacity) {
         return asBasicSink(parent, capacity, 1);
     }
 
-    public static Energy asBasicSink(BlockEntity parent, double capacity, int tier) {
+    public static Energy asBasicSink(BlockEntityBase parent, double capacity, int tier) {
         return new Energy(parent, capacity, new HashSet<Direction>(Arrays.asList(Direction.values())), Collections.EMPTY_SET, tier);
     }
 
-    public static Energy asBasicSource(BlockEntity parent, double capacity) {
+    public static Energy asBasicSource(BlockEntityBase parent, double capacity) {
         return asBasicSource(parent, capacity, 1);
     }
 
-    public static Energy asBasicSource(BlockEntity parent, double capacity, int tier) {
+    public static Energy asBasicSource(BlockEntityBase parent, double capacity, int tier) {
         return new Energy(parent, capacity, Collections.EMPTY_SET, new HashSet<Direction>(Arrays.asList(Direction.values())), tier);
     }
 
-    public Energy(BlockEntity parent, double capacity) {
+    public Energy(BlockEntityBase parent, double capacity) {
         this(parent, capacity, Collections.EMPTY_SET, Collections.EMPTY_SET, 1);
     }
 
-    public Energy(BlockEntity parent, double capacity, Set<Direction> sinkDirections, Set<Direction> sourceDirections, int tier) {
+    public Energy(BlockEntityBase parent, double capacity, Set<Direction> sinkDirections, Set<Direction> sourceDirections, int tier) {
         this(parent, capacity, sinkDirections, sourceDirections, tier, tier, false);
     }
 
-    public Energy(BlockEntity parent, double capacity, Set<Direction> sinkDirections, Set<Direction> sourceDirections, int sinkTier, int sourceTier, boolean fullEnergy) {
+    public Energy(BlockEntityBase parent, double capacity, Set<Direction> sinkDirections, Set<Direction> sourceDirections, int sinkTier, int sourceTier, boolean fullEnergy) {
+        super(parent);
         this.multiSource = false;
         this.sourcePackets = 1;
         this.capacity = capacity;
@@ -45,6 +47,17 @@ public class Energy {
         this.sinkDirections = sinkDirections;
         this.sourceDirections = sourceDirections;
         this.fullEnergy = fullEnergy;
+    }
+
+    public Energy addManagedSlot(ICContainer slot) {
+        if (slot instanceof IChargingSlot || slot instanceof IDischargingSlot) {
+            if (this.managedSlots == null)
+                this.managedSlots = new ArrayList<>(4);
+            this.managedSlots.add(slot);
+        } else {
+            throw new IllegalArgumentException("No charge/discharge slot.");
+        }
+        return this;
     }
 
     public void load(CompoundTag nbt) {
@@ -97,6 +110,7 @@ public class Energy {
     private int sourceTier;
     private Set<Direction> sinkDirections;
     private Set<Direction> sourceDirections;
+    private List<ICContainer> managedSlots;
     private boolean multiSource;
     private int sourcePackets;
     private boolean loaded;
