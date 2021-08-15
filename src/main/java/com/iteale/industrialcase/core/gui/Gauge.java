@@ -22,7 +22,7 @@ public abstract class Gauge<T extends Gauge<T>> extends GuiElement<T> {
     protected abstract double getRatio();
 
     protected boolean isActive(double ratio) {
-        return (ratio > 0.0D);
+        return ratio > 0.0D;
     }
 
     public void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY){
@@ -204,7 +204,8 @@ public abstract class Gauge<T extends Gauge<T>> extends GuiElement<T> {
             this.innerHeight = this.hoverHeight = toShort(innerHeight);
             this.vertical = dir.vertical;
             this.reverse = dir.reverse;
-        } }
+        }
+    }
 
     public static class GaugeProperties {
         public final short uInner;
@@ -281,15 +282,15 @@ public abstract class Gauge<T extends Gauge<T>> extends GuiElement<T> {
         ProgressMetalFormer((new Gauge.GaugePropertyBuilder(200, 19, 46, 9, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withBackground(-8, -3, 64, 16, 192, 0).build()),
         ProgressCentrifuge((new Gauge.GaugePropertyBuilder(252, 33, 3, 28, Gauge.GaugePropertyBuilder.GaugeOrientation.Up)).withBackground(-1, -1, 5, 30, 246, 32).build()),
         HeatCentrifuge((new Gauge.GaugePropertyBuilder(225, 54, 20, 4, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withBackground(-1, -1, 22, 6, 224, 47).build()),
-        HeatNuclearReactor((new Gauge.GaugePropertyBuilder(0, 243, 100, 13, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/GUINuclearReactor.png")).build()),
-        HeatSteamGenerator((new Gauge.GaugePropertyBuilder(177, 1, 7, 76, Gauge.GaugePropertyBuilder.GaugeOrientation.Up)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/GUISteamGenerator.png")).build()),
-        CalcificationSteamGenerator((new Gauge.GaugePropertyBuilder(187, 1, 7, 58, Gauge.GaugePropertyBuilder.GaugeOrientation.Up)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/GUISteamGenerator.png")).build()),
-        ProgressCondenser((new Gauge.GaugePropertyBuilder(1, 185, 82, 7, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/GUICondenser.png")).build()),
-        HeatFermenter((new Gauge.GaugePropertyBuilder(177, 10, 40, 3, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/GUIFermenter.png")).build()),
-        ProgressFermenter((new Gauge.GaugePropertyBuilder(177, 1, 40, 7, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/GUIFermenter.png")).build()),
-        ProgressOreWasher((new Gauge.GaugePropertyBuilder(177, 118, 18, 18, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withTexture(new ResourceLocation("ic2", "textures/gui/GUIOreWashingPlant.png")).withBackground(-1, -1, 20, 19, 102, 38).build()),
-        ProgressBlockCutter((new Gauge.GaugePropertyBuilder(176, 15, 46, 17, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withTexture(new ResourceLocation("ic2", "textures/gui/GUIBlockCutter.png")).withBackground(55, 33).build()),
-        ProgressLongArrow((new Gauge.GaugePropertyBuilder(176, 15, 34, 13, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withTexture(new ResourceLocation("ic2", "textures/gui/GUI_Canner_Classic.png")).withBackground(74, 36).build());
+        HeatNuclearReactor((new Gauge.GaugePropertyBuilder(0, 243, 100, 13, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/container/nuclear_reactor.png")).build()),
+        HeatSteamGenerator((new Gauge.GaugePropertyBuilder(177, 1, 7, 76, Gauge.GaugePropertyBuilder.GaugeOrientation.Up)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/container/steam_generator.png")).build()),
+        CalcificationSteamGenerator((new Gauge.GaugePropertyBuilder(187, 1, 7, 58, Gauge.GaugePropertyBuilder.GaugeOrientation.Up)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/container/steam_generator.png")).build()),
+        ProgressCondenser((new Gauge.GaugePropertyBuilder(1, 185, 82, 7, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/container/condenser.png")).build()),
+        HeatFermenter((new Gauge.GaugePropertyBuilder(177, 10, 40, 3, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/container/fermenter.png")).build()),
+        ProgressFermenter((new Gauge.GaugePropertyBuilder(177, 1, 40, 7, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withHoverBorder(1).withTexture(new ResourceLocation("ic2", "textures/gui/container/fermenter.png")).build()),
+        ProgressOreWasher((new Gauge.GaugePropertyBuilder(177, 118, 18, 18, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withTexture(new ResourceLocation("ic2", "textures/gui/container/ore_washing_plant.png")).withBackground(-1, -1, 20, 19, 102, 38).build()),
+        ProgressBlockCutter((new Gauge.GaugePropertyBuilder(176, 15, 46, 17, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withTexture(new ResourceLocation("ic2", "textures/gui/container/block_cutter.png")).withBackground(55, 33).build()),
+        ProgressLongArrow((new Gauge.GaugePropertyBuilder(176, 15, 34, 13, Gauge.GaugePropertyBuilder.GaugeOrientation.Right)).withTexture(new ResourceLocation("ic2", "textures/gui/container/canner_classic.png")).withBackground(74, 36).build());
 
         private static final Map<String, IGaugeStyle> map = getMap();
         private final String name;
@@ -322,10 +323,6 @@ public abstract class Gauge<T extends Gauge<T>> extends GuiElement<T> {
             for (GaugeStyle style : values)
                 ret.put(style.name, style);
             return ret;
-        }
-
-        static {
-
         }
     }
     public enum Direction

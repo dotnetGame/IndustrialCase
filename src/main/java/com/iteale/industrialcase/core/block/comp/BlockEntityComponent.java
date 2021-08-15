@@ -30,7 +30,7 @@ public abstract class BlockEntityComponent {
     public void load(CompoundTag nbt) {}
 
     public CompoundTag save() {
-        return null;
+        return new CompoundTag();
     }
 
     public void onLoaded() {}

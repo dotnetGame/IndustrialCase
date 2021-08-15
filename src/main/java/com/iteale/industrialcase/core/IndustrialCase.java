@@ -2,6 +2,7 @@ package com.iteale.industrialcase.core;
 
 import com.iteale.industrialcase.api.info.Info;
 import com.iteale.industrialcase.api.item.ElectricItem;
+import com.iteale.industrialcase.core.block.comp.Components;
 import com.iteale.industrialcase.core.init.ICConfig;
 import com.iteale.industrialcase.core.item.ElectricItemManager;
 import com.iteale.industrialcase.core.item.GatewayElectricItemManager;
@@ -58,5 +59,6 @@ public class IndustrialCase
         ElectricItem.manager = new GatewayElectricItemManager();
         ElectricItem.rawManager = new ElectricItemManager();
         Info.itemInfo = new ItemInfo();
+        Components.init();
     }
 }

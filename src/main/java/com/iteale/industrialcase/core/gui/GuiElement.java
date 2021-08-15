@@ -1,6 +1,7 @@
 package com.iteale.industrialcase.core.gui;
 
 
+import com.iteale.industrialcase.core.IndustrialCase;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.GameRenderer;
@@ -34,18 +35,21 @@ public abstract class GuiElement<T extends GuiElement<T>>
     }
 
     public boolean contains(int x, int y) {
-        return (x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height);
+        return x >= this.gui.getGuiLeft() + this.x
+                && x <= this.gui.getGuiLeft() + this.x + this.width
+                && y >= this.gui.getGuiTop() + this.y
+                && y <= this.gui.getGuiTop() + this.y + this.height;
     }
 
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks){}
 
     public void renderLabels(PoseStack poseStack, int mouseX, int mouseY){}
 
+    public void renderTooltip(PoseStack poseStack, int mouseX, int mouseY){}
+
     public void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY){}
 
     public void bindTexture(int textureId, ResourceLocation texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(textureId, texture);
     }
 
@@ -126,7 +130,7 @@ public abstract class GuiElement<T extends GuiElement<T>>
         }
     }
 
-    public static final ResourceLocation commonTexture = new ResourceLocation("ic2", "textures/gui/common.png");
+    public static final ResourceLocation commonTexture = new ResourceLocation(IndustrialCase.MODID, "textures/gui/container/common.png");
     private static final Map<Class<?>, Subscriptions> SUBSCRIPTIONS = new HashMap<>();
     protected final GuiIC<?> gui;
     protected int x;

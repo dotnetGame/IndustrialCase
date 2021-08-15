@@ -64,10 +64,29 @@ public class Energy extends BlockEntityComponent {
         this.storage = nbt.getDouble("storage");
     }
 
-    public CompoundTag writeToNbt() {
+    public CompoundTag save() {
         CompoundTag ret = new CompoundTag();
         ret.putDouble("storage", this.storage);
         return ret;
+    }
+
+    public boolean enableWorldTick() {
+        return true;
+    }
+
+    public void onWorldTick() {
+        for (ICContainer slot : this.managedSlots) {
+            if (slot instanceof IChargingSlot) {
+                if (this.storage > 0.0D)
+                    this.storage -= ((IChargingSlot)slot).charge(this.storage);
+                continue;
+            }
+            if (slot instanceof IDischargingSlot) {
+                double space = this.capacity - this.storage;
+                if (space > 0.0D)
+                    this.storage += ((IDischargingSlot)slot).discharge(space, false);
+            }
+        }
     }
 
     public double getCapacity() {

@@ -20,6 +20,7 @@ import com.iteale.industrialcase.core.datagen.recipe.ToolRecipes;
 import com.iteale.industrialcase.core.datagen.recipe.WiringRecipes;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.SoundDefinitionsProvider;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;

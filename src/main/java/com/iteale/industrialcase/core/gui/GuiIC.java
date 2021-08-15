@@ -51,10 +51,24 @@ public abstract class GuiIC<T extends AbstractContainerMenu> extends AbstractCon
     }
 
     @Override
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(poseStack, mouseX, mouseY, partialTicks);
+        this.renderTooltip(poseStack, mouseX, mouseY);
+    }
+
+    @Override
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
         super.renderLabels(poseStack, mouseX, mouseY);
         for (GuiElement ele : this.elements) {
             ele.renderLabels(poseStack, mouseX, mouseY);
+        }
+    }
+
+    @Override
+    protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY) {
+        super.renderTooltip(poseStack, mouseX, mouseY);
+        for (GuiElement ele : this.elements) {
+            ele.renderTooltip(poseStack, mouseX, mouseY);
         }
     }
 
@@ -73,26 +87,12 @@ public abstract class GuiIC<T extends AbstractContainerMenu> extends AbstractCon
         for (GuiElement ele : this.elements) {
             ele.renderBg(poseStack, partialTicks, mouseX, mouseY);
         }
-
-        // draw fuel gauge
-        /*
-        int fuelPercent;
-        if (this.menu.getFuel() <= 0)
-            fuelPercent = 0;
-        else
-            fuelPercent = (int)(13.0F * this.menu.getFuel() / this.menu.getTotalFuel());
-        this.blit(poseStack, i + 56, j + 36 + 14 - fuelPercent, 176, 13 - fuelPercent, 14, fuelPercent + 1);
-
-        // draw energy gauge
-        int energyPercent = (int)(24.0F * this.menu.getStorage() / this.menu.getCapacity());
-        this.blit(poseStack, i + 79, j + 35, 176, 15, energyPercent, 16);
-         */
     }
 
     public abstract ResourceLocation getBackgroundTexture();
 
     public void drawTexturedRect(PoseStack poseStack, int x, int y, int w, int h, int u, int v) {
-        this.blit(poseStack, u, v, x, y, w, h);
+        this.blit(poseStack, leftPos + x, topPos + y, u, v, w, h);
     }
 
     public T getContainer() {

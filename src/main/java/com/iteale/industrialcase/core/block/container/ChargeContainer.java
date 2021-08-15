@@ -8,17 +8,14 @@ import net.minecraft.world.item.ItemStack;
 
 public class ChargeContainer extends ICContainer implements IChargingSlot {
     public int tier;
-    public ChargeContainer(int sizeIn) {
-        super(sizeIn);
-    }
-    public ChargeContainer(IContainerHolder<?> base, int sizeIn) {
+    public ChargeContainer(IContainerHolder<?> base, int tier) {
         super(base, "charge", ICContainer.Access.IO, 1, ICContainer.InvSide.TOP);
 
         this.tier = tier;
     }
 
     public boolean accepts(ItemStack stack) {
-        return (ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, this.tier, true, true) > 0.0D);
+        return ElectricItem.manager.charge(stack, Double.POSITIVE_INFINITY, this.tier, true, true) > 0.0D;
     }
 
     @Override

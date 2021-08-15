@@ -4,12 +4,17 @@ package com.iteale.industrialcase.core.block;
 import com.iteale.industrialcase.api.info.ITeBlock;
 import com.iteale.industrialcase.api.network.INetworkDataProvider;
 import com.iteale.industrialcase.api.network.INetworkUpdateListener;
+import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.comp.BlockEntityComponent;
+import com.iteale.industrialcase.core.block.comp.Components;
 import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
 import com.iteale.industrialcase.core.registries.BlockRegistry;
+import com.iteale.industrialcase.core.util.LogCategory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.TagType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,8 +27,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import java.util.*;
 
 public abstract class BlockEntityBase
-        extends BaseContainerBlockEntity
-        implements INetworkDataProvider, INetworkUpdateListener {
+        extends BaseContainerBlockEntity {
+        // implements INetworkDataProvider, INetworkUpdateListener
     public static final String teBlockName = "teBlk";
     public static final String oldMarker = "Old-";
     protected static final int lightOpacityTranslucent = 0;
@@ -58,6 +63,43 @@ public abstract class BlockEntityBase
     }
      */
 
+
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        this.active = nbt.getBoolean("active");
+        if (this.components != null && nbt.contains("components", Tag.TAG_COMPOUND)) {
+            CompoundTag componentsNbt = nbt.getCompound("components");
+            for (String name : componentsNbt.getAllKeys()) {
+                Class<? extends BlockEntityComponent> cls = Components.getClass(name);
+                BlockEntityComponent component;
+                if (cls == null || (component = getComponent((Class)cls)) == null) {
+                    IndustrialCase.log.warn(LogCategory.Block, "Can't find component %s while loading %s.", name, this);
+                    continue;
+                }
+                CompoundTag componentNbt = componentsNbt.getCompound(name);
+                component.load(componentNbt);
+            }
+        }
+    }
+
+    public CompoundTag save(CompoundTag nbt) {
+        super.save(nbt);
+        nbt.putBoolean("active", this.active);
+        if (this.components != null) {
+            CompoundTag componentsNbt = null;
+            for (BlockEntityComponent component : this.components.values()) {
+                CompoundTag componentNbt = component.save();
+                if (componentNbt == null)
+                    continue;
+                if (componentsNbt == null) {
+                    componentsNbt = new CompoundTag();
+                    nbt.put("components", componentsNbt);
+                }
+                componentsNbt.put(Components.getId(component.getClass()), componentNbt);
+            }
+        }
+        return nbt;
+    }
 
     protected final <T extends BlockEntityComponent> T addComponent(T component) {
         if (component == null)
@@ -96,7 +138,6 @@ public abstract class BlockEntityBase
         BlockEntityComponent prev = this.capabilityComponents.put(cap, component);
         assert prev == null;
     }
-
 
     private enum TickSubscription {
         None, Client, Server, Both;

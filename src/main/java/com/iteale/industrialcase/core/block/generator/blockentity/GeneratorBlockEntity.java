@@ -1,5 +1,6 @@
 package com.iteale.industrialcase.core.block.generator.blockentity;
 
+import com.iteale.industrialcase.core.block.comp.BlockEntityComponent;
 import com.iteale.industrialcase.core.block.comp.Energy;
 import com.iteale.industrialcase.core.block.container.ChargeContainer;
 import com.iteale.industrialcase.core.block.container.FuelContainer;
@@ -75,13 +76,13 @@ public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        this.fuel = tag.getInt("fuel");
+        this.totalFuel = tag.getInt("totalFuel");
     }
 
     @Override
     public CompoundTag save(CompoundTag nbt) {
         super.save(nbt);
-        nbt.putInt("fuel", this.fuel);
+        nbt.putInt("totalFuel", this.totalFuel);
         return nbt;
     }
 
@@ -120,28 +121,24 @@ public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
     }
 
     public boolean isConverting() {
-        return (!needsFuel() && this.energy.getFreeEnergy() >= this.production);
+        return !needsFuel() && this.energy.getFreeEnergy() >= this.production;
     }
 
     public boolean needsFuel() {
-        return (this.fuel <= 0 && this.energy.getFreeEnergy() >= this.production);
+        return this.fuel <= 0 && this.energy.getFreeEnergy() >= this.production;
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, GeneratorBlockEntity blockEntity) {
+        for (BlockEntityComponent component : blockEntity.getComponents())
+            if (component.enableWorldTick())
+                component.onWorldTick();
         boolean needsInvUpdate = false;
         if (blockEntity.needsFuel())
             needsInvUpdate = blockEntity.gainFuel();
-        boolean newActive = blockEntity.gainEnergy();
-    }
-
-    @Override
-    public List<String> getNetworkedFields() {
-        return null;
-    }
-
-    @Override
-    public void onNetworkUpdate(String field) {
-
+        boolean conversionActive = blockEntity.gainEnergy();
+        if (!conversionActive && blockEntity.fuel > 0 ) {
+            blockEntity.fuel--;
+        }
     }
 
     public enum GeneratorDataType {
