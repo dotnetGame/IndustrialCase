@@ -36,7 +36,7 @@ public class Generator extends BaseEntityBlock {
         super(Properties.of(Material.METAL));
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
-                .setValue(LIT, Boolean.valueOf(false)));
+                .setValue(LIT, Boolean.FALSE));
     }
 
     @Nullable

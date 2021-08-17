@@ -4,6 +4,7 @@ package com.iteale.industrialcase.core.block;
 import com.iteale.industrialcase.api.info.ITeBlock;
 import com.iteale.industrialcase.api.network.INetworkDataProvider;
 import com.iteale.industrialcase.api.network.INetworkUpdateListener;
+import com.iteale.industrialcase.core.IWorldTickCallback;
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.comp.BlockEntityComponent;
 import com.iteale.industrialcase.core.block.comp.Components;
@@ -15,6 +16,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.TagType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -26,8 +28,7 @@ import net.minecraftforge.common.capabilities.Capability;
 
 import java.util.*;
 
-public abstract class BlockEntityBase
-        extends BaseContainerBlockEntity {
+public abstract class BlockEntityBase extends BlockEntity {
         // implements INetworkDataProvider, INetworkUpdateListener
     public static final String teBlockName = "teBlk";
     public static final String oldMarker = "Old-";
@@ -101,6 +102,105 @@ public abstract class BlockEntityBase
         return nbt;
     }
 
+    @Override
+    public void clearRemoved() {
+        super.clearRemoved();
+        this.onLoaded();
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        this.onUnloaded();
+    }
+
+    public final void validate() {
+        // super.validate();
+        Level world = getLevel();
+        if (world == null || this.worldPosition == null)
+            throw new IllegalStateException("no world/pos");
+        if (this.loadState != 0 && this.loadState != 3)
+            throw new IllegalStateException("invalid load state: " + this.loadState);
+        this.loadState = 1;
+    }
+
+    protected void onLoaded() {
+        this.validate();
+        if (this.loadState != 1)
+            throw new IllegalStateException("invalid load state: " + this.loadState);
+        this.loadState = 2;
+        this.enableWorldTick = requiresWorldTick();
+        if (this.components != null)
+            for (BlockEntityComponent component : this.components.values()) {
+                component.onLoaded();
+                if (component.enableWorldTick()) {
+                    if (this.updatableComponents == null)
+                        this.updatableComponents = new ArrayList<>(4);
+                    this.updatableComponents.add(component);
+                }
+            }
+        // if (!this.enableWorldTick && this.updatableComponents == null)
+        // (getLevel()).tickableTileEntities.remove(this);
+    }
+
+    protected void onUnloaded() {
+        if (this.loadState == 3)
+            throw new IllegalStateException("invalid load state: " + this.loadState);
+        this.loadState = 3;
+        if (this.components != null)
+            for (BlockEntityComponent component : this.components.values())
+                component.onUnloaded();
+    }
+
+
+    private final synchronized boolean requiresWorldTick() {
+        Class<?> cls = getClass();
+        TickSubscription subscription = tickSubscriptions.get(cls);
+        if (subscription == null) {
+            boolean hasUpdateClient = false;
+            boolean hasUpdateServer = false;
+            boolean isClient = this.level.isClientSide;
+            while (cls != BlockEntityBase.class && ((!hasUpdateClient && isClient) || !hasUpdateServer)) {
+                if (!hasUpdateClient && isClient) {
+                    boolean found = true;
+                    try {
+                        cls.getDeclaredMethod("updateEntityClient", new Class[0]);
+                    } catch (NoSuchMethodException e) {
+                        found = false;
+                    }
+                    if (found)
+                        hasUpdateClient = true;
+                }
+                if (!hasUpdateServer) {
+                    boolean found = true;
+                    try {
+                        cls.getDeclaredMethod("updateEntityServer", new Class[0]);
+                    } catch (NoSuchMethodException e) {
+                        found = false;
+                    }
+                    if (found)
+                        hasUpdateServer = true;
+                }
+                cls = cls.getSuperclass();
+            }
+            if (hasUpdateClient) {
+                if (hasUpdateServer) {
+                    subscription = TickSubscription.Both;
+                } else {
+                    subscription = TickSubscription.Client;
+                }
+            } else if (hasUpdateServer) {
+                subscription = TickSubscription.Server;
+            } else {
+                subscription = TickSubscription.None;
+            }
+            tickSubscriptions.put(getClass(), subscription);
+        }
+        if (getLevel().isClientSide)
+            return (subscription == TickSubscription.Both || subscription == TickSubscription.Client);
+        return (subscription == TickSubscription.Both || subscription == TickSubscription.Server);
+    }
+
     protected final <T extends BlockEntityComponent> T addComponent(T component) {
         if (component == null)
             throw new NullPointerException("null component");
@@ -139,13 +239,19 @@ public abstract class BlockEntityBase
         assert prev == null;
     }
 
+    public void onServerTick() {
+        if (this.updatableComponents != null)
+            for (BlockEntityComponent component : this.updatableComponents)
+                component.onWorldTick();
+    }
+
     private enum TickSubscription {
         None, Client, Server, Both;
     }
 
     // protected static final EnumPlantType noCrop = EnumPlantType.getPlantType("IC2_NO_CROP");
     private static final CompoundTag emptyNbt = new CompoundTag();
-    private static final List<AABB> defaultAabbs = Arrays.asList(new AABB[] { new AABB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D) });
+    private static final List<AABB> defaultAabbs = Arrays.asList(new AABB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D));
     private static final List<BlockEntityComponent> emptyComponents = Collections.emptyList();
     private static final Map<Class<?>, TickSubscription> tickSubscriptions = new HashMap<>();
     private static final byte loadStateInitial = 0;

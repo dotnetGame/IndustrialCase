@@ -129,9 +129,7 @@ public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, GeneratorBlockEntity blockEntity) {
-        for (BlockEntityComponent component : blockEntity.getComponents())
-            if (component.enableWorldTick())
-                component.onWorldTick();
+        blockEntity.onServerTick();
         boolean needsInvUpdate = false;
         if (blockEntity.needsFuel())
             needsInvUpdate = blockEntity.gainFuel();

@@ -16,7 +16,7 @@ import net.minecraftforge.client.model.ModelLoader;
 public class ItemBattery extends BaseElectricItem
 {
     public ItemBattery(Properties properties, double maxCharge, double transferLimit, int tier) {
-        super(properties.stacksTo(16).setNoRepair(), maxCharge, transferLimit, tier);
+        super(properties.durability(27).setNoRepair(), maxCharge, transferLimit, tier);
     }
 
     public boolean canProvideEnergy(ItemStack stack) {

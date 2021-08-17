@@ -34,6 +34,38 @@ public class ItemRegistry {
     public static RegistryObject<Item> TIN_PLATE = register("resource/plate/tin");
     public static RegistryObject<Item> BRONZE_PLATE = register("resource/plate/bronze");
 
+    // casing
+    public static RegistryObject<Item> CASING_BRONZE = register("resource/casing/bronze");
+    public static RegistryObject<Item> CASING_COPPER = register("resource/casing/copper");
+    public static RegistryObject<Item> CASING_GOLD = register("resource/casing/gold");
+    public static RegistryObject<Item> CASING_IRON = register("resource/casing/iron");
+    public static RegistryObject<Item> CASING_LEAD = register("resource/casing/lead");
+    public static RegistryObject<Item> CASING_STEEL = register("resource/casing/steel");
+    public static RegistryObject<Item> CASING_TIN = register("resource/casing/tin");
+
+    // crushed
+    public static RegistryObject<Item> CRUSHED_COPPER = register("resource/crushed/copper");
+    public static RegistryObject<Item> CRUSHED_GOLD = register("resource/crushed/gold");
+    public static RegistryObject<Item> CRUSHED_IRON = register("resource/crushed/iron");
+    public static RegistryObject<Item> CRUSHED_LEAD = register("resource/crushed/lead");
+    public static RegistryObject<Item> CRUSHED_SILVER = register("resource/crushed/silver");
+    public static RegistryObject<Item> CRUSHED_TIN = register("resource/crushed/tin");
+    public static RegistryObject<Item> CRUSHED_URANIUM = register("resource/crushed/uranium");
+
+    // dust
+    public static RegistryObject<Item> BRONZE_DUST = register("resource/dust/bronze");
+    public static RegistryObject<Item> CLAY_DUST = register("resource/dust/clay");
+    public static RegistryObject<Item> COAL_DUST = register("resource/dust/coal");
+    public static RegistryObject<Item> COPPER_DUST = register("resource/dust/copper");
+    public static RegistryObject<Item> DIAMOND_DUST = register("resource/dust/diamond");
+    public static RegistryObject<Item> EMERALD_DUST = register("resource/dust/emerald");
+    public static RegistryObject<Item> GOLD_DUST = register("resource/dust/gold");
+    public static RegistryObject<Item> LEAD_DUST = register("resource/dust/lead");
+    public static RegistryObject<Item> LAPIS_DUST = register("resource/dust/lapis");
+    public static RegistryObject<Item> TIN_DUST = register("resource/dust/tin");
+    public static RegistryObject<Item> OBSIDIAN_DUST = register("resource/dust/obsidian");
+    public static RegistryObject<Item> SILVER_DUST = register("resource/dust/silver");
+
     // crafting
     public static RegistryObject<Item> RUBBER = register("crafting/rubber");
 

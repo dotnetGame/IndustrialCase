@@ -52,5 +52,6 @@ public class ZHCNLanguage extends ICLanguageProvider {
 
         // ui
         add("gui.generator.electric.generator", "火力发电机");
+        add("gui.wiring.storage.batbox", "储电箱");
     }
 }

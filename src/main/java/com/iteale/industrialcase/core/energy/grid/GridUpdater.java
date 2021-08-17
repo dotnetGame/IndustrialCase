@@ -114,8 +114,10 @@ class GridUpdater
       switch (change.type) {
         case ADDITION:
           ChangeHandler.applyAddition(this.enet, change.ioTile, change.pos, change.subTiles, this.changes);
+          break;
         case REMOVAL:
           ChangeHandler.applyRemoval(this.enet, change.ioTile, change.pos);
+          break;
       } 
     } 
     notifyCalculator();

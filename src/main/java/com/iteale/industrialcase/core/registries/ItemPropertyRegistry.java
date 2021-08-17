@@ -26,7 +26,7 @@ public class ItemPropertyRegistry {
         ItemProperties.register(item,
             new ResourceLocation(IndustrialCase.MODID, "level"),
             (stack, world, living, i) -> {
-                if (living != null && living.isUsingItem() && living.getUseItem() == stack) {
+                if (living != null) {
                     int damage = stack.getDamageValue();
                     int maxDamage = stack.getMaxDamage() - 1;
 

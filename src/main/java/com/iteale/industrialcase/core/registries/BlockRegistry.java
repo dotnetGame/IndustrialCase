@@ -4,18 +4,15 @@ import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.generator.Generator;
 import com.iteale.industrialcase.core.block.machine.IronFurnace;
 import com.iteale.industrialcase.core.block.resource.*;
+import com.iteale.industrialcase.core.block.wiring.CableType;
+import com.iteale.industrialcase.core.block.wiring.storage.BatBox;
 import com.iteale.industrialcase.core.block.wiring.CableBlock;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
+import com.iteale.industrialcase.core.util.IcColor;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -46,14 +43,14 @@ public class BlockRegistry {
     public static final RegistryObject<Block> STEEL_BLOCK = register("resource/block/steel_block", new ResourceBlock(3.0F, 5.0F, true));
 
     // cable
-    public static final RegistryObject<Block> COPPER_CABLE = register("wiring/cable/copper_cable", new CableBlock(0, 0.25F, 0.2D, 128));
-    public static final RegistryObject<Block> GOLD_CABLE = register("wiring/cable/gold_cable", new CableBlock( 0, 0.1875F, 0.4D, 512));
-    public static final RegistryObject<Block> IRON_CABLE = register("wiring/cable/iron_cable", new CableBlock( 0, 0.375F, 0.8D, 2048));
-    public static final RegistryObject<Block> TIN_CABLE = register("wiring/cable/tin_cable", new CableBlock( 0, 0.25F, 0.2D, 32));
-    public static final RegistryObject<Block> GLASS_CABLE = register("wiring/cable/glass_cable", new CableBlock( 0, 0.25F, 0.025D, 8192));
+    public static final RegistryObject<Block> COPPER_CABLE = register("wiring/cable/copper_cable", new CableBlock(CableType.copper, IcColor.black, 0));
+    public static final RegistryObject<Block> GOLD_CABLE = register("wiring/cable/gold_cable", new CableBlock( CableType.gold, IcColor.black, 0));
+    public static final RegistryObject<Block> IRON_CABLE = register("wiring/cable/iron_cable", new CableBlock(CableType.iron, IcColor.black, 0));
+    public static final RegistryObject<Block> TIN_CABLE = register("wiring/cable/tin_cable", new CableBlock( CableType.tin, IcColor.black, 0));
+    public static final RegistryObject<Block> GLASS_CABLE = register("wiring/cable/glass_cable", new CableBlock( CableType.glass, IcColor.black, 0));
 
-    public static final RegistryObject<Block> COPPER_CABLE_INSULATED = register("wiring/cable/copper_cable_insulated", new CableBlock(1, 0.375F, 0.2D, 128));
-    public static final RegistryObject<Block> COPPER_CABLE_INSULATED_BLUE = register("wiring/cable/copper_cable_insulated_blue", new CableBlock(1, 0.375F, 0.2D, 128));
+    public static final RegistryObject<Block> COPPER_CABLE_INSULATED = register("wiring/cable/copper_cable_insulated", new CableBlock(CableType.copper, IcColor.black, 1));
+    public static final RegistryObject<Block> COPPER_CABLE_INSULATED_BLUE = register("wiring/cable/copper_cable_insulated_blue", new CableBlock(CableType.copper, IcColor.blue, 1));
 
     // explosive
     public static final RegistryObject<Block> ITNT = register("explosive/itnt", new Block(BlockBehaviour.Properties.of(Material.STONE)));
@@ -64,6 +61,11 @@ public class BlockRegistry {
 
     // machine
     public static final RegistryObject<Block> IRON_FURNACE = register("machine/processing/basic/iron_furnace", new IronFurnace());
+
+    // storage
+    public static final RegistryObject<Block> BATBOX = register("wiring/storage/batbox", new BatBox());
+
+
     // detector(0, 2147483647, 0.5F, 0.5D, 8192),
     // splitter(0, 2147483647, 0.5F, 0.5D, 8192);
 

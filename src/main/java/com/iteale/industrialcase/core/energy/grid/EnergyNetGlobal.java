@@ -6,14 +6,13 @@ import com.iteale.industrialcase.api.energy.NodeStats;
 import com.iteale.industrialcase.api.energy.tile.IEnergyTile;
 import com.iteale.industrialcase.api.info.ILocatable;
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.WorldData;
 import com.iteale.industrialcase.core.energy.leg.EnergyCalculatorLeg;
 import com.iteale.industrialcase.core.util.LogCategory;
 import com.iteale.industrialcase.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.storage.WorldData;
-import net.minecraftforge.server.permission.context.WorldContext;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -162,9 +161,7 @@ public class EnergyNetGlobal implements IEnergyNet
     if (world.isClientSide()) throw new IllegalStateException("not applicable clientside");
     assert world.getServer().isSameThread();
 
-    // FIXME
-    // return (WorldData.get(world)).energyNet;
-    return null;
+    return (WorldData.get(world)).energyNet;
   }
   
   private static final List<IEnergyNetEventReceiver> eventReceivers = new CopyOnWriteArrayList<>();

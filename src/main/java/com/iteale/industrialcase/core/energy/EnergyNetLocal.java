@@ -44,15 +44,13 @@ public final class EnergyNetLocal implements IEnergyCalculator {
   
   protected void addTile(IEnergyTile mainTile, int retry) {
     if (EnergyNetGlobal.debugTileManagement) {
-      IndustrialCase.log.debug(LogCategory.EnergyNet, "EnergyNet.addTile(%s, %d), world=%s, chunk=%s, this=%s", new Object[] { mainTile,
-            
-            Integer.valueOf(retry), EnergyNet.instance
-            .getWorld(mainTile), EnergyNet.instance
-            .getWorld(mainTile).getChunk(EnergyNet.instance.getPos(mainTile)), this });
+      IndustrialCase.log.debug(LogCategory.EnergyNet, "EnergyNet.addTile(%s, %d), world=%s, chunk=%s, this=%s", mainTile,
+              retry, EnergyNet.instance.getWorld(mainTile),
+              EnergyNet.instance.getWorld(mainTile).getChunk(EnergyNet.instance.getPos(mainTile)), this);
     }
     
     if (EnergyNetGlobal.checkApi && !Util.checkInterfaces(mainTile.getClass())) {
-      IndustrialCase.log.warn(LogCategory.EnergyNet, "EnergyNet.addTile: %s doesn't implement its advertised interfaces completely.", new Object[] { mainTile });
+      IndustrialCase.log.warn(LogCategory.EnergyNet, "EnergyNet.addTile: %s doesn't implement its advertised interfaces completely.", mainTile);
     }
     
     if (mainTile instanceof BlockEntity && ((BlockEntity)mainTile).isRemoved()) {
@@ -70,7 +68,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
      */
     if (this.locked) {
       logDebug("EnergyNet.addTileEntity: adding " + mainTile + " while locked, postponing.");
-      this.pendingAdds.put(mainTile, Integer.valueOf(retry));
+      this.pendingAdds.put(mainTile, retry);
       
       return;
     } 
@@ -80,10 +78,10 @@ public final class EnergyNetLocal implements IEnergyCalculator {
       List<String> posStrings = new ArrayList<>(tile.subTiles.size());
       
       for (IEnergyTile subTile : tile.subTiles) {
-        posStrings.add(String.format("%s (%s)", new Object[] { subTile, EnergyNet.instance.getPos(subTile) }));
+        posStrings.add(String.format("%s (%s)", subTile, EnergyNet.instance.getPos(subTile)));
       } 
       
-      IndustrialCase.log.debug(LogCategory.EnergyNet, "positions: %s", new Object[] { posStrings });
+      IndustrialCase.log.debug(LogCategory.EnergyNet, "positions: %s", posStrings);
     } 
     
     for (ListIterator<IEnergyTile> it = tile.subTiles.listIterator(); it.hasNext(); ) {
@@ -97,7 +95,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
           logDebug("EnergyNet.addTileEntity: " + subTile + " (" + mainTile + ") is already added using the same position, aborting");
         } else if (retry < 2) {
 
-          this.pendingAdds.put(mainTile, Integer.valueOf(retry + 1));
+          this.pendingAdds.put(mainTile, retry + 1);
         } else if ((conflicting.mainTile instanceof BlockEntity && ((BlockEntity)mainTile).isRemoved()) || EnergyNetGlobal.replaceConflicting) {
           
           logDebug("EnergyNet.addTileEntity: " + subTile + " (" + mainTile + ") is conflicting with " + conflicting.mainTile + " (invalid=" + ((conflicting.mainTile instanceof BlockEntity && ((BlockEntity)conflicting.mainTile).isRemoved()) ? 1 : 0) + ") using the same position, which is abandoned (prev. te not removed), replacing");
@@ -174,8 +172,6 @@ public final class EnergyNetLocal implements IEnergyCalculator {
     } 
   }
 
-
-
   
   protected void removeTile(IEnergyTile mainTile) {
     List<IEnergyTile> subTiles;
@@ -188,12 +184,10 @@ public final class EnergyNetLocal implements IEnergyCalculator {
               this);
     }
 
-
-    
     if (mainTile instanceof IMetaDelegate) {
       subTiles = ((IMetaDelegate)mainTile).getSubTiles();
     } else {
-      subTiles = Arrays.asList(new IEnergyTile[] { mainTile });
+      subTiles = Arrays.asList(mainTile);
     } 
     
     boolean wasPending = (this.pendingAdds.remove(mainTile) != null);
@@ -202,10 +196,10 @@ public final class EnergyNetLocal implements IEnergyCalculator {
       List<String> posStrings = new ArrayList<>(subTiles.size());
       
       for (IEnergyTile subTile : subTiles) {
-        posStrings.add(String.format("%s (%s)", new Object[] { subTile, EnergyNet.instance.getPos(subTile) }));
+        posStrings.add(String.format("%s (%s)", subTile, EnergyNet.instance.getPos(subTile)));
       } 
       
-      IndustrialCase.log.debug(LogCategory.EnergyNet, "positions: %s", new Object[] { posStrings });
+      IndustrialCase.log.debug(LogCategory.EnergyNet, "positions: %s", posStrings);
     } 
     
     boolean removed = false;
@@ -358,7 +352,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
       this.pendingAdds.clear();
       
       for (Map.Entry<IEnergyTile, Integer> entry : pending) {
-        addTile(entry.getKey(), ((Integer)entry.getValue()).intValue());
+        addTile(entry.getKey(), entry.getValue().intValue());
       }
     } 
 
@@ -398,7 +392,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
     List<Node> extraNodes = new ArrayList<>();
     
     for (Node node : tile.nodes) {
-      Grid grid; List<List<Node>> neighborGroups; Map<Node, Node> neighborReplacements; int i; ListIterator<Node> it; if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Adding node %s.", new Object[] { node });
+      Grid grid; List<List<Node>> neighborGroups; Map<Node, Node> neighborReplacements; int i; ListIterator<Node> it; if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Adding node %s.", node);
 
       
       List<Node> neighbors = new ArrayList<>();
@@ -447,7 +441,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
         } 
       } 
       if (neighbors.isEmpty()) {
-        if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new grid for %s.", new Object[] { node }); 
+        if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new grid for %s.", node);
         Grid grid1 = new Grid(this);
         grid1.add(node, neighbors); continue;
       } 
@@ -458,7 +452,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
           for (Node neighbor : neighbors) {
             if (neighbor.nodeType == NodeType.Conductor || neighbor.links.isEmpty()) {
               if (EnergyNetGlobal.debugGrid)
-                IndustrialCase.log.debug(LogCategory.EnergyNet, "Using %s for %s with neighbors %s.", new Object[] { neighbor.getGrid(), node, neighbors });
+                IndustrialCase.log.debug(LogCategory.EnergyNet, "Using %s for %s with neighbors %s.", neighbor.getGrid(), node, neighbors);
               grid = neighbor.getGrid();
               
               break;
@@ -466,7 +460,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
           } 
           if (grid == null) {
             if (EnergyNetGlobal.debugGrid)
-              IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new grid for %s with neighbors %s.", new Object[] { node, neighbors });
+              IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new grid for %s with neighbors %s.", node, neighbors);
             grid = new Grid(this);
           } 
 
@@ -488,7 +482,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
                   
                   .getGrid() == grid) {
                   if (EnergyNetGlobal.debugGrid)
-                    IndustrialCase.log.debug(LogCategory.EnergyNet, "Using neighbor node %s instead of %s.", new Object[] { neighbor2, neighbors });
+                    IndustrialCase.log.debug(LogCategory.EnergyNet, "Using neighbor node %s instead of %s.", neighbor2, neighbors);
                   found = true;
                   it.set(neighbor2);
                   
@@ -496,7 +490,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
                 } 
               } 
               if (!found) {
-                if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for neighbor %s.", new Object[] { neighbor }); 
+                if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for neighbor %s.", neighbor);
                 neighbor = new Node(this, neighbor.tile, neighbor.nodeType);
                 neighbor.tile.addExtraNode(neighbor);
                 grid.add(neighbor, Collections.emptyList());
@@ -556,7 +550,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
             } 
           } 
           
-          if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Neighbor groups detected for %s: %s.", new Object[] { node, neighborGroups });
+          if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Neighbor groups detected for %s: %s.", node, neighborGroups);
           assert !neighborGroups.isEmpty();
           
           for (i = 0; i < neighborGroups.size(); i++) {
@@ -566,7 +560,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
             
             if (neighbor.nodeType != NodeType.Conductor && !neighbor.links.isEmpty()) {
               assert nodeList.size() == 1;
-              if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for neighbor %s.", new Object[] { neighbor });
+              if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for neighbor %s.", neighbor);
               
               neighbor = new Node(this, neighbor.tile, neighbor.nodeType);
               neighbor.tile.addExtraNode(neighbor);
@@ -581,7 +575,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
             if (i == 0) {
               currentNode = node;
             } else {
-              if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for %s.", new Object[] { node });
+              if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for %s.", node);
               
               currentNode = new Node(this, tile, node.nodeType);
               currentNode.setExtraNode(true);
@@ -625,7 +619,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
         if (replacement != null) {
           for (Node node : replacement.nodes) {
             if (node.nodeType == change.node.nodeType && node.getGrid() == change.node.getGrid()) {
-              if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Redirecting change %s to replacement node %s.", new Object[] { change, node });
+              if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Redirecting change %s to replacement node %s.", change, node);
               change.node = node;
               validReplacement = true;
               
@@ -649,7 +643,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
         } 
 
         
-        if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Redistributing change %s to remaining source nodes %s.", new Object[] { change, sameGridSourceChanges });
+        if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Redistributing change %s to remaining source nodes %s.", change, sameGridSourceChanges);
         
         for (Change change2 : sameGridSourceChanges) {
           change2.setAmount(change2.getAmount() - Math.abs(change.getAmount()) / sameGridSourceChanges.size());
@@ -667,7 +661,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
         IEnergySink sink = (IEnergySink)change.node.tile.mainTile;
         double returned = sink.injectEnergy(change.dir, change.getAmount(), change.getVoltage());
         if (EnergyNetGlobal.debugGrid)
-          IndustrialCase.log.debug(LogCategory.EnergyNet, "Applied change %s, %f EU returned.", new Object[] { change, Double.valueOf(returned) });
+          IndustrialCase.log.debug(LogCategory.EnergyNet, "Applied change %s, %f EU returned.", change, Double.valueOf(returned));
         
         if (returned > 0.0D) {
           List<Change> sameGridSourceChanges = new ArrayList<>();
@@ -681,7 +675,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
 
           
           if (EnergyNetGlobal.debugGrid)
-            IndustrialCase.log.debug(LogCategory.EnergyNet, "Redistributing returned amount to source nodes %s.", new Object[] { sameGridSourceChanges });
+            IndustrialCase.log.debug(LogCategory.EnergyNet, "Redistributing returned amount to source nodes %s.", sameGridSourceChanges);
           
           for (Change change2 : sameGridSourceChanges) {
             change2.setAmount(change2.getAmount() - returned / sameGridSourceChanges.size());
@@ -699,7 +693,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
         IEnergySource source = (IEnergySource)change.node.tile.mainTile;
         source.drawEnergy(change.getAmount());
         
-        if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Applied change %s.", new Object[] { change });
+        if (EnergyNetGlobal.debugGrid) IndustrialCase.log.debug(LogCategory.EnergyNet, "Applied change %s.", change);
       
       } 
     } 
@@ -751,7 +745,7 @@ public final class EnergyNetLocal implements IEnergyCalculator {
     long minTime = System.nanoTime() - 300000000000L;
     
     for (Iterator<Long> it = this.recentLogs.values().iterator(); it.hasNext(); ) {
-      long recTime = ((Long)it.next()).longValue();
+      long recTime = it.next().longValue();
       
       if (recTime < minTime) it.remove(); 
     } 

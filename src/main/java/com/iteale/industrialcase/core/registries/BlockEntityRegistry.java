@@ -3,6 +3,8 @@ package com.iteale.industrialcase.core.registries;
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.generator.blockentity.GeneratorBlockEntity;
 import com.iteale.industrialcase.core.block.machine.blockentity.IronFurnaceBlockEntity;
+import com.iteale.industrialcase.core.block.wiring.CableBlockEntity;
+import com.iteale.industrialcase.core.block.wiring.storage.blockentity.BatBoxBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -15,9 +17,17 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class BlockEntityRegistry {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, IndustrialCase.MODID);
 
+    // cable
+    public static final RegistryObject<BlockEntityType<CableBlockEntity>> CABLE = register("wiring/cable", CableBlockEntity::new, BlockRegistry.COPPER_CABLE);
+
     // machine
     public static final RegistryObject<BlockEntityType<IronFurnaceBlockEntity>> IRON_FURNACE = register("machine/processing/basic/iron_furnace", IronFurnaceBlockEntity::new, BlockRegistry.IRON_FURNACE);
+
+    // generator
     public static final RegistryObject<BlockEntityType<GeneratorBlockEntity>> GENERATOR = register("generator/electric/generator", GeneratorBlockEntity::new, BlockRegistry.GENERATOR);
+
+    // storage
+    public static final RegistryObject<BlockEntityType<BatBoxBlockEntity>> BATBOX = register("wiring/storage/batbox", BatBoxBlockEntity::new, BlockRegistry.BATBOX);
 
     // public static final RegistryObject<BlockEntityType<FurnaceBlockEntity>> FURNACE = register("furnace", BlockEntityType.Builder.of(FurnaceBlockEntity::new, Blocks.FURNACE));
     // register methods

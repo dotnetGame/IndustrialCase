@@ -63,6 +63,27 @@ public abstract class ICBlockStateProvider extends BlockStateProvider {
         );
     }
 
+    protected void registerDirectionalBlockState(Block block) {
+        ModelFile.ExistingModelFile modelFile = new ModelFile.ExistingModelFile(
+                new ResourceLocation(IndustrialCase.MODID, "block/" + block.getRegistryName().getPath()),
+                models().existingFileHelper
+        );
+        getVariantBuilder(block)
+                .forAllStates(state -> {
+                    Direction dir = state.getValue(BlockStateProperties.FACING);
+                    ConfiguredModel.Builder<?> builder = ConfiguredModel.builder()
+                            .modelFile(modelFile);
+
+                    if (dir == Direction.DOWN) builder.rotationX(90);
+                    else if (dir == Direction.UP) builder.rotationX(-90);
+                    else if (dir == Direction.SOUTH) builder.rotationX(180);
+                    else if (dir == Direction.EAST) builder.rotationY(90);
+                    else if (dir == Direction.WEST) builder.rotationY(-90);
+
+                    return builder.build();
+                });
+    }
+
     protected void registerMachineBlockState(Block block) {
         ModelFile empty = models().getExistingFile(new ResourceLocation("block/air"));
         this.getVariantBuilder(block).forAllStates(s->{
@@ -154,6 +175,12 @@ public abstract class ICBlockStateProvider extends BlockStateProvider {
         itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
     }
 
+    public void registerDirectionalBlock(Block block, ResourceLocation down, ResourceLocation up, ResourceLocation north, ResourceLocation south, ResourceLocation east, ResourceLocation west) {
+        registerDirectionalBlockState(block);
+        ModelFile blockModel = models().cube(blockModelname(block), down, up, north, south, east, west).texture("particle", north);
+        itemModels().withExistingParent(itemModelname(block), blockModel.getLocation());
+    }
+
     public void registerMachine(Block block) {
         registerHorizontalBlock(
                 block,
@@ -165,6 +192,19 @@ public abstract class ICBlockStateProvider extends BlockStateProvider {
                 new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_leftrightback")
         );
     }
+
+    public void registerStorage(Block block) {
+        registerDirectionalBlock(
+                block,
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_bottom"),
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_top"),
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_front"),
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_back"),
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_leftright"),
+                new ResourceLocation(IndustrialCase.MODID, blockModelname(block) + "_leftright")
+        );
+    }
+
 
     public void registerCable(Block block, float thickness) {
         ResourceLocation cableTexture = new ResourceLocation(IndustrialCase.MODID, blockModelname(block));

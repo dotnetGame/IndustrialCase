@@ -53,6 +53,7 @@ public class ENUSLanguage extends ICLanguageProvider {
 
         // ui
         add("gui.generator.electric.generator", "Generator");
+        add("gui.wiring.storage.batbox", "BatBox");
 
     }
 }

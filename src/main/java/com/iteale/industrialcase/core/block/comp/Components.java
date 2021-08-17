@@ -11,10 +11,10 @@ public class Components
         register(Energy.class, "energy");
         // register((Class)Fluids.class, "fluid");
         // register((Class)FluidReactorLookup.class, "fluidReactorLookup");
-        // register((Class)Obscuration.class, "obscuration");
+        register(Obscuration.class, "obscuration");
         // register(Process.class, "process");
-        // register((Class)Redstone.class, "redstone");
-        // register((Class)RedstoneEmitter.class, "redstoneEmitter");
+        register(Redstone.class, "redstone");
+        register(RedstoneEmitter.class, "redstoneEmitter");
         register(ComparatorEmitter.class, "comparatorEmitter");
         // register((Class)ProcessingComponent.class, "processingComponent");
         // register((Class)Covers.class, "covers");

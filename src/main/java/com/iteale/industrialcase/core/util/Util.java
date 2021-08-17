@@ -246,7 +246,7 @@ public final class Util
       dimId = "None";
     }
 
-    return String.format("dim %d (@%x): %d/%d/%d", new Object[] { Integer.valueOf(dimId), Integer.valueOf(System.identityHashCode(world)), Integer.valueOf(x), Integer.valueOf(y), Integer.valueOf(z) });
+    return String.format("dim %s (@%x): %d/%d/%d", dimId, System.identityHashCode(world), x, y, z);
   }
   
   public static String formatPosition(BlockPos pos) {
