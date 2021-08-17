@@ -20,13 +20,13 @@ public class Redstone extends BlockEntityComponent {
     public void onLoaded() {
         super.onLoaded();
 
-        update();
+        // update();
     }
 
 
     public void onUnloaded() {
-        unlinkOutbound();
-        unlinkInbound();
+        // unlinkOutbound();
+        // unlinkInbound();
 
         super.onUnloaded();
     }

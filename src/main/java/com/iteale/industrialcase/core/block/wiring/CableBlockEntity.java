@@ -28,6 +28,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -352,64 +353,8 @@ public class CableBlockEntity extends BlockEntityBase implements IEnergyConducto
         return true;
     }
 
-    public boolean tryRemoveInsulation(boolean simulate) {
-        if (this.insulation <= 0)
-            return false;
-        if (simulate)
-            return true;
-        if (this.insulation == this.cableType.minColoredInsulation) {
-            CableFoam foam = this.foam;
-            this.foam = CableFoam.None;
-            recolor(getFacing(), EnumDyeColor.BLACK);
-            this.foam = foam;
-        }
-        this.insulation--;
-        if (!(getWorld()).isRemote)
-            ((NetworkManager)IC2.network.get(true)).updateTileEntityField((TileEntity)this, "insulation");
-        return true;
-    }
-
     public boolean wrenchCanRemove(EntityPlayer player) {
         return false;
-    }
-
-    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, Direction direction) {
-        return canInteractWith((IEnergyTile)emitter, direction);
-    }
-
-    public boolean emitsEnergyTo(IEnergyAcceptor receiver, Direction direction) {
-        return canInteractWith((IEnergyTile)receiver, direction);
-    }
-
-
-
-    public double getInsulationEnergyAbsorption() {
-        if (this.cableType.maxInsulation == 0)
-            return 2.147483647E9D;
-        if (this.cableType == CableType.tin)
-            return EnergyNet.instance.getPowerFromTier(this.insulation);
-        return EnergyNet.instance.getPowerFromTier(this.insulation + 1);
-    }
-
-    public double getInsulationBreakdownEnergy() {
-        return 9001.0D;
-    }
-
-    public double getConductorBreakdownEnergy() {
-        return (this.cableType.capacity + 1);
-    }
-
-    public void removeInsulation() {
-        tryRemoveInsulation(false);
-    }
-
-    public void removeConductor() {
-        getLevel().setBlockToAir(this.pos);
-        ((NetworkManager)IC2.network.get(true)).initiateTileEntityEvent((TileEntity)this, 0, true);
-    }
-
-    public DyeColor getColor(Direction side) {
-        return (this.color == IcColor.black) ? null : this.color.mcColor;
     }
 
     public List<String> getNetworkedFields() {
@@ -542,43 +487,65 @@ public class CableBlockEntity extends BlockEntityBase implements IEnergyConducto
     // private IWorldTickCallback continuousUpdate;
     private static final int EventRemoveConductor = 0;
 
-    @Override
-    public DyeColor getColor(Direction side) {
-        return null;
+    public boolean tryRemoveInsulation(boolean simulate) {
+        if (this.insulation <= 0)
+            return false;
+        if (simulate)
+            return true;
+        if (this.insulation == this.cableType.minColoredInsulation) {
+            CableFoam foam = this.foam;
+            this.foam = CableFoam.None;
+            // recolor(getFacing(), DyeColor.BLACK);
+            this.foam = foam;
+        }
+        this.insulation--;
+        // if (!(getWorld()).isRemote)
+        // ((NetworkManager)IC2.network.get(true)).updateTileEntityField((TileEntity)this, "insulation");
+        return true;
     }
 
     @Override
-    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, Direction side) {
-        return false;
+    public DyeColor getColor(Direction side) {
+        return (this.color == IcColor.black) ? null : this.color.mcColor;
+    }
+
+    @Override
+    public boolean acceptsEnergyFrom(IEnergyEmitter emitter, Direction direction) {
+        return canInteractWith(emitter, direction);
     }
 
     @Override
     public double getInsulationEnergyAbsorption() {
-        return 0;
+        if (this.cableType.maxInsulation == 0)
+            return 2.147483647E9D;
+        if (this.cableType == CableType.tin)
+            return EnergyNet.instance.getPowerFromTier(this.insulation);
+        return EnergyNet.instance.getPowerFromTier(this.insulation + 1);
     }
 
     @Override
     public double getInsulationBreakdownEnergy() {
-        return 0;
+        return 9001.0D;
     }
 
     @Override
     public double getConductorBreakdownEnergy() {
-        return 0;
+        return (this.cableType.capacity + 1);
     }
 
     @Override
     public void removeInsulation() {
-
+        tryRemoveInsulation(false);
     }
 
     @Override
     public void removeConductor() {
-
+        getLevel().setBlock(this.worldPosition, Blocks.AIR.defaultBlockState(), 2);
+        // ((NetworkManager)IC2.network.get(true)).initiateTileEntityEvent((TileEntity)this, 0, true);
     }
 
     @Override
-    public boolean emitsEnergyTo(IEnergyAcceptor receiver, Direction side) {
-        return false;
+    public boolean emitsEnergyTo(IEnergyAcceptor receiver, Direction direction) {
+        return canInteractWith((IEnergyTile)receiver, direction);
     }
 }

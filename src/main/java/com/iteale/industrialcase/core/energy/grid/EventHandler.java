@@ -23,8 +23,6 @@ public class EventHandler
     
     MinecraftForge.EVENT_BUS.register(new EventHandler());
   }
-
-
   
   @SubscribeEvent
   public void onEnergyTileLoad(EnergyTileLoadEvent event) {
@@ -45,7 +43,7 @@ public class EventHandler
   @SubscribeEvent
   public void onEnergyTileUnload(EnergyTileUnloadEvent event) {
     if ((event.getWorld()).isClientSide()) {
-      IndustrialCase.log.warn(LogCategory.EnergyNet, "EnergyTileUnloadEvent: posted for %s client-side, aborting", new Object[] { Util.toString(event.tile, event.getWorld(), EnergyNet.instance.getPos(event.tile)) });
+      IndustrialCase.log.warn(LogCategory.EnergyNet, "EnergyTileUnloadEvent: posted for %s client-side, aborting", Util.toString(event.tile, event.getWorld(), EnergyNet.instance.getPos(event.tile)));
       
       return;
     } 

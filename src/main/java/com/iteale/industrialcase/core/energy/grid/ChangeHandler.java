@@ -133,9 +133,9 @@ class ChangeHandler
       Map<Node, Node> neighborReplacements;
       int i;
       ListIterator<Node> it;
-      if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Adding node %s.", new Object[] { node });
+      if (EnergyNetSettings.logGridUpdatesVerbose)
+        IndustrialCase.log.debug(LogCategory.EnergyNet, "Adding node %s.", node);
 
-      
       List<Node> neighbors = new ArrayList<>();
       
       for (IEnergyTile subTile : tile.subTiles) {
@@ -151,14 +151,11 @@ class ChangeHandler
               boolean canEmit = false;
               
               if ((node.nodeType == NodeType.Source || node.nodeType == NodeType.Conductor) && neighbor.nodeType != NodeType.Source) {
-
                 
                 IEnergyEmitter emitter = (subTile instanceof IEnergyEmitter) ? (IEnergyEmitter)subTile : (IEnergyEmitter)ioTile;
                 IEnergyTile neighborSubTe = neighborTile.getSubTileAt(coords);
                 IEnergyAcceptor acceptor = (neighborSubTe instanceof IEnergyAcceptor) ? (IEnergyAcceptor)neighborSubTe : (IEnergyAcceptor)neighborIoTile;
 
-
-                
                 canEmit = (emitter.emitsEnergyTo((IEnergyAcceptor)neighborIoTile, dir) && acceptor.acceptsEnergyFrom((IEnergyEmitter)ioTile, dir.getOpposite()));
               } 
               
@@ -166,12 +163,10 @@ class ChangeHandler
               
               if (!canEmit && (node.nodeType == NodeType.Sink || node.nodeType == NodeType.Conductor) && neighbor.nodeType != NodeType.Sink) {
 
-                
                 IEnergyAcceptor acceptor = (subTile instanceof IEnergyAcceptor) ? (IEnergyAcceptor)subTile : (IEnergyAcceptor)ioTile;
                 IEnergyTile neighborSubTe = neighborTile.getSubTileAt(coords);
                 IEnergyEmitter emitter = (neighborSubTe instanceof IEnergyEmitter) ? (IEnergyEmitter)neighborSubTe : (IEnergyEmitter)neighborIoTile;
 
-                
                 canAccept = (acceptor.acceptsEnergyFrom((IEnergyEmitter)neighborIoTile, dir) && emitter.emitsEnergyTo((IEnergyAcceptor)ioTile, dir.getOpposite()));
               } 
               
@@ -183,32 +178,29 @@ class ChangeHandler
         } 
       } 
       if (neighbors.isEmpty()) {
-        if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new grid for %s.", new Object[] { node }); 
+        if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new grid for %s.", node);
         Grid grid1 = new Grid(enet);
         grid1.add(node, neighbors); continue;
       } 
       switch (node.nodeType) {
         case Conductor:
           grid = null;
-          
           for (Node neighbor : neighbors) {
             if (neighbor.nodeType == NodeType.Conductor || neighbor.links.isEmpty()) {
-              if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Using %s for %s with neighbors %s.", new Object[] { neighbor.getGrid(), node, neighbors }); 
+              if (EnergyNetSettings.logGridUpdatesVerbose)
+                IndustrialCase.log.debug(LogCategory.EnergyNet, "Using %s for %s with neighbors %s.", neighbor.getGrid(), node, neighbors);
               grid = neighbor.getGrid();
-              
               break;
             } 
           } 
           if (grid == null) {
-            if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new grid for %s with neighbors %s.", new Object[] { node, neighbors }); 
+            if (EnergyNetSettings.logGridUpdatesVerbose)
+              IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new grid for %s with neighbors %s.", node, neighbors);
             grid = new Grid(enet);
           } 
 
-
-          
           neighborReplacements = new HashMap<>();
 
-          
           for (it = neighbors.listIterator(); it.hasNext(); ) {
             Node neighbor = it.next();
             
@@ -224,7 +216,7 @@ class ChangeHandler
                 if (neighbor2.tile == neighbor.tile && neighbor2.nodeType == neighbor.nodeType && neighbor2
                   
                   .getGrid() == grid) {
-                  if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Using neighbor node %s instead of %s.", new Object[] { neighbor2, neighbors }); 
+                  if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Using neighbor node %s instead of %s.", neighbor2, neighbors);
                   found = true;
                   it.set(neighbor2);
                   
@@ -232,7 +224,7 @@ class ChangeHandler
                 } 
               } 
               if (!found) {
-                if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for neighbor %s.", new Object[] { neighbor }); 
+                if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for neighbor %s.", neighbor);
                 neighbor = new Node(enet.allocateNodeId(), neighbor.tile, neighbor.nodeType);
                 neighbor.tile.addExtraNode(neighbor);
                 grid.add(neighbor, Collections.emptyList());
@@ -242,9 +234,7 @@ class ChangeHandler
               }  continue;
             } 
             grid.merge(neighbor.getGrid(), neighborReplacements);
-          } 
-
-
+          }
           
           for (it = neighbors.listIterator(); it.hasNext(); ) {
             Node neighbor = it.next();
@@ -261,17 +251,13 @@ class ChangeHandler
           grid.add(node, neighbors);
           
           assert node.getGrid() != null;
-
-
-
-        
+          break;
         case Sink:
         case Source:
           neighborGroups = new ArrayList<>();
           
           for (Node neighbor : neighbors) {
             boolean found = false;
-            
             if (node.nodeType == NodeType.Conductor) {
               for (List<Node> nodeList : neighborGroups) {
                 Node neighbor2 = nodeList.get(0);
@@ -292,17 +278,18 @@ class ChangeHandler
             } 
           } 
           
-          if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Neighbor groups detected for %s: %s.", new Object[] { node, neighborGroups }); 
+          if (EnergyNetSettings.logGridUpdatesVerbose)
+            IndustrialCase.log.debug(LogCategory.EnergyNet, "Neighbor groups detected for %s: %s.", node, neighborGroups);
           assert !neighborGroups.isEmpty();
           
           for (i = 0; i < neighborGroups.size(); i++) {
             Node currentNode; List<Node> nodeList = neighborGroups.get(i);
             Node neighbor = nodeList.get(0);
 
-            
             if (neighbor.nodeType != NodeType.Conductor && !neighbor.links.isEmpty()) {
               assert nodeList.size() == 1;
-              if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for neighbor %s.", new Object[] { neighbor });
+              if (EnergyNetSettings.logGridUpdatesVerbose)
+                IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for neighbor %s.", neighbor);
               
               neighbor = new Node(enet.allocateNodeId(), neighbor.tile, neighbor.nodeType);
               neighbor.tile.addExtraNode(neighbor);
@@ -310,14 +297,13 @@ class ChangeHandler
               nodeList.set(0, neighbor);
               
               assert neighbor.getGrid() != null;
-            } 
+            }
 
-
-            
             if (i == 0) {
               currentNode = node;
             } else {
-              if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for %s.", new Object[] { node });
+              if (EnergyNetSettings.logGridUpdatesVerbose)
+                IndustrialCase.log.debug(LogCategory.EnergyNet, "Creating new extra node for %s.", node);
               
               currentNode = new Node(enet.allocateNodeId(), tile, node.nodeType);
               currentNode.setExtraNode(true);
@@ -327,13 +313,9 @@ class ChangeHandler
             neighbor.getGrid().add(currentNode, nodeList);
             
             assert currentNode.getGrid() != null;
-          } 
-      } 
-
-
-
-
-    
+          }
+          break;
+      }
     } 
     for (Node node : extraNodes) {
       tile.addExtraNode(node);
@@ -344,11 +326,13 @@ class ChangeHandler
     Tile tile = enet.registeredIoTiles.remove(ioTile);
     
     if (tile == null) {
-      if (EnergyNetSettings.logGridUpdateIssues) IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s removal without registration", Util.toString(ioTile, enet.getWorld(), pos));
+      if (EnergyNetSettings.logGridUpdateIssues)
+        IndustrialCase.log.warn(LogCategory.EnergyNet, "Tile %s removal without registration", Util.toString(ioTile, enet.getWorld(), pos));
       
       return;
     } 
-    if (EnergyNetSettings.logGridUpdatesVerbose) IndustrialCase.log.debug(LogCategory.EnergyNet, "Removing tile %s.", Util.toString(ioTile, enet.getWorld(), pos));
+    if (EnergyNetSettings.logGridUpdatesVerbose)
+      IndustrialCase.log.debug(LogCategory.EnergyNet, "Removing tile %s.", Util.toString(ioTile, enet.getWorld(), pos));
     
     assert tile.getMainTile() == ioTile;
     if (ioTile instanceof IEnergySource) enet.sources.remove(tile);

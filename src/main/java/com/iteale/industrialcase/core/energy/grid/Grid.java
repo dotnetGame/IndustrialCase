@@ -42,7 +42,7 @@ public class Grid
   }
   
   public Node getNode(int id) {
-    return this.nodes.get(Integer.valueOf(id));
+    return this.nodes.get(id);
   }
   
   public Collection<Node> getNodes() {
@@ -70,7 +70,7 @@ public class Grid
   
   void add(Node node, Collection<Node> neighbors) {
     if (EnergyNetSettings.logGridUpdatesVerbose)
-      IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Add %s to %s neighbors: %s.", new Object[] { Integer.valueOf(this.uid), node, this, neighbors }); 
+      IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Add %s to %s neighbors: %s.", this.uid, node, this, neighbors);
     invalidate();
     assert !this.nodes.isEmpty() || neighbors.isEmpty();
     assert this.nodes.isEmpty() || !neighbors.isEmpty() || node.isExtraNode();
@@ -78,7 +78,7 @@ public class Grid
     add(node);
     for (Node neighbor : neighbors) {
       assert neighbor != node;
-      assert this.nodes.containsKey(Integer.valueOf(neighbor.uid));
+      assert this.nodes.containsKey(neighbor.uid);
       double loss = (node.getInnerLoss() + neighbor.getInnerLoss()) / 2.0D;
       NodeLink link = new NodeLink(node, neighbor, loss);
       node.links.add(link);
@@ -107,11 +107,11 @@ public class Grid
           IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Removing isolated extra node %s.", new Object[] { Integer.valueOf(this.uid), neighbor }); 
         assert neighbor.getType() != NodeType.Conductor;
         it.remove();
-        this.nodes.remove(Integer.valueOf(neighbor.uid));
+        this.nodes.remove(neighbor.uid);
         neighbor.clearGrid();
       } 
     } 
-    this.nodes.remove(Integer.valueOf(node.uid));
+    this.nodes.remove(node.uid);
     node.clearGrid();
     int linkCount = node.links.size();
     if (linkCount == 0) {
@@ -158,13 +158,13 @@ public class Grid
       } 
       assert gridCount > 0;
       if (EnergyNetSettings.logGridUpdatesVerbose) {
-        IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Neighbor connectivity (%d links, %d new grids):", new Object[] { Integer.valueOf(this.uid), Integer.valueOf(linkCount), Integer.valueOf(gridCount) });
+        IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Neighbor connectivity (%d links, %d new grids):", this.uid, linkCount, gridCount);
         for (i = 0; i < linkCount; i++) {
           Set<Node> nodes = arrayOfSet[i];
           if (nodes != null) {
-            IndustrialCase.log.debug(LogCategory.EnergyNet, "%d %d: %s: %s (%d).", new Object[] { Integer.valueOf(this.uid), Integer.valueOf(i), ((NodeLink)node.links.get(i)).getNeighbor(node), nodes, Integer.valueOf(nodes.size()) });
+            IndustrialCase.log.debug(LogCategory.EnergyNet, "%d %d: %s: %s (%d).", this.uid, i, ((NodeLink)node.links.get(i)).getNeighbor(node), nodes, nodes.size());
           } else {
-            IndustrialCase.log.debug(LogCategory.EnergyNet, "%d %d: %s contained in %d.", new Object[] { Integer.valueOf(this.uid), Integer.valueOf(i), ((NodeLink)node.links.get(i)).getNeighbor(node), Integer.valueOf(mapping[i]) });
+            IndustrialCase.log.debug(LogCategory.EnergyNet, "%d %d: %s contained in %d.", this.uid, i, ((NodeLink)node.links.get(i)).getNeighbor(node), mapping[i]);
           } 
         } 
       } 
@@ -175,7 +175,7 @@ public class Grid
         if (connectedNodes != null) {
           Grid grid = new Grid(this.enet);
           if (EnergyNetSettings.logGridUpdatesVerbose)
-            IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Moving %d nodes from net %d to new grid %d.", new Object[] { Integer.valueOf(this.uid), Integer.valueOf(connectedNodes.size()), Integer.valueOf(i), Integer.valueOf(grid.uid) }); 
+            IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Moving %d nodes from net %d to new grid %d.", this.uid, connectedNodes.size(), i, grid.uid);
           for (Node cNode : connectedNodes) {
             boolean needsExtraNode = false;
             if (!cNode.links.isEmpty() && cNode.nodeType != NodeType.Conductor)
@@ -207,9 +207,9 @@ public class Grid
               continue;
             } 
             if (EnergyNetSettings.logGridUpdatesVerbose)
-              IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Move Node %s to grid %d.", new Object[] { Integer.valueOf(this.uid), cNode, Integer.valueOf(grid.uid) }); 
-            assert this.nodes.containsKey(Integer.valueOf(cNode.uid));
-            this.nodes.remove(Integer.valueOf(cNode.uid));
+              IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Move Node %s to grid %d.", this.uid, cNode, grid.uid);
+            assert this.nodes.containsKey(cNode.uid);
+            this.nodes.remove(cNode.uid);
             cNode.clearGrid();
             grid.add(cNode);
             assert cNode.getGrid() != null;
@@ -221,7 +221,7 @@ public class Grid
   
   void merge(Grid grid, Map<Node, Node> nodeReplacements) {
     if (EnergyNetSettings.logGridUpdatesVerbose)
-      IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Merge %s -> %s.", new Object[] { Integer.valueOf(this.uid), grid, this }); 
+      IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Merge %s -> %s.", this.uid, grid, this);
     assert this.enet.hasGrid(grid);
     invalidate();
     for (Node node : grid.nodes.values()) {
@@ -230,7 +230,7 @@ public class Grid
         for (Node node2 : node.tile.nodes) {
           if (node2.nodeType == node.nodeType && node2.getGrid() == this) {
             if (EnergyNetSettings.logGridUpdatesVerbose)
-              IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Merge Node %s -> %s.", new Object[] { Integer.valueOf(this.uid), node, node2 }); 
+              IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Merge Node %s -> %s.", this.uid, node, node2);
             found = true;
             for (NodeLink link : node.links) {
               link.replaceNode(node, node2);
@@ -243,20 +243,20 @@ public class Grid
         }  
       if (!found) {
         if (EnergyNetSettings.logGridUpdatesVerbose)
-          IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Add Node %s.", new Object[] { Integer.valueOf(this.uid), node }); 
+          IndustrialCase.log.debug(LogCategory.EnergyNet, "%d Add Node %s.", this.uid, node);
         node.clearGrid();
         add(node);
         assert node.getGrid() != null;
       } 
     } 
     if (EnergyNetSettings.logGridUpdatesVerbose)
-      IndustrialCase.log.debug(LogCategory.EnergyNet, "Remove %s.", new Object[] { grid }); 
+      IndustrialCase.log.debug(LogCategory.EnergyNet, "Remove %s.", grid);
     this.enet.removeGrid(grid);
   }
   
   private void add(Node node) {
     node.setGrid(this);
-    Node prev = this.nodes.put(Integer.valueOf(node.uid), node);
+    Node prev = this.nodes.put(node.uid, node);
     if (prev != null)
       throw new IllegalStateException("duplicate node uid, new " + node + ", old " + prev); 
   }

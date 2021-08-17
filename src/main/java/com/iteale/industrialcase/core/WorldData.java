@@ -48,7 +48,7 @@ public class WorldData
     }
 
     public static void onWorldUnload(Level world) {
-        getIndex(!world.isClientSide).remove(world.dimension().hashCode());
+        getIndex(!world.isClientSide).remove(world.dimension().location().toString());
     }
 
     private static ConcurrentMap<String, WorldData> getIndex(boolean simulating) {
