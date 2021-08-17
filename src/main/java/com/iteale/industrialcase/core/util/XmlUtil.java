@@ -76,9 +76,3 @@ public final class XmlUtil {
     return Integer.parseInt(str);
   }
 }
-
-
-/* Location:              C:\Users\wangjun\Documents\github\industrialcraft-2-2.8.221-ex112-dev\!\ic2\cor\\util\XmlUtil.class
- * Java compiler version: 8 (52.0)
- * JD-Core Version:       1.1.3
- */

@@ -73,8 +73,6 @@ public class NodeLink {
     }
     return null;
   }
-
-
   
   public String toString() {
     return "NodeLink:" + this.nodeA + "@" + this.dirFromA + "->" + this.nodeB + "@" + this.dirFromB;
@@ -102,17 +100,6 @@ public class NodeLink {
     this.dirFromA = null;
     this.dirFromB = null;
   }
-
-
-
-
-
   
   List<Node> skippedNodes = new ArrayList<>();
 }
-
-
-/* Location:              C:\Users\wangjun\Documents\github\industrialcraft-2-2.8.221-ex112-dev\!\ic2\core\energy\grid\NodeLink.class
- * Java compiler version: 8 (52.0)
- * JD-Core Version:       1.1.3
- */

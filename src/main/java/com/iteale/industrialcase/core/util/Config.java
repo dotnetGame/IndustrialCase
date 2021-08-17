@@ -623,9 +623,3 @@ public class Config {
     }
   }
 }
-
-
-/* Location:              C:\Users\wangjun\Documents\github\industrialcraft-2-2.8.221-ex112-dev\!\ic2\cor\\util\Config.class
- * Java compiler version: 8 (52.0)
- * JD-Core Version:       1.1.3
- */

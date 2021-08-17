@@ -118,9 +118,3 @@ class NodeLink {
   
   List<Node> skippedNodes = new ArrayList<>();
 }
-
-
-/* Location:              C:\Users\wangjun\Documents\github\industrialcraft-2-2.8.221-ex112-dev\!\ic2\core\energy\NodeLink.class
- * Java compiler version: 8 (52.0)
- * JD-Core Version:       1.1.3
- */

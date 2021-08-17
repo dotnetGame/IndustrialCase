@@ -149,9 +149,3 @@ public class Log
   private final Logger parent;
   private final Map<LogCategory, Logger> loggers;
 }
-
-
-/* Location:              C:\Users\wangjun\Documents\github\industrialcraft-2-2.8.221-ex112-dev\!\ic2\cor\\util\Log.class
- * Java compiler version: 8 (52.0)
- * JD-Core Version:       1.1.3
- */

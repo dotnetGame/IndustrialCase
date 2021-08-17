@@ -126,9 +126,3 @@ public class Vector2
     return set(cos * this.x - sin * this.y, sin * this.x + cos * this.y);
   }
 }
-
-
-/* Location:              C:\Users\wangjun\Documents\github\industrialcraft-2-2.8.221-ex112-dev\!\ic2\cor\\util\Vector2.class
- * Java compiler version: 8 (52.0)
- * JD-Core Version:       1.1.3
- */
