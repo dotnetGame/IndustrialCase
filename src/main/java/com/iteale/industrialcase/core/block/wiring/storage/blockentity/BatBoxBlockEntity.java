@@ -15,35 +15,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class BatBoxBlockEntity extends ElectricBlockEntity {
-
-    public ContainerData dataAccess = new ContainerData() {
-        @Override
-        public int get(int index) {
-            if (index == StorageDataType.STORAGE.getValue()) {
-                return (int) BatBoxBlockEntity.this.energy.getStorage();
-            } else if (index == StorageDataType.CAPACITY.getValue()) {
-                return (int) BatBoxBlockEntity.this.energy.getCapacity();
-            } else {
-                throw new IndexOutOfBoundsException("Generator container data out of range.");
-            }
-        }
-
-        @Override
-        public void set(int index, int value) {
-            if (index == StorageDataType.STORAGE.getValue()) {
-                BatBoxBlockEntity.this.energy.setStorage(value);
-            } else if (index == StorageDataType.CAPACITY.getValue()) {
-                BatBoxBlockEntity.this.energy.setCapacity(value);
-            } else {
-                throw new IndexOutOfBoundsException("Generator container data out of range.");
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return StorageDataType.values().length;
-        }
-    };
     public BatBoxBlockEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.BATBOX.get(), pos, state, 1, 32, 40000);
     }

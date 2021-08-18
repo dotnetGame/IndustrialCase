@@ -1,4 +1,4 @@
-package com.iteale.industrialcase.core.block.container;
+package com.iteale.industrialcase.core.block.invslot;
 
 import com.iteale.industrialcase.api.energy.tile.IChargingSlot;
 import com.iteale.industrialcase.api.item.ElectricItem;
@@ -6,10 +6,10 @@ import com.iteale.industrialcase.core.block.IContainerHolder;
 import com.iteale.industrialcase.core.util.StackUtil;
 import net.minecraft.world.item.ItemStack;
 
-public class ChargeContainer extends ICContainer implements IChargingSlot {
+public class InvSlotCharge extends InvSlot implements IChargingSlot {
     public int tier;
-    public ChargeContainer(IContainerHolder<?> base, int tier) {
-        super(base, "charge", ICContainer.Access.IO, 1, ICContainer.InvSide.TOP);
+    public InvSlotCharge(IContainerHolder<?> base, int tier) {
+        super(base, "charge", InvSlot.Access.IO, 1, InvSlot.InvSide.TOP);
 
         this.tier = tier;
     }

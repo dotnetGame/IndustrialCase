@@ -7,13 +7,12 @@ import com.iteale.industrialcase.api.energy.event.EnergyTileUnloadEvent;
 import com.iteale.industrialcase.api.energy.tile.*;
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.BlockEntityBase;
-import com.iteale.industrialcase.core.block.container.ICContainer;
+import com.iteale.industrialcase.core.block.invslot.InvSlot;
 import com.iteale.industrialcase.core.util.LogCategory;
 import com.iteale.industrialcase.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -59,7 +58,7 @@ public class Energy extends BlockEntityComponent {
         this.fullEnergy = fullEnergy;
     }
 
-    public Energy addManagedSlot(ICContainer slot) {
+    public Energy addManagedSlot(InvSlot slot) {
         if (slot instanceof IChargingSlot || slot instanceof IDischargingSlot) {
             if (this.managedSlots == null)
                 this.managedSlots = new ArrayList<>(4);
@@ -85,7 +84,7 @@ public class Energy extends BlockEntityComponent {
     }
 
     public void onWorldTick() {
-        for (ICContainer slot : this.managedSlots) {
+        for (InvSlot slot : this.managedSlots) {
             if (slot instanceof IChargingSlot) {
                 if (this.storage > 0.0D)
                     this.storage -= ((IChargingSlot)slot).charge(this.storage);
@@ -345,7 +344,7 @@ public class Energy extends BlockEntityComponent {
     private int sourceTier;
     private Set<Direction> sinkDirections;
     private Set<Direction> sourceDirections;
-    private List<ICContainer> managedSlots;
+    private List<InvSlot> managedSlots;
     private boolean multiSource;
     private int sourcePackets;
     private EnergyNetDelegate delegate;

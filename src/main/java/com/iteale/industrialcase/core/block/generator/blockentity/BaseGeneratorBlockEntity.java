@@ -2,7 +2,7 @@ package com.iteale.industrialcase.core.block.generator.blockentity;
 
 import com.iteale.industrialcase.core.block.BlockEntityInventory;
 import com.iteale.industrialcase.core.block.comp.Energy;
-import com.iteale.industrialcase.core.block.container.ChargeContainer;
+import com.iteale.industrialcase.core.block.invslot.InvSlotCharge;
 import com.iteale.industrialcase.core.network.GuiSynced;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class BaseGeneratorBlockEntity extends BlockEntityInventory {
-    public final ChargeContainer chargeSlot;
+    public final InvSlotCharge chargeSlot;
     protected final Energy energy;
     @GuiSynced
     public int fuel;
@@ -21,7 +21,7 @@ public abstract class BaseGeneratorBlockEntity extends BlockEntityInventory {
         this.fuel = 0;
 
         this.production = production;
-        this.chargeSlot = new ChargeContainer(this, 1);
+        this.chargeSlot = new InvSlotCharge(this, 1);
         this.energy = addComponent(Energy.asBasicSource(this, maxStorage, tier)
                 .addManagedSlot(this.chargeSlot));
     }

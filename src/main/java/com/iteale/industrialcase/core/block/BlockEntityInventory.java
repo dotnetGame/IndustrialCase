@@ -1,23 +1,14 @@
 package com.iteale.industrialcase.core.block;
 
 import com.iteale.industrialcase.core.block.comp.ComparatorEmitter;
-import com.iteale.industrialcase.core.block.container.ICContainer;
-import com.iteale.industrialcase.core.block.container.UpgradeContainer;
+import com.iteale.industrialcase.core.block.invslot.InvSlot;
+import com.iteale.industrialcase.core.block.invslot.InvSlotUpgrade;
 import com.iteale.industrialcase.core.util.StackUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.Container;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.Nameable;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
@@ -28,7 +19,7 @@ import java.util.List;
 
 public abstract class BlockEntityInventory extends BlockEntityContainer
         implements IContainerHolder<BlockEntityInventory> {
-    private final List<ICContainer> invSlots;
+    private final List<InvSlot> invSlots;
     private final IItemHandler[] itemHandler;
     protected final ComparatorEmitter comparator;
 
@@ -53,7 +44,7 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
         return new SlotLocation(-1, -1);
     }
 
-    private ICContainer getAt(SlotLocation loc) {
+    private InvSlot getAt(SlotLocation loc) {
         return this.invSlots.get(loc.getIndex());
     }
 
@@ -65,7 +56,7 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
     public void load(CompoundTag nbtTagCompound) {
         super.load(nbtTagCompound);
         CompoundTag invSlotsTag = nbtTagCompound.getCompound("InvSlots");
-        for (ICContainer invSlot : this.invSlots)
+        for (InvSlot invSlot : this.invSlots)
             invSlot.load(invSlotsTag.getCompound(invSlot.name));
     }
 
@@ -73,7 +64,7 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
     public CompoundTag save(CompoundTag nbt) {
         super.save(nbt);
         CompoundTag invSlotsTag = new CompoundTag();
-        for (ICContainer invSlot : this.invSlots) {
+        for (InvSlot invSlot : this.invSlots) {
             CompoundTag invSlotTag = new CompoundTag();
             invSlot.save(invSlotTag);
             invSlotsTag.put(invSlot.name, invSlotTag);
@@ -82,7 +73,7 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
         return nbt;
     }
 
-    protected static int calcRedstoneFromInvSlots(ICContainer... slots) {
+    protected static int calcRedstoneFromInvSlots(InvSlot... slots) {
         return calcRedstoneFromInvSlots(Arrays.asList(slots));
     }
 
@@ -90,11 +81,11 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
         return calcRedstoneFromInvSlots(this.invSlots);
     }
 
-    protected static int calcRedstoneFromInvSlots(Iterable<ICContainer> invSlots) {
+    protected static int calcRedstoneFromInvSlots(Iterable<InvSlot> invSlots) {
         int space = 0;
         int used = 0;
-        for (ICContainer slot : invSlots) {
-            if (slot instanceof UpgradeContainer)
+        for (InvSlot slot : invSlots) {
+            if (slot instanceof InvSlotUpgrade)
                 continue;
             int size = slot.getContainerSize();
             int limit = slot.getMaxStackSize();
@@ -116,8 +107,8 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
     }
 
     @Override
-    public ICContainer getContainer(String paramString) {
-        for (ICContainer invSlot : this.invSlots) {
+    public InvSlot getContainer(String paramString) {
+        for (InvSlot invSlot : this.invSlots) {
             if (invSlot.name.equals(paramString))
                 return invSlot;
         }
@@ -125,15 +116,15 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
     }
 
     @Override
-    public void addContainer(ICContainer paramContainer) {
+    public void addContainer(InvSlot paramContainer) {
         assert this.invSlots.stream().noneMatch(slot -> slot.name.equals(paramContainer.name));
         this.invSlots.add(paramContainer);
     }
 
     @Override
-    public int getBaseIndex(ICContainer paramContainer) {
+    public int getBaseIndex(InvSlot paramContainer) {
         int ret = 0;
-        for (ICContainer slot : this.invSlots) {
+        for (InvSlot slot : this.invSlots) {
             if (slot == paramContainer)
                 return ret;
             ret += slot.getContainerSize();
@@ -144,7 +135,7 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
     @Override
     public int getContainerSize() {
         int totalSize = 0;
-        for (ICContainer invSlot : this.invSlots) {
+        for (InvSlot invSlot : this.invSlots) {
             totalSize += invSlot.getContainerSize();
         }
         return totalSize;
@@ -152,7 +143,7 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
 
     @Override
     public boolean isEmpty() {
-        for (ICContainer invSlot : this.invSlots) {
+        for (InvSlot invSlot : this.invSlots) {
             if (!invSlot.isEmpty())
                 return false;
         }
@@ -185,7 +176,7 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
 
     @Override
     public void clearContent() {
-        for (ICContainer invSlot : this.invSlots) {
+        for (InvSlot invSlot : this.invSlots) {
             invSlot.clearContent();
         }
     }

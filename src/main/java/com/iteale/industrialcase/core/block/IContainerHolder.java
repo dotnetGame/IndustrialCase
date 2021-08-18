@@ -1,15 +1,15 @@
 package com.iteale.industrialcase.core.block;
 
-import com.iteale.industrialcase.core.block.container.ICContainer;
+import com.iteale.industrialcase.core.block.invslot.InvSlot;
 import net.minecraft.world.Container;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface IContainerHolder<P extends BlockEntity & Container> {
     P getParent();
 
-    ICContainer getContainer(String paramString);
+    InvSlot getContainer(String paramString);
 
-    void addContainer(ICContainer paramContainer);
+    void addContainer(InvSlot paramContainer);
 
-    int getBaseIndex(ICContainer paramContainer);
+    int getBaseIndex(InvSlot paramContainer);
 }

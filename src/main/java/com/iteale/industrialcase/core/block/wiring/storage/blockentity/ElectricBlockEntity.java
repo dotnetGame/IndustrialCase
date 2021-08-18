@@ -4,40 +4,38 @@ import com.iteale.industrialcase.core.block.BlockEntityInventory;
 import com.iteale.industrialcase.core.block.comp.Energy;
 import com.iteale.industrialcase.core.block.comp.Redstone;
 import com.iteale.industrialcase.core.block.comp.RedstoneEmitter;
-import com.iteale.industrialcase.core.block.container.ChargeContainer;
-import com.iteale.industrialcase.core.block.container.DischargeContainer;
-import com.iteale.industrialcase.core.block.container.ICContainer;
-import com.iteale.industrialcase.core.util.StackUtil;
+import com.iteale.industrialcase.core.block.invslot.InvSlotCharge;
+import com.iteale.industrialcase.core.block.invslot.InvSlotDischarge;
+import com.iteale.industrialcase.core.block.invslot.InvSlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.List;
 
 public abstract class ElectricBlockEntity extends BlockEntityInventory {
     protected double output;
     public byte redstoneMode;
 
-    public final ChargeContainer chargeSlot;
-    public final DischargeContainer dischargeSlot;
+    public final InvSlotCharge chargeSlot;
+    public final InvSlotDischarge dischargeSlot;
     public final Energy energy;
     public final Redstone redstone;
     public final RedstoneEmitter rsEmitter;
 
     public static byte redstoneModes = 7;
 
+    public ContainerData dataAccess = new ElectricContainerData(this);
+
     public ElectricBlockEntity(BlockEntityType<?> t, BlockPos pos, BlockState state, int tier, int output, int maxStorage) {
         super(t, pos, state);
         this.redstoneMode = 0;
         this.output = output;
-        this.chargeSlot = new ChargeContainer(this, tier);
-        this.dischargeSlot = new DischargeContainer(this, ICContainer.Access.IO, tier, ICContainer.InvSide.BOTTOM);
+        this.chargeSlot = new InvSlotCharge(this, tier);
+        this.dischargeSlot = new InvSlotDischarge(this, InvSlot.Access.IO, tier, InvSlot.InvSide.BOTTOM);
         this.energy = (Energy)addComponent(
                 (new Energy(this, maxStorage, EnumSet.complementOf(EnumSet.of(Direction.DOWN)), EnumSet.of(Direction.DOWN), tier, tier, true))
                         .addManagedSlot(this.chargeSlot).addManagedSlot(this.dischargeSlot));

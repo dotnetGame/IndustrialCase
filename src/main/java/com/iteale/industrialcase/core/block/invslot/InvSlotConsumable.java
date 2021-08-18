@@ -1,21 +1,20 @@
-package com.iteale.industrialcase.core.block.container;
+package com.iteale.industrialcase.core.block.invslot;
 
 import com.iteale.industrialcase.core.block.IContainerHolder;
 import com.iteale.industrialcase.core.util.StackUtil;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public abstract class ConsumableContainer extends ICContainer {
-    public ConsumableContainer(int sizeIn) {
+public abstract class InvSlotConsumable extends InvSlot {
+    public InvSlotConsumable(int sizeIn) {
         super(sizeIn);
     }
 
-    public ConsumableContainer(IContainerHolder<?> base, String name, int count) {
-        super(base, name, ICContainer.Access.I, count, ICContainer.InvSide.TOP);
+    public InvSlotConsumable(IContainerHolder<?> base, String name, int count) {
+        super(base, name, InvSlot.Access.I, count, InvSlot.InvSide.TOP);
     }
 
-    public ConsumableContainer(IContainerHolder<?> base, String name, ICContainer.Access access, int count, ICContainer.InvSide preferredSide) {
+    public InvSlotConsumable(IContainerHolder<?> base, String name, InvSlot.Access access, int count, InvSlot.InvSide preferredSide) {
         super(base, name, access, count, preferredSide);
     }
 

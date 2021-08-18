@@ -1,31 +1,21 @@
 package com.iteale.industrialcase.core.block.generator.blockentity;
 
-import com.iteale.industrialcase.core.block.comp.BlockEntityComponent;
-import com.iteale.industrialcase.core.block.comp.Energy;
-import com.iteale.industrialcase.core.block.container.ChargeContainer;
-import com.iteale.industrialcase.core.block.container.FuelContainer;
-import com.iteale.industrialcase.core.block.generator.Generator;
+import com.iteale.industrialcase.core.block.invslot.InvSlotConsumableFuel;
 import com.iteale.industrialcase.core.block.generator.menu.GeneratorMenu;
 import com.iteale.industrialcase.core.network.GuiSynced;
 import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
-import com.iteale.industrialcase.core.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.List;
-
 public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
-    public final FuelContainer fuelSlot;
+    public final InvSlotConsumableFuel fuelSlot;
     @GuiSynced
     public int totalFuel;
 
@@ -70,7 +60,7 @@ public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
         super(BlockEntityRegistry.GENERATOR.get(), pos, state,
                 Math.round(10.0F * 1.0F), 1, 4000);
         this.totalFuel = 0;
-        this.fuelSlot = new FuelContainer(this, "fuel", 1, false);
+        this.fuelSlot = new InvSlotConsumableFuel(this, "fuel", 1, false);
     }
 
     @Override

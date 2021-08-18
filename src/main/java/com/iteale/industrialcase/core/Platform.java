@@ -2,6 +2,7 @@ package com.iteale.industrialcase.core;
 
 
 import com.iteale.industrialcase.core.util.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.TextComponent;
@@ -38,7 +39,7 @@ public class Platform
     public void displayError(String error, Object... args) {
         if (args.length > 0) error = String.format(error, args);
 
-        error = "IndustrialCraft 2 Error\n\n == = IndustrialCraft 2 Error = == \n\n" + error + "\n\n == == == == == == == == == == ==\n";
+        error = "IndustrialCase Error\n\n == = IndustrialCase Error = == \n\n" + error + "\n\n == == == == == == == == == == ==\n";
         error = error.replace("\n", System.getProperty("line.separator"));
 
         throw new RuntimeException(error);
@@ -67,7 +68,6 @@ public class Platform
     public Level getWorld(String dimId) {
         return (Level)DimensionManager.getWorld(dimId);
     }
-
      */
 
     public Level getPlayerWorld() {

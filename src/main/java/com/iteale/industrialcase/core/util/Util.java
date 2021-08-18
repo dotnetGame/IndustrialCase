@@ -5,13 +5,19 @@ import com.iteale.industrialcase.core.IndustrialCase;
 import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -368,10 +374,45 @@ public final class Util
     } 
     
     try {
-      exit.invoke(null, new Object[] { Integer.valueOf(status) });
+      exit.invoke(null, status);
     } catch (Exception e) {
       throw new Error(e);
     } 
+  }
+
+
+  public static Block getBlock(String name) {
+    if (name == null) throw new NullPointerException("null name");
+
+    return getBlock(new ResourceLocation(name));
+  }
+
+  public static Block getBlock(ResourceLocation loc) {
+    Block ret = RegistryObject.of(loc, ForgeRegistries.BLOCKS).get();
+    if (ret != Blocks.AIR) return ret;
+
+    if (loc.getNamespace().equals("minecraft") && loc.getPath().equals("air")) {
+      return ret;
+    }
+    return null;
+  }
+
+  public static ResourceLocation getName(Block block) {
+    return block.getRegistryName();
+  }
+
+  public static Item getItem(String name) {
+    if (name == null) throw new NullPointerException("null name");
+
+    return getItem(new ResourceLocation(name));
+  }
+
+  public static Item getItem(ResourceLocation loc) {
+    return RegistryObject.of(loc, ForgeRegistries.ITEMS).get();
+  }
+
+  public static ResourceLocation getName(Item item) {
+    return item.getRegistryName();
   }
   
   public static Vec3 getEyePosition(Entity entity) {

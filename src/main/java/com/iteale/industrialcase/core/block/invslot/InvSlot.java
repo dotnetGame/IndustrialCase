@@ -1,9 +1,8 @@
-package com.iteale.industrialcase.core.block.container;
+package com.iteale.industrialcase.core.block.invslot;
 
 
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.IContainerHolder;
-import com.iteale.industrialcase.core.gui.Gauge;
 import com.iteale.industrialcase.core.util.LogCategory;
 import com.iteale.industrialcase.core.util.StackUtil;
 import com.iteale.industrialcase.core.util.Util;
@@ -11,7 +10,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.ContainerListener;
@@ -20,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
 
-public class ICContainer implements Container {
+public class InvSlot implements Container {
     public final IContainerHolder<?> base;
     public String name;
 
@@ -32,11 +30,11 @@ public class ICContainer implements Container {
     public final InvSide preferredSide;
     private int stackSizeLimit;
 
-    public ICContainer(IContainerHolder<?> base, String name, Access access, int count) {
+    public InvSlot(IContainerHolder<?> base, String name, Access access, int count) {
         this(base, name, access, count, InvSide.ANY);
     }
 
-    public ICContainer(IContainerHolder<?> base, String name, Access access, int count, InvSide preferredSide) {
+    public InvSlot(IContainerHolder<?> base, String name, Access access, int count, InvSide preferredSide) {
         if (count <= 0)
             throw new IllegalArgumentException("invalid slot count: " + count);
 
@@ -55,7 +53,7 @@ public class ICContainer implements Container {
     }
 
 
-    public ICContainer(int count) {
+    public InvSlot(int count) {
         if (count <= 0)
             throw new IllegalArgumentException("invalid slot count: " + count);
 
@@ -71,7 +69,7 @@ public class ICContainer implements Container {
 
     }
 
-    public ICContainer(ItemStack... itemsIn) {
+    public InvSlot(ItemStack... itemsIn) {
         this.size = itemsIn.length;
         this.items = NonNullList.of(ItemStack.EMPTY, itemsIn);
 

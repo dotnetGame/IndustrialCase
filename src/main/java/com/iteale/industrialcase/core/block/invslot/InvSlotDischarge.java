@@ -1,4 +1,4 @@
-package com.iteale.industrialcase.core.block.container;
+package com.iteale.industrialcase.core.block.invslot;
 
 import com.iteale.industrialcase.api.energy.tile.IDischargingSlot;
 import com.iteale.industrialcase.api.info.Info;
@@ -8,18 +8,18 @@ import com.iteale.industrialcase.core.util.StackUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class DischargeContainer extends ICContainer implements IDischargingSlot {
+public class InvSlotDischarge extends InvSlot implements IDischargingSlot {
     public int tier;
 
-    public DischargeContainer(IContainerHolder<?> base, ICContainer.Access access, int tier) {
-        this(base, access, tier, ICContainer.InvSide.ANY);
+    public InvSlotDischarge(IContainerHolder<?> base, InvSlot.Access access, int tier) {
+        this(base, access, tier, InvSlot.InvSide.ANY);
     }
     public boolean allowRedstoneDust;
-    public DischargeContainer(IContainerHolder<?> base, ICContainer.Access access, int tier, ICContainer.InvSide preferredSide) {
+    public InvSlotDischarge(IContainerHolder<?> base, InvSlot.Access access, int tier, InvSlot.InvSide preferredSide) {
         this(base, access, tier, true, preferredSide);
     }
 
-    public DischargeContainer(IContainerHolder<?> base, ICContainer.Access access, int tier, boolean allowRedstoneDust, ICContainer.InvSide preferredSide) {
+    public InvSlotDischarge(IContainerHolder<?> base, InvSlot.Access access, int tier, boolean allowRedstoneDust, InvSlot.InvSide preferredSide) {
         super(base, "discharge", access, 1, preferredSide);
         this.allowRedstoneDust = true;
         this.tier = tier;

@@ -5,6 +5,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.*;
 
@@ -156,4 +157,16 @@ public class StackUtil {
         }
         return stack.toString();
     }
+
+    public static int getRawMeta(ItemStack stack) {
+        // FIXME
+        return Items.BLACK_DYE.getDamage(stack);
+    }
+
+    public static void setRawMeta(ItemStack stack, int meta) {
+        if (meta < 0) throw new IllegalArgumentException("negative meta");
+
+        Items.BLACK_DYE.setDamage(stack, meta);
+    }
+
 }

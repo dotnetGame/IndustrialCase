@@ -12,9 +12,7 @@ import java.nio.BufferUnderflowException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
-public class GrowingBuffer
-        extends OutputStream
-        implements IGrowingBuffer {
+public class GrowingBuffer extends OutputStream implements IGrowingBuffer {
     public GrowingBuffer() {
         this(4096);
     }

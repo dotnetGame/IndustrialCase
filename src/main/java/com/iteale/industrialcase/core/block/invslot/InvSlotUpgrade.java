@@ -1,18 +1,7 @@
-package com.iteale.industrialcase.core.block.container;
+package com.iteale.industrialcase.core.block.invslot;
 
 
-import com.iteale.industrialcase.api.upgrade.IRemoteAccessUpgrade;
-import com.iteale.industrialcase.api.upgrade.IUpgradableBlock;
-import com.iteale.industrialcase.api.upgrade.IUpgradeItem;
-import com.iteale.industrialcase.core.block.IContainerHolder;
-import com.iteale.industrialcase.core.util.StackUtil;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.redstone.Redstone;
-
-import java.util.Collections;
-
-public class UpgradeContainer extends ICContainer {
+public class InvSlotUpgrade extends InvSlot {
     private static final int maxStackSize = 64;
     public int augmentation;
     public int extraProcessTime;

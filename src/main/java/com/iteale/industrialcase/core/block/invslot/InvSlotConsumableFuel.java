@@ -1,12 +1,9 @@
-package com.iteale.industrialcase.core.block.container;
+package com.iteale.industrialcase.core.block.invslot;
 
-import com.iteale.industrialcase.api.info.Info;
 import com.iteale.industrialcase.core.block.IContainerHolder;
 import com.iteale.industrialcase.core.util.StackUtil;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
@@ -14,10 +11,10 @@ import net.minecraftforge.fluids.FluidUtil;
 
 import java.util.Optional;
 
-public class FuelContainer extends ConsumableContainer {
+public class InvSlotConsumableFuel extends InvSlotConsumable {
     public final boolean allowLava;
-    public FuelContainer(IContainerHolder<?> base, String name, int count, boolean allowLava1) {
-        super(base, name, ICContainer.Access.I, count, ICContainer.InvSide.SIDE);
+    public InvSlotConsumableFuel(IContainerHolder<?> base, String name, int count, boolean allowLava1) {
+        super(base, name, InvSlot.Access.I, count, InvSlot.InvSide.SIDE);
 
         this.allowLava = allowLava1;
     }

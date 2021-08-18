@@ -2,22 +2,27 @@ package com.iteale.industrialcase.core.network;
 
 
 import com.iteale.industrialcase.api.crops.CropCard;
+import com.iteale.industrialcase.api.crops.Crops;
 import com.iteale.industrialcase.api.network.IGrowingBuffer;
 import com.iteale.industrialcase.api.network.INetworkCustomEncoder;
 import com.iteale.industrialcase.api.recipe.IElectrolyzerRecipeManager;
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.comp.BlockEntityComponent;
-import com.iteale.industrialcase.core.block.container.ICContainer;
+import com.iteale.industrialcase.core.block.invslot.InvSlot;
 import com.iteale.industrialcase.core.util.StackUtil;
 import com.iteale.industrialcase.core.util.Tuple;
 import com.iteale.industrialcase.core.util.Util;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtAccounter;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -32,7 +37,6 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public final class DataEncoder {
-    /*
     public static void encode(GrowingBuffer os, Object o) throws IOException {
         try {
             encode(os, o, true);
@@ -56,7 +60,7 @@ public final class DataEncoder {
         FluidStack fs;
         FluidTank tank;
         GameProfile gp;
-        ICContainer slot;
+        InvSlot slot;
         ItemStack stack;
         ResourceLocation loc;
         BlockEntity te;
@@ -207,7 +211,7 @@ public final class DataEncoder {
                 return;
 
             case Double:
-                os.writeDouble(((Double) o).doubleValue());
+                os.writeDouble((Double) o);
                 return;
             case ElectrolyzerRecipe:
                 recipe = (IElectrolyzerRecipeManager.ElectrolyzerRecipe) o;
@@ -219,11 +223,11 @@ public final class DataEncoder {
                 for (IElectrolyzerRecipeManager.ElectrolyzerOutput output : outputs) {
                     os.writeString(output.fluidName);
                     os.writeInt(output.fluidAmount);
-                    os.writeByte(output.tankDirection.getIndex());
+                    os.writeByte(output.tankDirection.ordinal());
                 }
                 return;
             case Enchantment:
-                encode(os, Enchantment.REGISTRY.getNameForObject(o), false);
+                // encode(os, Enchantment.REGISTRY.getNameForObject(o), false);
                 return;
             case Enum:
                 os.writeVarInt(((Enum) o).ordinal());
@@ -232,13 +236,13 @@ public final class DataEncoder {
                 os.writeFloat((Float) o);
                 return;
             case Fluid:
-                os.writeString(((Fluid) o).getName());
+                os.writeString(((Fluid) o).getRegistryName().toString());
                 return;
             case FluidStack:
                 fs = (FluidStack) o;
                 encode(os, fs.getFluid(), false);
-                os.writeInt(fs.amount);
-                encode(os, fs.tag, true);
+                os.writeInt(fs.getAmount());
+                encode(os, fs.getTag(), true);
                 return;
 
             case FluidTank:
@@ -254,10 +258,10 @@ public final class DataEncoder {
                 return;
 
             case Integer:
-                os.writeInt(((Integer) o).intValue());
+                os.writeInt((Integer) o);
                 return;
             case InvSlot:
-                slot = (ICContainer) o;
+                slot = (InvSlot) o;
                 contents = new ItemStack[slot.getContainerSize()];
 
                 for (i = 0; i < slot.getContainerSize(); i++) {
@@ -278,17 +282,17 @@ public final class DataEncoder {
                 } else {
                     os.writeByte(StackUtil.getSize(stack));
                     encode(os, stack.getItem(), false);
-                    os.writeShort(stack.getItemDamage());
-                    encode(os, stack.getTagCompound(), true);
+                    os.writeShort(stack.getDamageValue());
+                    encode(os, stack.getTag(), true);
                 }
                 return;
 
 
             case Long:
-                os.writeLong(((Long) o).longValue());
+                os.writeLong((Long) o);
                 return;
             case NBTTagCompound:
-                CompressedStreamTools.write((NBTTagCompound) o, (DataOutput) os);
+                NbtIo.write((CompoundTag) o,  os);
                 return;
             case Null:
                 if (!withType) throw new IllegalArgumentException("o has to be non-null without types");
@@ -297,12 +301,12 @@ public final class DataEncoder {
             case Object:
                 throw new IllegalArgumentException("unhandled class: " + o.getClass());
             case Potion:
-                encode(os, Potion.REGISTRY.getNameForObject(o), false);
+                // encode(os, Potion.REGISTRY.getNameForObject(o), false);
                 return;
             case ResourceLocation:
                 loc = (ResourceLocation) o;
-                os.writeString(loc.getResourceDomain());
-                os.writeString(loc.getResourcePath());
+                os.writeString(loc.getNamespace());
+                os.writeString(loc.getPath());
                 return;
 
             case Short:
@@ -344,7 +348,7 @@ public final class DataEncoder {
                 return;
 
             case World:
-                os.writeInt(((Level) o).provider.getDimension());
+                os.writeString(((Level) o).dimension().location().toString());
                 return;
         }
         throw new IllegalArgumentException("unhandled type: " + type);
@@ -358,7 +362,7 @@ public final class DataEncoder {
             String msg = "An unknown data type was received over multiplayer to be decoded.\nThis could happen due to corrupted data or a bug.";
 
 
-            IndustrialCase.platform.displayError(e, msg, new Object[0]);
+            IndustrialCase.platform.displayError(e, msg);
             return null;
         }
     }
@@ -375,7 +379,7 @@ public final class DataEncoder {
 
 
     public static <T extends Enum<T>> T decodeEnum(IGrowingBuffer is, Class<T> clazz) throws IOException {
-        int ordinal = ((Integer) decode(is, EncodedType.Enum)).intValue();
+        int ordinal = (Integer) decode(is, EncodedType.Enum);
 
         Enum[] arrayOfEnum = (Enum[]) clazz.getEnumConstants();
         return (ordinal >= 0 && ordinal < arrayOfEnum.length) ? (T) arrayOfEnum[ordinal] : null;
@@ -390,17 +394,17 @@ public final class DataEncoder {
     public static Object decode(final IGrowingBuffer is, EncodedType type) throws IOException {
         String aimTypeName;
         EncodedType componentType;
-        final Object ret;
+        final Object ret = null;
         int inputAmount;
-        FluidStack ret;
+        // FluidStack ret = null;
         ItemStack[] contents;
         int size;
-        final IResolvableValue<World> deferredWorld;
+        final IResolvableValue<Level> deferredWorld;
         final int dimensionId;
         final INetworkCustomEncoder ince;
         boolean primitive;
         int EUaTick;
-        ICContainer invSlot;
+        InvSlot invSlot;
         Item item;
         final BlockPos pos;
         boolean isEnum;
@@ -420,8 +424,6 @@ public final class DataEncoder {
         Object array;
         final Object tmpArray;
         switch (type) {
-
-
             case Addon:
             case UnSafeAddon:
                 aimTypeName = is.readString();
@@ -526,11 +528,11 @@ public final class DataEncoder {
             case BlockPos:
                 return new BlockPos(is.readInt(), is.readInt(), is.readInt());
             case Boolean:
-                return Boolean.valueOf(is.readBoolean());
+                return is.readBoolean();
             case Byte:
-                return Byte.valueOf(is.readByte());
+                return is.readByte();
             case Character:
-                return Character.valueOf(is.readChar());
+                return is.readChar();
             case ChunkPos:
                 return new ChunkPos(is.readInt(), is.readInt());
             case Collection:
@@ -551,7 +553,7 @@ public final class DataEncoder {
             case CropCard:
                 return Crops.instance.getCropCard(is.readString(), is.readString());
             case Double:
-                return Double.valueOf(is.readDouble());
+                return is.readDouble();
             case ElectrolyzerRecipe:
                 inputAmount = is.readInt();
                 EUaTick = is.readInt();
@@ -559,34 +561,37 @@ public final class DataEncoder {
                 max = is.readByte();
                 outputs = new IElectrolyzerRecipeManager.ElectrolyzerOutput[max];
                 for (b1 = 0; b1 < max; b1 = (byte) (b1 + 1)) {
-                    outputs[b1] = new IElectrolyzerRecipeManager.ElectrolyzerOutput(is.readString(), is.readInt(), EnumFacing.getFront(is.readByte()));
+                    outputs[b1] = new IElectrolyzerRecipeManager.ElectrolyzerOutput(is.readString(), is.readInt(), Direction.values()[is.readByte()]);
                 }
                 return new IElectrolyzerRecipeManager.ElectrolyzerRecipe(inputAmount, EUaTick, ticksNeeded, outputs);
 
             case Enchantment:
-                return Enchantment.REGISTRY.getObject(decode(is, EncodedType.ResourceLocation));
+                // Enchantment.REGISTRY.getObject(decode(is, EncodedType.ResourceLocation));
+                return null;
 
             case Enum:
-                return Integer.valueOf(is.readVarInt());
+                return is.readVarInt();
             case Float:
-                return Float.valueOf(is.readFloat());
+                return is.readFloat();
             case Fluid:
-                return FluidRegistry.getFluid(is.readString());
+                // return FluidRegistry.getFluid(is.readString());
+                return null;
             case FluidStack:
-                ret = new FluidStack((Fluid) decode(is, EncodedType.Fluid), is.readInt());
-                ret.setTag((CompoundTag) decode(is));
+                FluidStack retFluidStack = new FluidStack((Fluid) decode(is, EncodedType.Fluid), is.readInt());
+                retFluidStack.setTag((CompoundTag) decode(is));
 
-                return ret;
+                return retFluidStack;
 
             case FluidTank:
-                return new FluidTank((FluidStack) decode(is), is.readInt());
+                // (FluidStack) decode(is);
+                return new FluidTank(is.readInt(), (s) -> {return true;});
             case GameProfile:
                 return new GameProfile((UUID) decode(is), is.readString());
             case Integer:
-                return Integer.valueOf(is.readInt());
+                return is.readInt();
             case InvSlot:
                 contents = (ItemStack[]) decode(is, EncodedType.Array);
-                invSlot = new ICContainer(contents.length);
+                invSlot = new InvSlot(contents.length);
 
                 for (i = 0; i < contents.length; i++) {
                     invSlot.setItem(i, contents[i]);
@@ -606,22 +611,22 @@ public final class DataEncoder {
                 meta = is.readShort();
                 nbt = (CompoundTag) decode(is);
 
-                itemStack = new ItemStack(item, size, meta);
-                itemStack.setTag(nbt);
+                itemStack = new ItemStack(item, size, nbt);
 
                 return itemStack;
 
 
             case Long:
-                return Long.valueOf(is.readLong());
+                return is.readLong();
             case NBTTagCompound:
-                return CompressedStreamTools.read((DataInput) is, NBTSizeTracker.INFINITE);
+                return NbtIo.read(is, NbtAccounter.UNLIMITED);
             case Null:
                 return null;
             case Object:
                 return new Object();
             case Potion:
-                return Potion.REGISTRY.getObject(decode(is, EncodedType.ResourceLocation));
+                // return Potion.REGISTRY.getObject(decode(is, EncodedType.ResourceLocation));
+                return null;
             case ResourceLocation:
                 return new ResourceLocation(is.readString(), is.readString());
             case Short:
@@ -655,7 +660,8 @@ public final class DataEncoder {
 
                 return new IResolvableValue<Level>() {
                     public Level get() {
-                        return IndustrialCase.platform.getWorld(dimensionId);
+                        // return IndustrialCase.platform.getWorld(dimensionId);
+                        return null;
                     }
                 };
         }
@@ -680,7 +686,7 @@ public final class DataEncoder {
             if (srcT.getItem() == dstT.getItem()) {
                 dstT.setCount(srcT.getCount());
                 StackUtil.setRawMeta(dstT, StackUtil.getRawMeta(srcT));
-                dstT.setTagCompound(srcT.getTagCompound());
+                dstT.setTag(srcT.getTag());
 
                 return true;
             }
@@ -693,9 +699,9 @@ public final class DataEncoder {
 
             dstT.setFluid(srcT.getFluid());
             dstT.setCapacity(srcT.getCapacity());
-        } else if (dst instanceof ICContainer) {
-            ICContainer srcT = (ICContainer) src;
-            ICContainer dstT = (ICContainer) dst;
+        } else if (dst instanceof InvSlot) {
+            InvSlot srcT = (InvSlot) src;
+            InvSlot dstT = (InvSlot) dst;
 
             if (srcT.getContainerSize() != dstT.getContainerSize())
                 throw new RuntimeException("Can't sync InvSlots with mismatched sizes.");
@@ -803,15 +809,15 @@ public final class DataEncoder {
 
     public enum EncodedType {
         Null(null), Array(null),
-        Byte(Byte.class), Short(Short.class), Integer(Integer.class), Long(Long.class), Float((String) Float.class), Double((String) Double.class),
+        Byte(Byte.class), Short(Short.class), Integer(Integer.class), Long(Long.class), Float(Float.class), Double(Double.class),
         Boolean(Boolean.class), Character(Character.class),
         String(String.class), Enum(Enum.class), UUID(UUID.class),
         Block(Block.class), Item(Item.class), TileEntity(BlockEntity.class, false), ItemStack(ItemStack.class),
         World(Level.class, false), NBTTagCompound(CompoundTag.class), ResourceLocation(ResourceLocation.class), GameProfile(GameProfile.class),
         Potion(Potion.class), Enchantment(Enchantment.class),
-        BlockPos(BlockPos.class), ChunkPos(ChunkPos.class), Vec3(Vec3d.class),
+        BlockPos(BlockPos.class), ChunkPos(ChunkPos.class), Vec3(Vec3.class),
         Fluid(Fluid.class), FluidStack(FluidStack.class), FluidTank(FluidTank.class),
-        InvSlot(ICContainer.class), Component(BlockEntityComponent.class, false), CropCard(CropCard.class),
+        InvSlot(com.iteale.industrialcase.core.block.invslot.InvSlot.class), Component(BlockEntityComponent.class, false), CropCard(CropCard.class),
         ElectrolyzerRecipe(IElectrolyzerRecipeManager.ElectrolyzerRecipe.class), TupleT2(Tuple.T2.class), TupleT3(Tuple.T3.class),
 
         Addon(null), UnSafeAddon(null, false),
@@ -858,6 +864,5 @@ public final class DataEncoder {
     private static interface IResolvableValue<T> {
         T get();
     }
-     */
 }
 
