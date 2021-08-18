@@ -27,7 +27,7 @@ public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
             } else if (index == GeneratorDataType.STORAGE.value) {
                 return (int) GeneratorBlockEntity.this.energy.getStorage();
             } else if (index == GeneratorDataType.CAPACITY.value) {
-                return (int) GeneratorBlockEntity.this.energy.getCapacity();
+                return (int) GeneratorBlockEntity.this.energy.getEnergy();
             } else if (index == GeneratorDataType.TOTAL_FUEL.value) {
                 return GeneratorBlockEntity.this.totalFuel;
             } else {
@@ -42,7 +42,7 @@ public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
             } else if (index == GeneratorDataType.STORAGE.value) {
                 GeneratorBlockEntity.this.energy.setStorage(value);
             } else if (index == GeneratorDataType.CAPACITY.value) {
-                GeneratorBlockEntity.this.energy.setCapacity(value);
+                GeneratorBlockEntity.this.energy.setEnergy(value);
             } else if (index == GeneratorDataType.TOTAL_FUEL.value) {
                 GeneratorBlockEntity.this.totalFuel = value;
             } else {

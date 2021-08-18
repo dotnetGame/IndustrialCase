@@ -1,8 +1,14 @@
 package com.iteale.industrialcase.core.network;
 
 
+import com.iteale.industrialcase.api.network.INetworkUpdateListener;
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.WorldData;
+import com.iteale.industrialcase.core.block.BlockEntityBase;
 import com.iteale.industrialcase.core.util.LogCategory;
+import com.iteale.industrialcase.core.util.ReflectionUtil;
+import com.iteale.industrialcase.core.util.Util;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.world.level.Level;
@@ -11,9 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.io.IOException;
 import java.util.*;
 
-class TeUpdate
-{
-    /*
+class TeUpdate {
     public static void send(WorldData worldData, NetworkManager network) throws IOException {
         if (worldData.tesToUpdate.isEmpty())
             return;
@@ -21,16 +25,16 @@ class TeUpdate
         List<ServerPlayer> playersInRange = new ArrayList<>();
         GrowingBuffer commonBuffer = new GrowingBuffer();
 
-        for (Map.Entry<BlockEntity, TeUpdateDataServer> entry : (Iterable<Map.Entry<TileEntity, TeUpdateDataServer>>)worldData.tesToUpdate.entrySet()) {
-            TileEntity te = entry.getKey();
+        for (Map.Entry<BlockEntity, TeUpdateDataServer> entry : (Iterable<Map.Entry<BlockEntity, TeUpdateDataServer>>) worldData.tesToUpdate.entrySet()) {
+            BlockEntity te = entry.getKey();
 
-            NetworkManager.getPlayersInRange(te.getWorld(), te.getPos(), playersInRange);
+            NetworkManager.getPlayersInRange(te.getLevel(), te.getBlockPos(), playersInRange);
             if (playersInRange.isEmpty())
                 continue;
             TeUpdateDataServer updateData = entry.getValue();
 
 
-            DataEncoder.encode(commonBuffer, te.getPos(), false);
+            DataEncoder.encode(commonBuffer, te.getBlockPos(), false);
             commonBuffer.mark();
             commonBuffer.writeShort(0);
 
@@ -44,7 +48,8 @@ class TeUpdate
                 Collection<String> playerFields = updateData.getPlayerFields(player);
                 int fieldCount = updateData.getGlobalFields().size() + playerFields.size();
                 if (fieldCount == 0)
-                    continue;  if (fieldCount > 65535) throw new RuntimeException("too many fields for " + te + ": " + fieldCount);
+                    continue;
+                if (fieldCount > 65535) throw new RuntimeException("too many fields for " + te + ": " + fieldCount);
 
 
                 commonBuffer.reset();
@@ -58,7 +63,7 @@ class TeUpdate
                     playerBuffer = new GrowingBuffer(0);
                     buffers.put(player, playerBuffer);
 
-                    playerBuffer.writeInt((player.getEntityWorld()).provider.getDimension());
+                    playerBuffer.writeString((player.getLevel()).dimension().location().toString());
                 }
 
                 commonBuffer.writeTo(playerBuffer);
@@ -85,7 +90,7 @@ class TeUpdate
     }
 
     static void receive(GrowingBuffer buffer) throws IOException {
-        final int dimensionId = buffer.readInt();
+        final String dimensionId = buffer.readString();
         final TeUpdateDataClient updateData = new TeUpdateDataClient();
 
         while (buffer.hasAvailable()) {
@@ -99,7 +104,7 @@ class TeUpdate
                 Object value = DataEncoder.decode(buffer);
 
                 if (fieldName.equals("teBlk")) {
-                    String name = (String)value;
+                    String name = (String) value;
 
                     if (name.startsWith("Old-")) {
                         teData.teClass = TeBlockRegistry.getOld(name);
@@ -120,24 +125,23 @@ class TeUpdate
 
         if (debug) printDebugOutput(dimensionId, updateData);
 
-        IndustrialCase.platform.requestTick(false, new Runnable()
-        {
+        IndustrialCase.platform.requestTick(false, new Runnable() {
             public void run() {
                 Level world = IndustrialCase.platform.getPlayerWorld();
-                if (world == null || world.provider.getDimension() != dimensionId)
+                if (world == null || world.dimension().location().toString() != dimensionId)
                     return;
                 for (TeUpdateDataClient.TeData update : updateData.getTes()) {
                     try {
                         TeUpdate.apply(update, world);
                     } catch (Throwable t) {
-                        IndustrialCase.log.warn(LogCategory.Network, t, "TE update at %s failed.", new Object[] { Util.formatPosition((IBlockAccess)world, update.pos) });
+                        IndustrialCase.log.warn(LogCategory.Network, t, "TE update at %s failed.", Util.formatPosition(world, update.pos));
                     }
                 }
             }
         });
     }
 
-    private static void printDebugOutput(int dimensionId, TeUpdateDataClient data) {
+    private static void printDebugOutput(String dimensionId, TeUpdateDataClient data) {
         StringBuilder out = new StringBuilder();
 
         out.append("dimension: ");
@@ -175,7 +179,8 @@ class TeUpdate
             if (te.teClass != null) {
                 out.append("    TE Class: ");
                 out.append(te.teClass.getName());
-                out.append('\n'); continue;
+                out.append('\n');
+                continue;
             }
             out.append("    no TE Class\n");
         }
@@ -183,34 +188,42 @@ class TeUpdate
 
         out.setLength(out.length() - 1);
 
-        IC2.log.info(LogCategory.Network, "Received TE Update:\n" + out.toString());
+        IndustrialCase.log.info(LogCategory.Network, "Received TE Update:\n" + out.toString());
     }
+
     private static void apply(TeUpdateDataClient.TeData update, Level world) {
-        TileEntityBlock tileEntityBlock;
-        if (!world.isBlockLoaded(update.pos, false)) {
-            if (debug) IC2.log.info(LogCategory.Network, "Skipping update at %s, chunk not loaded.", new Object[] { Util.formatPosition((IBlockAccess)world, update.pos) });
+        BlockEntityBase tileEntityBlock;
+        if (!world.isLoaded(update.pos)) {
+            if (debug)
+                IndustrialCase.log.info(LogCategory.Network, "Skipping update at %s, chunk not loaded.", Util.formatPosition(world, update.pos));
 
             return;
         }
 
-        TileEntity te = world.getTileEntity(update.pos);
+        BlockEntity te = world.getBlockEntity(update.pos);
 
-        if (update.teClass != null && (te == null || te.getClass() != update.teClass || te.isInvalid() || te.getWorld() != world))
-        { if (debug) IC2.log.info(LogCategory.Network, "Instantiating %s with %s.", new Object[] { Util.formatPosition((IBlockAccess)world, update.pos), update.teClass.getName() });
+        if (update.teClass != null && (te == null || te.getClass() != update.teClass || te.isRemoved() || te.getLevel() != world)) {
+            if (debug)
+                IndustrialCase.log.info(LogCategory.Network, "Instantiating %s with %s.", Util.formatPosition(world, update.pos), update.teClass.getName());
 
-            tileEntityBlock = TileEntityBlock.instantiate(update.teClass);
-            world.setTileEntity(update.pos, (TileEntity)tileEntityBlock);
+            tileEntityBlock = BlockEntityBase.instantiate(update.teClass);
+            world.setBlockEntity(update.pos, (BlockEntity) tileEntityBlock);
 
-            assert !tileEntityBlock.isInvalid();
-            assert tileEntityBlock.getWorld() == world; }
-        else { if (tileEntityBlock == null) {
-            if (debug) IC2.log.info(LogCategory.Network, "Can't apply update at %s, no te and no teClass.", new Object[] { Util.formatPosition((IBlockAccess)world, update.pos) });  return;
-        }
-            if (tileEntityBlock.isInvalid() || tileEntityBlock.getWorld() != world) {
-                if (debug) IC2.log.warn(LogCategory.Network, "Can't apply update at %s, invalid te and no teClass.", new Object[] { Util.formatPosition((IBlockAccess)world, update.pos) });
+            assert !tileEntityBlock.isRemoved();
+            assert tileEntityBlock.getLevel() == world;
+        } else {
+            if (tileEntityBlock == null) {
+                if (debug)
+                    IndustrialCase.log.info(LogCategory.Network, "Can't apply update at %s, no te and no teClass.", Util.formatPosition(world, update.pos));
                 return;
             }
-            if (debug) IC2.log.info(LogCategory.Network, "TE class at %s unchanged.", new Object[] { Util.formatPosition((IBlockAccess)world, update.pos) });
+            if (tileEntityBlock.isRemoved() || tileEntityBlock.getLevel() != world) {
+                if (debug)
+                    IndustrialCase.log.warn(LogCategory.Network, "Can't apply update at %s, invalid te and no teClass.", Util.formatPosition(world, update.pos));
+                return;
+            }
+            if (debug)
+                IndustrialCase.log.info(LogCategory.Network, "TE class at %s unchanged.", Util.formatPosition(world, update.pos));
         }
 
         for (TeUpdateDataClient.FieldData fieldUpdate : update.getFields()) {
@@ -223,11 +236,10 @@ class TeUpdate
             }
 
             if (tileEntityBlock instanceof INetworkUpdateListener) {
-                ((INetworkUpdateListener)tileEntityBlock).onNetworkUpdate(fieldUpdate.name);
+                ((INetworkUpdateListener) tileEntityBlock).onNetworkUpdate(fieldUpdate.name);
             }
         }
     }
 
     static final boolean debug = (System.getProperty("ic2.network.debug.teupdate") != null);
-     */
 }

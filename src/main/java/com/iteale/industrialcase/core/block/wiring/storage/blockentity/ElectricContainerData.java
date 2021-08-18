@@ -12,7 +12,7 @@ public class ElectricContainerData implements ContainerData {
         if (index == ElectricBlockEntity.StorageDataType.STORAGE.getValue()) {
             return (int) blockEntity.energy.getStorage();
         } else if (index == ElectricBlockEntity.StorageDataType.CAPACITY.getValue()) {
-            return (int) blockEntity.energy.getCapacity();
+            return (int) blockEntity.energy.getEnergy();
         } else {
             throw new IndexOutOfBoundsException("Generator container data out of range.");
         }
@@ -23,7 +23,7 @@ public class ElectricContainerData implements ContainerData {
         if (index == ElectricBlockEntity.StorageDataType.STORAGE.getValue()) {
             blockEntity.energy.setStorage(value);
         } else if (index == ElectricBlockEntity.StorageDataType.CAPACITY.getValue()) {
-            blockEntity.energy.setCapacity(value);
+            blockEntity.energy.setEnergy(value);
         } else {
             throw new IndexOutOfBoundsException("Generator container data out of range.");
         }

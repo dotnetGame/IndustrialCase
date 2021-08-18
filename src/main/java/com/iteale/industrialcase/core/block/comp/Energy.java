@@ -125,11 +125,11 @@ public class Energy extends BlockEntityComponent {
         this.loaded = false;
     }
 
-    public double getCapacity() {
+    public double getEnergy() {
         return this.capacity;
     }
 
-    public void setCapacity(double capacity) {
+    public void setEnergy(double capacity) {
         this.capacity = capacity;
     }
 

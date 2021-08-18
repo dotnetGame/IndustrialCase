@@ -15,13 +15,13 @@ import net.minecraft.world.level.block.entity.BlockEntity;
  */
 public interface INetworkManager {
 
-	void updateTileEntityField(BlockEntity te, String field);
+	void updateBlockEntityField(BlockEntity te, String field);
 
-	void initiateTileEntityEvent(BlockEntity te, int event, boolean limitRange);
+	void initiateBlockEntityEvent(BlockEntity te, int event, boolean limitRange);
 
 	void initiateItemEvent(Player player, ItemStack stack, int event, boolean limitRange);
 
-	void initiateClientTileEntityEvent(BlockEntity te, int event);
+	void initiateClientBlockEntityEvent(BlockEntity te, int event);
 
 	void initiateClientItemEvent(ItemStack stack, int event);
 

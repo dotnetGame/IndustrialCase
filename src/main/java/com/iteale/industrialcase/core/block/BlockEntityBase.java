@@ -152,6 +152,37 @@ public abstract class BlockEntityBase extends BlockEntity {
                 component.onUnloaded();
     }
 
+    public Direction getFacing() {
+        return Direction.values()[this.facing];
+    }
+
+    protected Set<Direction> getSupportedFacings() {
+        // return this.teBlock.getSupportedFacings();
+        return new HashSet(Arrays.asList(Direction.values()));
+    }
+
+    protected void setFacing(Direction facing) {
+        if (facing == null)
+            throw new NullPointerException("null facing");
+        if (this.facing == facing.ordinal())
+            throw new IllegalArgumentException("unchanged facing");
+        if (!getSupportedFacings().contains(facing))
+            throw new IllegalArgumentException("invalid facing: " + facing + ", supported: " + getSupportedFacings());
+        this.facing = (byte)facing.ordinal();
+        // if (!(getActive()).isRemote)
+        //     ((NetworkManager)IC2.network.get(true)).updateTileEntityField(this, "facing");
+    }
+
+    public boolean getActive() {
+        return this.active;
+    }
+
+    public void setActive(boolean active) {
+        if (this.active == active)
+            return;
+        this.active = active;
+        // ((NetworkManager)IC2.network.get(true)).updateTileEntityField(this, "active");
+    }
 
     private final synchronized boolean requiresWorldTick() {
         Class<?> cls = getClass();
@@ -258,6 +289,7 @@ public abstract class BlockEntityBase extends BlockEntity {
     private static final byte loadStateQueued = 1;
     private static final byte loadStateLoaded = 2;
     private static final byte loadStateUnloaded = 3;
+    // protected final ITeBlock teBlock;
     private Map<Class<? extends BlockEntityComponent>, BlockEntityComponent> components;
     private Map<Capability<?>, BlockEntityComponent> capabilityComponents;
     private List<BlockEntityComponent> updatableComponents;
