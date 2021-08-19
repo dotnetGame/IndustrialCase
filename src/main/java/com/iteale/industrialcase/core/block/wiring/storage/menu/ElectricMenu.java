@@ -1,7 +1,7 @@
 package com.iteale.industrialcase.core.block.wiring.storage.menu;
 
-import com.iteale.industrialcase.core.block.MenuBase;
-import com.iteale.industrialcase.core.block.wiring.storage.blockentity.ElectricBlockEntity;
+import com.iteale.industrialcase.core.block.ContainerMenuBase;
+import com.iteale.industrialcase.core.block.wiring.storage.blockentity.ElectricTileEntity;
 import com.iteale.industrialcase.core.registries.MenuTypeRegistry;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -11,7 +11,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 
-public class ElectricMenu extends MenuBase {
+public class ElectricMenu extends ContainerMenuBase {
     private final Container container;
     private final ContainerData data;
     public ElectricMenu(int containerId, Inventory inventory) {
@@ -41,10 +41,10 @@ public class ElectricMenu extends MenuBase {
 
     // api
     public int getStorage() {
-        return this.data.get(ElectricBlockEntity.StorageDataType.STORAGE.getValue());
+        return this.data.get(ElectricTileEntity.StorageDataType.STORAGE.getValue());
     }
 
     public int getCapacity() {
-        return this.data.get(ElectricBlockEntity.StorageDataType.CAPACITY.getValue());
+        return this.data.get(ElectricTileEntity.StorageDataType.CAPACITY.getValue());
     }
 }

@@ -1,9 +1,9 @@
 package com.iteale.industrialcase.core.block.comp;
 
-import com.iteale.industrialcase.core.block.BlockEntityBase;
+import com.iteale.industrialcase.core.block.TileEntityBlock;
 
 public class ComparatorEmitter extends BasicRedstoneComponent {
-    public ComparatorEmitter(BlockEntityBase parent) {
+    public ComparatorEmitter(TileEntityBlock parent) {
         super(parent);
     }
 

@@ -306,7 +306,7 @@ public class Grid
     IEnergyTile ioTile = node.getTile().getMainTile();
     chat.printf("%sNode %s info:%n", new Object[] { prefix, node });
     // FIXME
-    // chat.printf("%s pos: %s%n", new Object[] { prefix, Util.formatPosition((IBlockAccess)EnergyNet.instance.getWorld(ioTile), EnergyNet.instance.getPos(ioTile)) });
+    // chat.printf("%s pos: %s%n", new Object[] { prefix, Util.formatPosition((BlockGetter)EnergyNet.instance.getWorld(ioTile), EnergyNet.instance.getPos(ioTile)) });
     chat.printf("%s type: %s%n", new Object[] { prefix, node.nodeType });
     switch (node.nodeType) {
       case Sink:

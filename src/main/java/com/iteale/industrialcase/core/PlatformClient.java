@@ -210,7 +210,7 @@ public class PlatformClient
         Block leaves = BlockName.leaves.getInstance();
         this.mc.getBlockColors().registerBlockColorHandler(new IBlockColor()
         {
-            public int colorMultiplier(IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex) {
+            public int colorMultiplier(BlockState state, BlockGetter worldIn, BlockPos pos, int tintIndex) {
                 return 6723908;
             }
         },  new Block[] { leaves });
@@ -238,7 +238,7 @@ public class PlatformClient
 
         this.mc.getBlockColors().registerBlockColorHandler(new IBlockColor()
         {
-            public int colorMultiplier(IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex) {
+            public int colorMultiplier(BlockState state, BlockGetter worldIn, BlockPos pos, int tintIndex) {
                 String variant = ((MetaTeBlock)state.getValue(((BlockTileEntity)state.getBlock()).typeProperty)).teBlock.getName();
                 if (variant.endsWith("_storage_box")) {
                     switch (variant) {
@@ -295,7 +295,7 @@ public class PlatformClient
     }
 
 
-    public int getColorMultiplier(IBlockState state, IBlockAccess world, BlockPos pos, int tint) {
+    public int getColorMultiplier(BlockState state, BlockGetter world, BlockPos pos, int tint) {
         return this.mc.getBlockColors().colorMultiplier(state, world, pos, tint);
     }
      */

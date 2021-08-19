@@ -1,8 +1,7 @@
 package com.iteale.industrialcase.core.block.wiring.storage;
 
-import com.iteale.industrialcase.core.block.BlockEntityBase;
-import com.iteale.industrialcase.core.block.BlockEntityContainer;
-import com.iteale.industrialcase.core.block.EntityBlockBase;
+import com.iteale.industrialcase.core.block.TileEntityContainer;
+import com.iteale.industrialcase.core.block.BlockTileEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
@@ -19,7 +18,7 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
-public abstract class ElectricBlock extends EntityBlockBase {
+public abstract class ElectricBlock extends BlockTileEntity {
     public static final DirectionProperty FACING = DirectionalBlock.FACING;
 
     protected ElectricBlock(Properties properties) {
@@ -32,7 +31,7 @@ public abstract class ElectricBlock extends EntityBlockBase {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide && hand == InteractionHand.MAIN_HAND) {
-            BlockEntityContainer blockEntity = (BlockEntityContainer) level.getBlockEntity(pos);
+            TileEntityContainer blockEntity = (TileEntityContainer) level.getBlockEntity(pos);
             NetworkHooks.openGui((ServerPlayer) player, blockEntity, (FriendlyByteBuf packerBuffer) -> {
                 packerBuffer.writeBlockPos(blockEntity.getBlockPos());
             });

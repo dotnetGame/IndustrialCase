@@ -1,24 +1,13 @@
 package com.iteale.industrialcase.core.block.comp;
 
 
-import com.iteale.industrialcase.api.event.RetextureEvent;
-import com.iteale.industrialcase.core.block.BlockEntityBase;
-import com.iteale.industrialcase.core.util.Util;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import java.util.Arrays;
+import com.iteale.industrialcase.core.block.TileEntityBlock;
 
 public class Obscuration extends BlockEntityComponent {
     private final Runnable changeHandler;
     // private ObscurationData[] dataMap;
 
-    public Obscuration(BlockEntityBase parent, Runnable changeHandler) {
+    public Obscuration(TileEntityBlock parent, Runnable changeHandler) {
         super(parent);
 
         this.changeHandler = changeHandler;
@@ -37,7 +26,7 @@ public class Obscuration extends BlockEntityComponent {
                 if (block != null) {
 
                     String variant = cNbt.getString("variant");
-                    IBlockState state = BlockStateUtil.getState(block, variant);
+                    BlockState state = BlockStateUtil.getState(block, variant);
                     if (state != null) {
 
                         int rawSide = cNbt.getByte("side");
@@ -48,7 +37,7 @@ public class Obscuration extends BlockEntityComponent {
 
                             ObscurationData data = new ObscurationData(state, variant, side, colorMultipliers);
 
-                            if (this.dataMap == null) this.dataMap = new ObscurationData[EnumFacing.VALUES.length];
+                            if (this.dataMap == null) this.dataMap = new ObscurationData[Direction.VALUES.length];
 
                             this.dataMap[facing.ordinal()] = data.intern();
                         }
@@ -134,10 +123,10 @@ public class Obscuration extends BlockEntityComponent {
             }
         } }
     public static class ObscurationData {
-        public final IBlockState state;
+        public final BlockState state;
         public final String variant;
 
-        public ObscurationData(IBlockState state, String variant, Direction side, int[] colorMultipliers) {
+        public ObscurationData(BlockState state, String variant, Direction side, int[] colorMultipliers) {
             this.state = state;
             this.variant = variant;
             this.side = side;

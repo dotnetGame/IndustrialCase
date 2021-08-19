@@ -1,13 +1,10 @@
 package com.iteale.industrialcase.core.block.generator.gui;
 
 import com.iteale.industrialcase.core.IndustrialCase;
-import com.iteale.industrialcase.core.block.BlockEntityBase;
-import com.iteale.industrialcase.core.block.generator.blockentity.GeneratorBlockEntity;
 import com.iteale.industrialcase.core.block.generator.menu.GeneratorMenu;
 import com.iteale.industrialcase.core.gui.EnergyGauge;
 import com.iteale.industrialcase.core.gui.FuelGauge;
 import com.iteale.industrialcase.core.gui.GuiIC;
-import com.iteale.industrialcase.core.gui.Text;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;

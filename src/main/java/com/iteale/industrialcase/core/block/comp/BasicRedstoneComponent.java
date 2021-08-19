@@ -1,6 +1,6 @@
 package com.iteale.industrialcase.core.block.comp;
 
-import com.iteale.industrialcase.core.block.BlockEntityBase;
+import com.iteale.industrialcase.core.block.TileEntityBlock;
 
 import java.util.function.IntSupplier;
 
@@ -10,7 +10,7 @@ public abstract class BasicRedstoneComponent
     private int level;
     private IntSupplier update;
 
-    public BasicRedstoneComponent(BlockEntityBase parent) {
+    public BasicRedstoneComponent(TileEntityBlock parent) {
         super(parent);
     }
 

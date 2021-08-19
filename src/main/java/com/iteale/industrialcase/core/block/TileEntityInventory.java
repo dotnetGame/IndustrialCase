@@ -17,13 +17,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class BlockEntityInventory extends BlockEntityContainer
-        implements IContainerHolder<BlockEntityInventory> {
+public abstract class TileEntityInventory extends TileEntityContainer
+        implements IContainerHolder<TileEntityInventory> {
     private final List<InvSlot> invSlots;
     private final IItemHandler[] itemHandler;
     protected final ComparatorEmitter comparator;
 
-    public BlockEntityInventory(BlockEntityType<?> t, BlockPos pos, BlockState state) {
+    public TileEntityInventory(BlockEntityType<?> t, BlockPos pos, BlockState state) {
         super(t, pos, state);
         this.invSlots = new ArrayList<>();
 
@@ -102,7 +102,7 @@ public abstract class BlockEntityInventory extends BlockEntityContainer
     }
 
     @Override
-    public BlockEntityInventory getParent() {
+    public TileEntityInventory getParent() {
         return this;
     }
 

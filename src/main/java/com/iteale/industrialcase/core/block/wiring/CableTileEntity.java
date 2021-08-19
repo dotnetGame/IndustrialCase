@@ -4,53 +4,33 @@ import com.iteale.industrialcase.api.energy.EnergyNet;
 import com.iteale.industrialcase.api.energy.event.EnergyTileLoadEvent;
 import com.iteale.industrialcase.api.energy.event.EnergyTileUnloadEvent;
 import com.iteale.industrialcase.api.energy.tile.*;
-import com.iteale.industrialcase.api.network.INetworkBlockEntityEventListener;
-import com.iteale.industrialcase.core.IndustrialCase;
-import com.iteale.industrialcase.core.block.BlockEntityBase;
+import com.iteale.industrialcase.core.block.TileEntityBlock;
 import com.iteale.industrialcase.core.block.BlockWall;
 import com.iteale.industrialcase.core.block.comp.Obscuration;
-import com.iteale.industrialcase.core.gui.Gauge;
 import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
 import com.iteale.industrialcase.core.util.IcColor;
-import com.iteale.industrialcase.core.util.LogCategory;
-import com.iteale.industrialcase.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class CableBlockEntity extends BlockEntityBase implements IEnergyConductor, IColoredEnergyTile
+public class CableTileEntity extends TileEntityBlock implements IEnergyConductor, IColoredEnergyTile
 {
     public static final float insulationThickness = 0.0625F;
 
-    public CableBlockEntity(BlockPos pos, BlockState state, CableType cableType, int insulation) {
+    public CableTileEntity(BlockPos pos, BlockState state, CableType cableType, int insulation) {
         this(pos, state);
 
         this.cableType = cableType;
         this.insulation = insulation;
     }
 
-    public CableBlockEntity(BlockPos pos, BlockState state, CableType cableType, int insulation, IcColor color) {
+    public CableTileEntity(BlockPos pos, BlockState state, CableType cableType, int insulation, IcColor color) {
         this(pos, state, cableType, insulation);
 
         if (canBeColored(color)) {
@@ -58,7 +38,7 @@ public class CableBlockEntity extends BlockEntityBase implements IEnergyConducto
         }
     }
 
-    public CableBlockEntity(BlockPos pos, BlockState state) {
+    public CableTileEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.CABLE.get(), pos, state);
         this.cableType = CableType.copper;
 
@@ -102,7 +82,7 @@ public class CableBlockEntity extends BlockEntityBase implements IEnergyConducto
         if ((getLevel()).isClientSide) {
             // updateRenderState();
         } else {
-            if (getClass() == CableBlockEntity.class && (this.cableType == CableType.detector || this.cableType == CableType.splitter)) {
+            if (getClass() == CableTileEntity.class && (this.cableType == CableType.detector || this.cableType == CableType.splitter)) {
                 /*
                 IndustrialCase.log.debug(LogCategory.Block, "Fixing incorrect cable TE %s.", Util.toString(this));
                 CableBlockEntity newTe = (this.cableType == CableType.detector) ? new TileEntityCableDetector() : new TileEntityCableSplitter();
@@ -240,7 +220,7 @@ public class CableBlockEntity extends BlockEntityBase implements IEnergyConducto
                     default:
                         throw new RuntimeException();
                 }
-                ret.add(new AxisAlignedBB(xS, yS, zS, xE, yE, zE));
+                ret.add(new AABB(xS, yS, zS, xE, yE, zE));
             }
         }
         return ret;
@@ -269,7 +249,7 @@ public class CableBlockEntity extends BlockEntityBase implements IEnergyConducto
         return state;
     }
 
-    protected boolean onActivated(EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+    protected boolean onActivated(EntityPlayer player, EnumHand hand, Direction side, float hitX, float hitY, float hitZ) {
         if (this.foam == CableFoam.Soft && StackUtil.consume(player, hand, StackUtil.sameItem((Block)Blocks.SAND), 1)) {
             changeFoam(CableFoam.Hardened, false);
             return true;

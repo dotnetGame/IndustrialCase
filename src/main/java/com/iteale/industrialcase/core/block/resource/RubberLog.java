@@ -51,7 +51,7 @@ public class RubberLog extends Block {
     /**
      * Returns the blockstate with the given rotation from the passed blockstate. If inapplicable, returns the passed
      * blockstate.
-     * @deprecated call via @link IBlockState#withRotation(Rotation) whenever possible. Implementing/overriding is
+     * @deprecated call via @link BlockState#withRotation(Rotation) whenever possible. Implementing/overriding is
      * fine.
      */
     @Deprecated

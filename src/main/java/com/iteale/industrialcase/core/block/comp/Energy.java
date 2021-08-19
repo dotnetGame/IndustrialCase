@@ -6,7 +6,7 @@ import com.iteale.industrialcase.api.energy.event.EnergyTileLoadEvent;
 import com.iteale.industrialcase.api.energy.event.EnergyTileUnloadEvent;
 import com.iteale.industrialcase.api.energy.tile.*;
 import com.iteale.industrialcase.core.IndustrialCase;
-import com.iteale.industrialcase.core.block.BlockEntityBase;
+import com.iteale.industrialcase.core.block.TileEntityBlock;
 import com.iteale.industrialcase.core.block.invslot.InvSlot;
 import com.iteale.industrialcase.core.util.LogCategory;
 import com.iteale.industrialcase.core.util.Util;
@@ -22,31 +22,31 @@ import java.util.*;
 
 public class Energy extends BlockEntityComponent {
 
-    public static Energy asBasicSink(BlockEntityBase parent, double capacity) {
+    public static Energy asBasicSink(TileEntityBlock parent, double capacity) {
         return asBasicSink(parent, capacity, 1);
     }
 
-    public static Energy asBasicSink(BlockEntityBase parent, double capacity, int tier) {
+    public static Energy asBasicSink(TileEntityBlock parent, double capacity, int tier) {
         return new Energy(parent, capacity, new HashSet<Direction>(Arrays.asList(Direction.values())), Collections.EMPTY_SET, tier);
     }
 
-    public static Energy asBasicSource(BlockEntityBase parent, double capacity) {
+    public static Energy asBasicSource(TileEntityBlock parent, double capacity) {
         return asBasicSource(parent, capacity, 1);
     }
 
-    public static Energy asBasicSource(BlockEntityBase parent, double capacity, int tier) {
+    public static Energy asBasicSource(TileEntityBlock parent, double capacity, int tier) {
         return new Energy(parent, capacity, Collections.EMPTY_SET, new HashSet<Direction>(Arrays.asList(Direction.values())), tier);
     }
 
-    public Energy(BlockEntityBase parent, double capacity) {
+    public Energy(TileEntityBlock parent, double capacity) {
         this(parent, capacity, Collections.EMPTY_SET, Collections.EMPTY_SET, 1);
     }
 
-    public Energy(BlockEntityBase parent, double capacity, Set<Direction> sinkDirections, Set<Direction> sourceDirections, int tier) {
+    public Energy(TileEntityBlock parent, double capacity, Set<Direction> sinkDirections, Set<Direction> sourceDirections, int tier) {
         this(parent, capacity, sinkDirections, sourceDirections, tier, tier, false);
     }
 
-    public Energy(BlockEntityBase parent, double capacity, Set<Direction> sinkDirections, Set<Direction> sourceDirections, int sinkTier, int sourceTier, boolean fullEnergy) {
+    public Energy(TileEntityBlock parent, double capacity, Set<Direction> sinkDirections, Set<Direction> sourceDirections, int sinkTier, int sourceTier, boolean fullEnergy) {
         super(parent);
         this.multiSource = false;
         this.sourcePackets = 1;

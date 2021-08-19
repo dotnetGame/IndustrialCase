@@ -65,7 +65,6 @@ public class BlockRegistry {
     // storage
     public static final RegistryObject<Block> BATBOX = register("wiring/storage/batbox", new BatBox());
 
-
     // detector(0, 2147483647, 0.5F, 0.5D, 8192),
     // splitter(0, 2147483647, 0.5F, 0.5D, 8192);
 

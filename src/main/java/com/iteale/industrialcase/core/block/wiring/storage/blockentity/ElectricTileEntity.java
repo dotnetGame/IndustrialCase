@@ -1,13 +1,16 @@
 package com.iteale.industrialcase.core.block.wiring.storage.blockentity;
 
 import com.iteale.industrialcase.core.IndustrialCase;
-import com.iteale.industrialcase.core.block.BlockEntityInventory;
+import com.iteale.industrialcase.core.MenuBase;
+import com.iteale.industrialcase.core.block.TileEntityInventory;
 import com.iteale.industrialcase.core.block.comp.Energy;
 import com.iteale.industrialcase.core.block.comp.Redstone;
 import com.iteale.industrialcase.core.block.comp.RedstoneEmitter;
 import com.iteale.industrialcase.core.block.invslot.InvSlotCharge;
 import com.iteale.industrialcase.core.block.invslot.InvSlotDischarge;
 import com.iteale.industrialcase.core.block.invslot.InvSlot;
+import com.iteale.industrialcase.core.block.wiring.storage.gui.ElectricScreen;
+import com.iteale.industrialcase.core.block.wiring.storage.menu.ElectricMenu;
 import com.iteale.industrialcase.core.init.Localization;
 import com.iteale.industrialcase.core.util.ConfigUtil;
 import com.iteale.industrialcase.core.util.StackUtil;
@@ -26,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.EnumSet;
 
-public abstract class ElectricBlockEntity extends BlockEntityInventory {
+public abstract class ElectricTileEntity extends TileEntityInventory {
     protected double output;
     public byte redstoneMode;
 
@@ -40,7 +43,7 @@ public abstract class ElectricBlockEntity extends BlockEntityInventory {
 
     public ContainerData dataAccess = new ElectricContainerData(this);
 
-    public ElectricBlockEntity(BlockEntityType<?> t, BlockPos pos, BlockState state, int tier, int output, int maxStorage) {
+    public ElectricTileEntity(BlockEntityType<?> t, BlockPos pos, BlockState state, int tier, int output, int maxStorage) {
         super(t, pos, state);
         this.redstoneMode = 0;
         this.output = output;
@@ -72,13 +75,13 @@ public abstract class ElectricBlockEntity extends BlockEntityInventory {
     }
 
 
-    public ContainerBase<? extends ElectricBlockEntity> getGuiContainer(Player player) {
-        return (ContainerBase<? extends ElectricBlockEntity>)new ContainerElectricBlock(player, this);
+    public MenuBase<? extends ElectricTileEntity> getGuiContainer(Player player) {
+        return (MenuBase<? extends ElectricTileEntity>)new ElectricMenu(player, this);
     }
 
     @OnlyIn(Dist.CLIENT)
     public Screen getGui(Player player, boolean isAdmin) {
-        return (Screen)new GuiElectricBlock(new ContainerElectricBlock(player, this));
+        return (Screen)new ElectricScreen<>(new ContainerElectricBlock(player, this));
     }
 
     public void onGuiClosed(Player player) {}
@@ -119,7 +122,7 @@ public abstract class ElectricBlockEntity extends BlockEntityInventory {
         this.redstoneMode = (byte)(this.redstoneMode + 1);
         if (this.redstoneMode >= redstoneModes)
             this.redstoneMode = 0;
-        IndustrialCase.platform.messagePlayer(player, getRedstoneMode(), new Object[0]);
+        IndustrialCase.platform.messagePlayer(player, getRedstoneMode());
     }
 
     public String getRedstoneMode() {

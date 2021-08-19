@@ -14,8 +14,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
-public abstract class EntityBlockBase extends BlockBase implements EntityBlock {
-    protected EntityBlockBase(BlockBehaviour.Properties properties) {
+public abstract class BlockTileEntity extends BlockBase implements EntityBlock {
+    protected BlockTileEntity(BlockBehaviour.Properties properties) {
         super(properties);
     }
 

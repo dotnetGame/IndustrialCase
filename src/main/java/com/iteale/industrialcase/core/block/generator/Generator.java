@@ -1,6 +1,6 @@
 package com.iteale.industrialcase.core.block.generator;
 
-import com.iteale.industrialcase.core.block.generator.blockentity.GeneratorBlockEntity;
+import com.iteale.industrialcase.core.block.generator.blockentity.GeneratorTileEntity;
 import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,7 +12,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -21,10 +20,8 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -45,7 +42,7 @@ public class Generator extends BaseEntityBlock {
         if (level.isClientSide) {
             return null;
         } else {
-            return createTickerHelper(blockEntityType, BlockEntityRegistry.GENERATOR.get(), GeneratorBlockEntity::serverTick);
+            return createTickerHelper(blockEntityType, BlockEntityRegistry.GENERATOR.get(), GeneratorTileEntity::serverTick);
         }
     }
 
@@ -53,7 +50,7 @@ public class Generator extends BaseEntityBlock {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!level.isClientSide && hand == InteractionHand.MAIN_HAND) {
-            GeneratorBlockEntity blockEntity = (GeneratorBlockEntity)level.getBlockEntity(pos);
+            GeneratorTileEntity blockEntity = (GeneratorTileEntity)level.getBlockEntity(pos);
             NetworkHooks.openGui((ServerPlayer) player, blockEntity, (FriendlyByteBuf packerBuffer) -> {
                 packerBuffer.writeBlockPos(blockEntity.getBlockPos());
             });
@@ -74,7 +71,7 @@ public class Generator extends BaseEntityBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new GeneratorBlockEntity(pos, state);
+        return new GeneratorTileEntity(pos, state);
     }
 
     @Override

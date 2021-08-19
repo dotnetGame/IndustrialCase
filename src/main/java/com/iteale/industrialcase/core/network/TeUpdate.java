@@ -4,13 +4,12 @@ package com.iteale.industrialcase.core.network;
 import com.iteale.industrialcase.api.network.INetworkUpdateListener;
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.WorldData;
-import com.iteale.industrialcase.core.block.BlockEntityBase;
+import com.iteale.industrialcase.core.block.TileEntityBlock;
 import com.iteale.industrialcase.core.util.LogCategory;
 import com.iteale.industrialcase.core.util.ReflectionUtil;
 import com.iteale.industrialcase.core.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -192,7 +191,7 @@ class TeUpdate {
     }
 
     private static void apply(TeUpdateDataClient.TeData update, Level world) {
-        BlockEntityBase tileEntityBlock;
+        TileEntityBlock tileEntityBlock;
         if (!world.isLoaded(update.pos)) {
             if (debug)
                 IndustrialCase.log.info(LogCategory.Network, "Skipping update at %s, chunk not loaded.", Util.formatPosition(world, update.pos));
@@ -206,7 +205,7 @@ class TeUpdate {
             if (debug)
                 IndustrialCase.log.info(LogCategory.Network, "Instantiating %s with %s.", Util.formatPosition(world, update.pos), update.teClass.getName());
 
-            tileEntityBlock = BlockEntityBase.instantiate(update.teClass);
+            tileEntityBlock = TileEntityBlock.instantiate(update.teClass);
             world.setBlockEntity(update.pos, (BlockEntity) tileEntityBlock);
 
             assert !tileEntityBlock.isRemoved();

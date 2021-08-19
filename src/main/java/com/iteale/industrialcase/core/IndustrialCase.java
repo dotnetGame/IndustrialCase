@@ -18,6 +18,7 @@ import com.iteale.industrialcase.core.registries.MenuTypeRegistry;
 import com.iteale.industrialcase.core.util.ItemInfo;
 import com.iteale.industrialcase.core.util.Log;
 import com.iteale.industrialcase.core.util.PriorityExecutor;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.ForgeMod;
@@ -89,5 +90,9 @@ public class IndustrialCase {
                     network = new NetworkManager();
                 }
             });
+    }
+
+    public static ResourceLocation getIdentifier(String name) {
+        return new ResourceLocation("industrialcase", name);
     }
 }

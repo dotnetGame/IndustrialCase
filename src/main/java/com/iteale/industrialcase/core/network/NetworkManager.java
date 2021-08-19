@@ -5,14 +5,17 @@ import com.iteale.industrialcase.api.info.ITeBlock;
 import com.iteale.industrialcase.api.network.*;
 import com.iteale.industrialcase.core.IHasGui;
 import com.iteale.industrialcase.core.IndustrialCase;
+import com.iteale.industrialcase.core.MenuBase;
 import com.iteale.industrialcase.core.WorldData;
-import com.iteale.industrialcase.core.block.BlockEntityBase;
+import com.iteale.industrialcase.core.block.TileEntityBlock;
 import com.iteale.industrialcase.core.util.LogCategory;
 import com.iteale.industrialcase.core.util.ReflectionUtil;
 import com.iteale.industrialcase.core.util.StackUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -21,10 +24,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import net.minecraftforge.fmllegacy.network.NetworkRegistry;
 import net.minecraftforge.fmllegacy.network.event.EventNetworkChannel;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
-import org.ejml.alg.dense.linsol.InvertUsingSolve;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -33,15 +35,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.zip.DeflaterOutputStream;
 
-public class NetworkManager implements INetworkManager
-{
+public class NetworkManager implements INetworkManager {
     private static final String PROTOCOL_VERSION = "1.1.0";
     public EventNetworkChannel channel = null;
+
     public NetworkManager() {
         if (channel == null) {
             channel = NetworkRegistry.newEventChannel(
                     new ResourceLocation(IndustrialCase.MODID, "network.channel"),
-                    ()->PROTOCOL_VERSION,
+                    () -> PROTOCOL_VERSION,
                     PROTOCOL_VERSION::equals,
                     PROTOCOL_VERSION::equals);
         }
@@ -80,7 +82,7 @@ public class NetworkManager implements INetworkManager
         buffer.flip();
 
         if (!isClient()) {
-            sendPacket(buffer, true, (ServerPlayer)player);
+            sendPacket(buffer, true, (ServerPlayer) player);
         } else {
             sendPacket(buffer);
         }
@@ -91,7 +93,7 @@ public class NetworkManager implements INetworkManager
         if (!isClient()) {
             getTeUpdateData(te).addGlobalField(field);
         } else if (getClientModifiableField(te.getClass(), field) == null) {
-            IndustrialCase.log.warn(LogCategory.Network, "Field update for %s failed.", new Object[] { te });
+            IndustrialCase.log.warn(LogCategory.Network, "Field update for %s failed.", new Object[]{te});
         } else {
             GrowingBuffer buffer = new GrowingBuffer(64);
 
@@ -112,12 +114,12 @@ public class NetworkManager implements INetworkManager
         Field field = ReflectionUtil.getFieldRecursive(cls, fieldName);
 
         if (field == null) {
-            IndustrialCase.log.warn(LogCategory.Network, "Can't find field %s in %s.", new Object[] { fieldName, cls.getName() });
+            IndustrialCase.log.warn(LogCategory.Network, "Can't find field %s in %s.", new Object[]{fieldName, cls.getName()});
             return null;
         }
 
         if (field.getAnnotation(ClientModifiable.class) == null) {
-            IndustrialCase.log.warn(LogCategory.Network, "The field %s in %s is not modifiable.", new Object[] { fieldName, cls.getName() });
+            IndustrialCase.log.warn(LogCategory.Network, "The field %s in %s is not modifiable.", new Object[]{fieldName, cls.getName()});
             return null;
         }
 
@@ -130,7 +132,7 @@ public class NetworkManager implements INetworkManager
 
         WorldData worldData = WorldData.get(te.getLevel());
 
-        TeUpdateDataServer ret = (TeUpdateDataServer)worldData.tesToUpdate.get(te);
+        TeUpdateDataServer ret = (TeUpdateDataServer) worldData.tesToUpdate.get(te);
 
         if (ret == null) {
             ret = new TeUpdateDataServer();
@@ -146,7 +148,7 @@ public class NetworkManager implements INetworkManager
         getTeUpdateData(te).addPlayerField(field, player);
     }
 
-    public final void sendComponentUpdate(BlockEntityBase te, String componentName, ServerPlayer player, GrowingBuffer data) {
+    public final void sendComponentUpdate(TileEntityBlock te, String componentName, ServerPlayer player, GrowingBuffer data) {
         assert !isClient();
 
         if (player.getLevel() != te.getLevel())
@@ -172,7 +174,7 @@ public class NetworkManager implements INetworkManager
     public final void initiateBlockEntityEvent(BlockEntity te, int event, boolean limitRange) {
         assert !isClient();
 
-        if ((te.getLevel()).playerEntities.isEmpty())
+        if ((te.getLevel()).players().isEmpty())
             return;
         GrowingBuffer buffer = new GrowingBuffer(32);
 
@@ -188,8 +190,8 @@ public class NetworkManager implements INetworkManager
 
         for (ServerPlayer target : getPlayersInRange(te.getLevel(), te.getBlockPos(), new ArrayList())) {
             if (limitRange) {
-                int dX = (int)(te.getBlockPos().getX() + 0.5D - target.getX());
-                int dZ = (int)(te.getBlockPos().getZ() + 0.5D - target.getZ());
+                int dX = (int) (te.getBlockPos().getX() + 0.5D - target.getX());
+                int dZ = (int) (te.getBlockPos().getZ() + 0.5D - target.getZ());
 
                 if (dX * dX + dZ * dZ > 400)
                     continue;
@@ -219,8 +221,8 @@ public class NetworkManager implements INetworkManager
 
         for (ServerPlayer target : getPlayersInRange(player.getLevel(), player.getOnPos(), new ArrayList())) {
             if (limitRange) {
-                int dX = (int)(player.getX() - target.getX());
-                int dZ = (int)(player.getZ() - target.getZ());
+                int dX = (int) (player.getX() - target.getX());
+                int dZ = (int) (player.getZ() - target.getZ());
 
                 if (dX * dX + dZ * dZ > 400)
                     continue;
@@ -260,12 +262,12 @@ public class NetworkManager implements INetworkManager
             SubPacketType.GuiDisplay.writeTo(buffer);
 
             MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-            boolean isAdmin = server.getPlayerList().canSendCommands(player.getGameProfile());
+            boolean isAdmin = server.getPlayerList().isOp(player.getGameProfile());
 
             buffer.writeBoolean(isAdmin);
 
             if (inventory instanceof BlockEntity) {
-                BlockEntity te = (BlockEntity)inventory;
+                BlockEntity te = (BlockEntity) inventory;
 
                 buffer.writeByte(0);
                 DataEncoder.encode(buffer, te, false);
@@ -305,7 +307,7 @@ public class NetworkManager implements INetworkManager
         if (te instanceof INetworkDataProvider) {
             TeUpdateDataServer updateData = getTeUpdateData(te);
 
-            for (String field : ((INetworkDataProvider)te).getNetworkedFields()) {
+            for (String field : ((INetworkDataProvider) te).getNetworkedFields()) {
                 updateData.addPlayerField(field, player);
             }
         }
@@ -317,14 +319,14 @@ public class NetworkManager implements INetworkManager
 
         if (te instanceof INetworkDataProvider) {
             TeUpdateDataServer updateData = getTeUpdateData(te);
-            List<String> fields = ((INetworkDataProvider)te).getNetworkedFields();
+            List<String> fields = ((INetworkDataProvider) te).getNetworkedFields();
 
             for (String field : fields) {
                 updateData.addGlobalField(field);
             }
 
             if (TeUpdate.debug) {
-                IndustrialCase.log.info(LogCategory.Network, "Sending initial TE data for %s (%s).", new Object[] { Util.formatPosition(te), fields });
+                IndustrialCase.log.info(LogCategory.Network, "Sending initial TE data for %s (%s).", new Object[]{Util.formatPosition(te), fields});
             }
         }
     }
@@ -358,7 +360,7 @@ public class NetworkManager implements INetworkManager
     public final void sendContainerField(ContainerBase<?> container, String fieldName) {
         if (isClient() &&
                 getClientModifiableField(container.getClass(), fieldName) == null) {
-            IndustrialCase.log.warn(LogCategory.Network, "Field update for %s failed.", new Object[] { container });
+            IndustrialCase.log.warn(LogCategory.Network, "Field update for %s failed.", new Object[]{container});
 
             return;
         }
@@ -376,7 +378,7 @@ public class NetworkManager implements INetworkManager
 
         if (!isClient()) {
             for (IContainerListener listener : container.getListeners()) {
-                if (listener instanceof ServerPlayer) sendPacket(buffer, false, (ServerPlayer)listener);
+                if (listener instanceof ServerPlayer) sendPacket(buffer, false, (ServerPlayer) listener);
             }
         } else {
             sendPacket(buffer);
@@ -394,21 +396,21 @@ public class NetworkManager implements INetworkManager
 
         if (!isClient()) {
             for (IContainerListener listener : container.getListeners()) {
-                if (listener instanceof ServerPlayer) sendPacket(buffer, false, (ServerPlayer)listener);
+                if (listener instanceof ServerPlayer) sendPacket(buffer, false, (ServerPlayer) listener);
             }
         } else {
             sendPacket(buffer);
         }
     }
 
-    public final void sendHandHeldInvField(ContainerBase<?> container, String fieldName) {
+    public final void sendHandHeldInvField(MenuBase<?> container, String fieldName) {
         if (!(container.base instanceof HandHeldInventory)) {
-            IndustrialCase.log.warn(LogCategory.Network, "Invalid container (%s) sent for field update.", new Object[] { container });
+            IndustrialCase.log.warn(LogCategory.Network, "Invalid container (%s) sent for field update.", new Object[]{container});
 
             return;
         }
         if (isClient() && getClientModifiableField(container.base.getClass(), fieldName) == null) {
-            IndustrialCase.log.warn(LogCategory.Network, "Field update for %s failed.", new Object[] { container });
+            IndustrialCase.log.warn(LogCategory.Network, "Field update for %s failed.", container);
 
             return;
         }
@@ -416,7 +418,7 @@ public class NetworkManager implements INetworkManager
 
         try {
             SubPacketType.HandHeldInvData.writeTo(buffer);
-            buffer.writeInt(container.windowId);
+            buffer.writeInt(container.containerId);
             writeFieldData(container.base, fieldName, buffer);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -425,15 +427,15 @@ public class NetworkManager implements INetworkManager
         buffer.flip();
 
         if (!isClient()) {
-            for (IContainerListener listener : container.getListeners()) {
-                if (listener instanceof ServerPlayer) sendPacket(buffer, false, (ServerPlayer)listener);
+            for (ContainerListener listener : container.getListeners()) {
+                if (listener instanceof ServerPlayer) sendPacket(buffer, false, (ServerPlayer) listener);
             }
         } else {
             sendPacket(buffer);
         }
     }
 
-    public final void initiateTeblockLandEffect(World world, double x, double y, double z, int count, ITeBlock teBlock) {
+    public final void initiateTeblockLandEffect(Level world, double x, double y, double z, int count, ITeBlock teBlock) {
         initiateTeblockLandEffect(world, null, x, y, z, count, teBlock);
     }
 
@@ -465,10 +467,10 @@ public class NetworkManager implements INetworkManager
         for (Player player : world.players()) {
             if (!(player instanceof ServerPlayer))
                 continue;
-            double distance = player.getDistanceSq(x, y, z);
+            double distance = player.distanceToSqr(x, y, z);
 
             if (distance <= 1024.0D) {
-                sendPacket(buffer, false, (ServerPlayer)player);
+                sendPacket(buffer, false, (ServerPlayer) player);
             }
         }
     }
@@ -491,9 +493,9 @@ public class NetworkManager implements INetworkManager
             } else {
                 buffer.writeBoolean(false);
             }
-            buffer.writeDouble(entity.posX + (IndustrialCase.random.nextFloat() - 0.5D) * entity.width);
-            buffer.writeDouble((entity.getEntityBoundingBox()).minY + 0.1D);
-            buffer.writeDouble(entity.posZ + (IndustrialCase.random.nextFloat() - 0.5D) * entity.width);
+            buffer.writeDouble(entity.getX() + (IndustrialCase.random.nextFloat() - 0.5D) * entity.getBbWidth());
+            buffer.writeDouble((entity.getBoundingBox()).minY + 0.1D);
+            buffer.writeDouble(entity.getZ() + (IndustrialCase.random.nextFloat() - 0.5D) * entity.getBbWidth());
             buffer.writeDouble(-entity.motionX * 4.0D);
 
             buffer.writeDouble(-entity.motionZ * 4.0D);
@@ -507,10 +509,10 @@ public class NetworkManager implements INetworkManager
         for (Player player : world.players()) {
             if (!(player instanceof ServerPlayer))
                 continue;
-            double distance = player.getDistanceSq(entity.posX, entity.posY, entity.posZ);
+            double distance = player.distanceToSqr(entity.getX(), entity.getY(), entity.getZ());
 
             if (distance <= 1024.0D)
-                sendPacket(buffer, false, (ServerPlayer)player);
+                sendPacket(buffer, false, (ServerPlayer) player);
         }
     }
 
@@ -561,233 +563,228 @@ public class NetworkManager implements INetworkManager
     }
 
     @SubscribeEvent
-    public void onPacket(FMLNetworkEvent.ServerCustomPacketEvent event) {
+    public void onPacket(NetworkEvent event) {
+        // FMLNetworkEvent.ServerCustomPacketEvent
         if (getClass() == NetworkManager.class) {
             try {
                 onPacketData(GrowingBuffer.wrap(event.getPacket().payload()),
-                        (EntityPlayer)((NetHandlerPlayServer)event.getHandler()).player);
+                        (Player) ((NetHandlerPlayServer) event.getHandler()).player);
             } catch (Throwable t) {
-                IC2.log.warn(LogCategory.Network, t, "Network read failed");
+                IndustrialCase.log.warn(LogCategory.Network, t, "Network read failed");
                 throw new RuntimeException(t);
             }
 
             event.getPacket().payload().release();
-        }  } private void onPacketData(GrowingBuffer is, final EntityPlayer player) throws IOException { final ItemStack stack; final int keyState; final Object teDeferred;
-    final boolean hand;
-    final int event;
-    final Object teDeferred;
-    if (!is.hasAvailable())
-        return;
-    SubPacketType packetType = SubPacketType.read(is, true);
-    if (packetType == null)
-        return;
-    switch (packetType) {
-        case ItemEvent:
-            stack = DataEncoder.<ItemStack>decode(is, ItemStack.class);
-            event = is.readInt();
+        }
+    }
 
-            if (stack.getItem() instanceof INetworkItemEventListener) {
-                IndustrialCase.platform.requestTick(true, new Runnable()
-                {
+    private void onPacketData(GrowingBuffer is, final Player player) throws IOException {
+        final ItemStack stack;
+        final int keyState;
+        final Object teDeferred;
+        final boolean hand;
+        final int event;
+        final Object teDeferred;
+        if (!is.hasAvailable())
+            return;
+        SubPacketType packetType = SubPacketType.read(is, true);
+        if (packetType == null)
+            return;
+        switch (packetType) {
+            case ItemEvent:
+                stack = DataEncoder.<ItemStack>decode(is, ItemStack.class);
+                event = is.readInt();
+
+                if (stack.getItem() instanceof INetworkItemEventListener) {
+                    IndustrialCase.platform.requestTick(true, new Runnable() {
+                        public void run() {
+                            ((INetworkItemEventListener) stack.getItem()).onNetworkEvent(stack, player, event);
+                        }
+                    });
+                }
+                return;
+
+            case KeyUpdate:
+                keyState = is.readInt();
+
+                IndustrialCase.platform.requestTick(true, new Runnable() {
                     public void run() {
-                        ((INetworkItemEventListener)stack.getItem()).onNetworkEvent(stack, player, event);
+                        IndustrialCase.keyboard.processKeyUpdate(player, keyState);
                     }
                 });
-            }
-            return;
+                return;
 
+            case BlockEntityEvent:
+                teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
+                event = is.readInt();
 
-
-        case KeyUpdate:
-            keyState = is.readInt();
-
-            IndustrialCase.platform.requestTick(true, new Runnable()
-            {
-                public void run() {
-                    IndustrialCase.keyboard.processKeyUpdate(player, keyState);
-                }
-            });
-            return;
-
-
-
-        case BlockEntityEvent:
-            teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
-            event = is.readInt();
-
-            IndustrialCase.platform.requestTick(true, new Runnable()
-            {
-                public void run() {
-                    BlockEntity te = DataEncoder.<BlockEntity>getValue(teDeferred);
-
-                    if (te instanceof INetworkClientBlockEntityEventListener) {
-                        ((INetworkClientBlockEntityEventListener)te).onNetworkEvent(player, event);
-                    }
-                }
-            });
-            return;
-
-
-
-        case RequestGUI:
-            hand = is.readBoolean();
-            object1 = hand ? null : DataEncoder.decodeDeferred(is, BlockEntity.class);
-
-            IndustrialCase.platform.requestTick(true, new Runnable() {
-                private IHasGui tryFindGUI(ItemStack stack) {
-                    if (!StackUtil.isEmpty(stack) && stack.getItem() instanceof IHandHeldInventory) {
-                        return ((IHandHeldInventory)stack.getItem()).getInventory(player, stack);
-                    }
-                    return null;
-                }
-
-
-
-                public void run() {
-                    if (hand) {
-                        for (ItemStack stack : player.getHeldEquipment()) {
-                            IHasGui gui = tryFindGUI(stack);
-
-                            if (gui != null) {
-                                IndustrialCase.platform.launchGui(player, gui);
-                                break;
-                            }
-                        }
-                    } else {
+                IndustrialCase.platform.requestTick(true, new Runnable() {
+                    public void run() {
                         BlockEntity te = DataEncoder.<BlockEntity>getValue(teDeferred);
 
-                        if (te instanceof IHasGui) {
-                            IndustrialCase.platform.launchGui(player, (IHasGui)te);
-                        }
-                    }
-                }
-            });
-            return;
-
-        case Rpc:
-            RpcHandler.processRpcRequest(is, (ServerPlayer)player);
-            return;
-    }
-
-
-    onCommonPacketData(packetType, true, is, player); } protected void onCommonPacketData(SubPacketType packetType, boolean simulating, GrowingBuffer is, final EntityPlayer player) throws IOException { final int slot, windowId; final Object teDeferred; final Item item;
-    final String fieldName, event;
-    int dataCount;
-    final Object value, subData[];
-    int i;
-    switch (packetType) {
-        case PlayerItemData:
-            slot = is.readByte();
-            item = DataEncoder.<Item>decode(is, Item.class);
-            dataCount = is.readVarInt();
-
-            subData = new Object[dataCount];
-
-            for (i = 0; i < dataCount; i++) {
-                subData[i] = DataEncoder.decode(is);
-            }
-
-            if (slot >= 0 && slot < 9) {
-                IndustrialCase.platform.requestTick(simulating, new Runnable()
-                {
-                    public void run() {
-                        for (int i = 0; i < subData.length; i++) {
-                            subData[i] = DataEncoder.getValue(subData[i]);
-                        }
-
-                        ItemStack stack = (ItemStack)player.inventory.mainInventory.get(slot);
-
-                        if (!StackUtil.isEmpty(stack) && stack.getItem() == item &&
-                                item instanceof IPlayerItemDataListener) {
-                            ((IPlayerItemDataListener)item).onPlayerItemNetworkData(player, slot, subData);
+                        if (te instanceof INetworkClientBlockEntityEventListener) {
+                            ((INetworkClientBlockEntityEventListener) te).onNetworkEvent(player, event);
                         }
                     }
                 });
-            }
-            return;
+                return;
 
-        case ContainerData:
-            windowId = is.readInt();
-            str1 = is.readString();
-            value = DataEncoder.decode(is);
+            case RequestGUI:
+                hand = is.readBoolean();
+                object1 = hand ? null : DataEncoder.decodeDeferred(is, BlockEntity.class);
 
-            IndustrialCase.platform.requestTick(simulating, new Runnable()
-            {
-                public void run() {
-                    if (player.openContainer instanceof ContainerBase && player.openContainer.windowId == windowId && (NetworkManager.this
-
-                            .isClient() || NetworkManager.this.getClientModifiableField(player.openContainer.getClass(), fieldName) != null)) {
-                        ReflectionUtil.setValueRecursive(player.openContainer, fieldName, DataEncoder.getValue(value));
+                IndustrialCase.platform.requestTick(true, new Runnable() {
+                    private IHasGui tryFindGUI(ItemStack stack) {
+                        if (!StackUtil.isEmpty(stack) && stack.getItem() instanceof IHandHeldInventory) {
+                            return ((IHandHeldInventory) stack.getItem()).getInventory(player, stack);
+                        }
+                        return null;
                     }
-                }
-            });
-            return;
 
-        case ContainerEvent:
-            windowId = is.readInt();
-            event = is.readString();
+                    public void run() {
+                        if (hand) {
+                            for (ItemStack stack : player.getHeldEquipment()) {
+                                IHasGui gui = tryFindGUI(stack);
 
-            IndustrialCase.platform.requestTick(simulating, new Runnable()
-            {
-                public void run() {
-                    if (player.openContainer instanceof ContainerBase && player.openContainer.windowId == windowId)
-                    {
-                        ((ContainerBase)player.openContainer).onContainerEvent(event);
-                    }
-                }
-            });
-            return;
+                                if (gui != null) {
+                                    IndustrialCase.platform.launchGui(player, gui);
+                                    break;
+                                }
+                            }
+                        } else {
+                            BlockEntity te = DataEncoder.<BlockEntity>getValue(teDeferred);
 
-        case HandHeldInvData:
-            windowId = is.readInt();
-            fieldName = is.readString();
-            value = DataEncoder.decode(is);
-
-            IndustrialCase.platform.requestTick(simulating, new Runnable()
-            {
-                public void run() {
-                    if (player.openContainer instanceof ContainerBase && player.openContainer.windowId == windowId) {
-
-                        ContainerBase<?> container = (ContainerBase)player.openContainer;
-
-                        if (container.base instanceof ic2.core.item.tool.HandHeldInventory && (NetworkManager.this
-                                .isClient() || NetworkManager.this.getClientModifiableField(container.base.getClass(), fieldName) != null)) {
-                            ReflectionUtil.setValueRecursive(container.base, fieldName, DataEncoder.getValue(value));
+                            if (te instanceof IHasGui) {
+                                IndustrialCase.platform.launchGui(player, (IHasGui) te);
+                            }
                         }
                     }
-                }
-            });
-            return;
+                });
+                return;
 
+            case Rpc:
+                RpcHandler.processRpcRequest(is, (ServerPlayer) player);
+                return;
+        }
 
-
-        case BlockEntityData:
-            teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
-            fieldName = is.readString();
-            value = DataEncoder.decode(is);
-
-            IndustrialCase.platform.requestTick(simulating, new Runnable()
-            {
-                public void run() {
-                    BlockEntity te = DataEncoder.<BlockEntity>getValue(teDeferred);
-
-                    if (te != null && (NetworkManager.this
-                            .isClient() || NetworkManager.this.getClientModifiableField(te.getClass(), fieldName) != null)) {
-                        ReflectionUtil.setValueRecursive(te, fieldName, DataEncoder.getValue(value));
-                    }
-                }
-            });
-            return;
+        onCommonPacketData(packetType, true, is, player);
     }
 
-    IndustrialCase.log.warn(LogCategory.Network, "Unhandled packet type: %s", packetType.name()); }
+    protected void onCommonPacketData(SubPacketType packetType, boolean simulating, GrowingBuffer is, final EntityPlayer player) throws IOException {
+        final int slot, windowId;
+        final Object teDeferred;
+        final Item item;
+        final String fieldName, event;
+        int dataCount;
+        final Object value, subData[];
+        int i;
+        switch (packetType) {
+            case PlayerItemData:
+                slot = is.readByte();
+                item = DataEncoder.<Item>decode(is, Item.class);
+                dataCount = is.readVarInt();
 
-    public void initiateKeyUpdate(int keyState) {}
+                subData = new Object[dataCount];
+
+                for (i = 0; i < dataCount; i++) {
+                    subData[i] = DataEncoder.decode(is);
+                }
+
+                if (slot >= 0 && slot < 9) {
+                    IndustrialCase.platform.requestTick(simulating, new Runnable() {
+                        public void run() {
+                            for (int i = 0; i < subData.length; i++) {
+                                subData[i] = DataEncoder.getValue(subData[i]);
+                            }
+
+                            ItemStack stack = (ItemStack) player.inventory.mainInventory.get(slot);
+
+                            if (!StackUtil.isEmpty(stack) && stack.getItem() == item &&
+                                    item instanceof IPlayerItemDataListener) {
+                                ((IPlayerItemDataListener) item).onPlayerItemNetworkData(player, slot, subData);
+                            }
+                        }
+                    });
+                }
+                return;
+
+            case ContainerData:
+                windowId = is.readInt();
+                str1 = is.readString();
+                value = DataEncoder.decode(is);
+
+                IndustrialCase.platform.requestTick(simulating, new Runnable() {
+                    public void run() {
+                        if (player.openContainer instanceof ContainerBase && player.openContainer.windowId == windowId && (NetworkManager.this
+
+                                .isClient() || NetworkManager.this.getClientModifiableField(player.openContainer.getClass(), fieldName) != null)) {
+                            ReflectionUtil.setValueRecursive(player.openContainer, fieldName, DataEncoder.getValue(value));
+                        }
+                    }
+                });
+                return;
+
+            case ContainerEvent:
+                windowId = is.readInt();
+                event = is.readString();
+
+                IndustrialCase.platform.requestTick(simulating, new Runnable() {
+                    public void run() {
+                        if (player.openContainer instanceof ContainerBase && player.openContainer.windowId == windowId) {
+                            ((ContainerBase) player.openContainer).onContainerEvent(event);
+                        }
+                    }
+                });
+                return;
+
+            case HandHeldInvData:
+                windowId = is.readInt();
+                fieldName = is.readString();
+                value = DataEncoder.decode(is);
+
+                IndustrialCase.platform.requestTick(simulating, new Runnable() {
+                    public void run() {
+                        if (player.openContainer instanceof ContainerBase && player.openContainer.windowId == windowId) {
+
+                            ContainerBase<?> container = (ContainerBase) player.openContainer;
+
+                            if (container.base instanceof ic2.core.item.tool.HandHeldInventory && (NetworkManager.this
+                                    .isClient() || NetworkManager.this.getClientModifiableField(container.base.getClass(), fieldName) != null)) {
+                                ReflectionUtil.setValueRecursive(container.base, fieldName, DataEncoder.getValue(value));
+                            }
+                        }
+                    }
+                });
+                return;
 
 
+            case BlockEntityData:
+                teDeferred = DataEncoder.decodeDeferred(is, BlockEntity.class);
+                fieldName = is.readString();
+                value = DataEncoder.decode(is);
 
-    public void sendLoginData() {}
+                IndustrialCase.platform.requestTick(simulating, new Runnable() {
+                    public void run() {
+                        BlockEntity te = DataEncoder.<BlockEntity>getValue(teDeferred);
 
+                        if (te != null && (NetworkManager.this
+                                .isClient() || NetworkManager.this.getClientModifiableField(te.getClass(), fieldName) != null)) {
+                            ReflectionUtil.setValueRecursive(te, fieldName, DataEncoder.getValue(value));
+                        }
+                    }
+                });
+                return;
+        }
+
+        IndustrialCase.log.warn(LogCategory.Network, "Unhandled packet type: %s", packetType.name());
+    }
+
+    public void initiateKeyUpdate(int keyState) {
+    }
+
+
+    public void sendLoginData() {
+    }
 
     public final void initiateExplosionEffect(Level world, Vec3 pos, ExplosionIC2.Type type) {
         assert !isClient();
@@ -805,7 +802,7 @@ public class NetworkManager implements INetworkManager
             for (Object obj : world.players()) {
                 if (!(obj instanceof ServerPlayer))
                     continue;
-                ServerPlayer player = (ServerPlayer)obj;
+                ServerPlayer player = (ServerPlayer) obj;
 
                 if (player.distanceToSqr(pos.x, pos.y, pos.z) < 128.0D) {
                     sendPacket(buffer, false, player);
@@ -832,16 +829,19 @@ public class NetworkManager implements INetworkManager
     static <T extends Collection<ServerPlayer>> T getPlayersInRange(Level world, BlockPos pos, T result) {
         if (!(world instanceof WorldServer)) return result;
 
-        PlayerChunkMap playerManager = ((WorldServer)world).getPlayerChunkMap();
+        PlayerChunkMap playerManager = ((WorldServer) world).getPlayerChunkMap();
         PlayerChunkMapEntry instance = playerManager.getEntry(pos.getX() >> 4, pos.getZ() >> 4);
         if (instance == null) return result;
 
-        result.addAll((Collection)ReflectionUtil.getFieldValue(playerInstancePlayers, instance));
+        result.addAll((Collection) ReflectionUtil.getFieldValue(playerInstancePlayers, instance));
 
         return result;
     }
 
-    private static Field playerInstancePlayers = ReflectionUtil.getField(PlayerChunkMapEntry.class, List.class); private static FMLEventChannel channel; private static final int maxPacketDataLength = 32766; public static final String channelName = "ic2";
+    private static Field playerInstancePlayers = ReflectionUtil.getField(PlayerChunkMapEntry.class, List.class);
+    private static FMLEventChannel channel;
+    private static final int maxPacketDataLength = 32766;
+    public static final String channelName = "ic2";
 
     static void writeFieldData(Object object, String fieldName, GrowingBuffer out) throws IOException {
         int pos = fieldName.indexOf('=');

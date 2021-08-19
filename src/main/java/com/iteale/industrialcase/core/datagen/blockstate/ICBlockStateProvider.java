@@ -1,9 +1,7 @@
 package com.iteale.industrialcase.core.datagen.blockstate;
 
 import com.iteale.industrialcase.core.IndustrialCase;
-import com.iteale.industrialcase.core.block.resource.RubberLog;
 import com.iteale.industrialcase.core.block.wiring.CableBase;
-import com.iteale.industrialcase.core.registries.BlockRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;

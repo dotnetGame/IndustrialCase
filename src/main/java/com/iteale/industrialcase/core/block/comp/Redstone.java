@@ -1,7 +1,7 @@
 package com.iteale.industrialcase.core.block.comp;
 
 
-import com.iteale.industrialcase.core.block.BlockEntityBase;
+import com.iteale.industrialcase.core.block.TileEntityBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -12,7 +12,7 @@ public class Redstone extends BlockEntityComponent {
     private int redstoneInput;
     private Set<IRedstoneChangeHandler> changeSubscribers;
 
-    public Redstone(BlockEntityBase parent) {
+    public Redstone(TileEntityBlock parent) {
         super(parent);
     }
     private Set<IRedstoneModifier> modifiers; private LinkHandler outboundLink;

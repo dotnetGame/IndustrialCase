@@ -1,48 +1,39 @@
 package com.iteale.industrialcase.core.block;
 
 
-import com.iteale.industrialcase.api.info.ITeBlock;
-import com.iteale.industrialcase.api.network.INetworkDataProvider;
-import com.iteale.industrialcase.api.network.INetworkUpdateListener;
-import com.iteale.industrialcase.core.IWorldTickCallback;
 import com.iteale.industrialcase.core.IndustrialCase;
 import com.iteale.industrialcase.core.block.comp.BlockEntityComponent;
 import com.iteale.industrialcase.core.block.comp.Components;
-import com.iteale.industrialcase.core.registries.BlockEntityRegistry;
-import com.iteale.industrialcase.core.registries.BlockRegistry;
 import com.iteale.industrialcase.core.util.LogCategory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.TagType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 
 import java.util.*;
 
-public abstract class BlockEntityBase extends BlockEntity {
+public abstract class TileEntityBlock extends BlockEntity {
         // implements INetworkDataProvider, INetworkUpdateListener
     public static final String teBlockName = "teBlk";
     public static final String oldMarker = "Old-";
     protected static final int lightOpacityTranslucent = 0;
     protected static final int lightOpacityOpaque = 255;
 
-    public static <T extends BlockEntityBase> T instantiate(Class<T> cls) {
+    public static <T extends TileEntityBlock> T instantiate(Class<T> cls) {
         try {
             return cls.newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
-    public BlockEntityBase(BlockEntityType<?> t, BlockPos pos, BlockState state) {
+    public TileEntityBlock(BlockEntityType<?> t, BlockPos pos, BlockState state) {
         super(t, pos, state);
         this.active = false;
         this.facing = (byte) Direction.DOWN.ordinal();
@@ -191,7 +182,7 @@ public abstract class BlockEntityBase extends BlockEntity {
             boolean hasUpdateClient = false;
             boolean hasUpdateServer = false;
             boolean isClient = this.level.isClientSide;
-            while (cls != BlockEntityBase.class && ((!hasUpdateClient && isClient) || !hasUpdateServer)) {
+            while (cls != TileEntityBlock.class && ((!hasUpdateClient && isClient) || !hasUpdateServer)) {
                 if (!hasUpdateClient && isClient) {
                     boolean found = true;
                     try {

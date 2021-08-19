@@ -51,6 +51,6 @@ public class CableBlock extends CableBase {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new CableBlockEntity(pos, state, this.cableType, this.insulation);
+        return new CableTileEntity(pos, state, this.cableType, this.insulation);
     }
 }

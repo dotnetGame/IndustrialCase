@@ -13,17 +13,16 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nullable;
 
-public abstract class BlockEntityContainer extends BlockEntityBase implements Container, MenuProvider, Nameable {
+public abstract class TileEntityContainer extends TileEntityBlock implements Container, MenuProvider, Nameable {
     private LockCode lockKey = LockCode.NO_LOCK;
     private Component name;
 
-    protected BlockEntityContainer(BlockEntityType<?> p_155076_, BlockPos p_155077_, BlockState p_155078_) {
+    protected TileEntityContainer(BlockEntityType<?> p_155076_, BlockPos p_155077_, BlockState p_155078_) {
         super(p_155076_, p_155077_, p_155078_);
     }
 

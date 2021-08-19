@@ -1,15 +1,12 @@
 package com.iteale.industrialcase.core.block.comp;
 
 
-import com.iteale.industrialcase.core.IndustrialCase;
-import com.iteale.industrialcase.core.block.BlockEntityBase;
+import com.iteale.industrialcase.core.block.TileEntityBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 
 import java.io.DataInput;
@@ -18,13 +15,13 @@ import java.util.Collection;
 import java.util.Collections;
 
 public abstract class BlockEntityComponent {
-    protected final BlockEntityBase parent;
+    protected final TileEntityBlock parent;
 
-    public BlockEntityComponent(BlockEntityBase parent) {
+    public BlockEntityComponent(TileEntityBlock parent) {
         this.parent = parent;
     }
 
-    public BlockEntityBase getParent() {
+    public TileEntityBlock getParent() {
         return this.parent;
     }
     public void load(CompoundTag nbt) {}

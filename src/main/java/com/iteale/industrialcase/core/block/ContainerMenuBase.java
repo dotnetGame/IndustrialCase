@@ -7,8 +7,8 @@ import net.minecraft.world.inventory.Slot;
 
 import javax.annotation.Nullable;
 
-public abstract class MenuBase extends AbstractContainerMenu {
-    protected MenuBase(@Nullable MenuType<?> menuType, int containerId) {
+public abstract class ContainerMenuBase extends AbstractContainerMenu {
+    protected ContainerMenuBase(@Nullable MenuType<?> menuType, int containerId) {
         super(menuType, containerId);
     }
 

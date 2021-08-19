@@ -1,6 +1,6 @@
 package com.iteale.industrialcase.core.block.generator.blockentity;
 
-import com.iteale.industrialcase.core.block.BlockEntityInventory;
+import com.iteale.industrialcase.core.block.TileEntityInventory;
 import com.iteale.industrialcase.core.block.comp.Energy;
 import com.iteale.industrialcase.core.block.invslot.InvSlotCharge;
 import com.iteale.industrialcase.core.network.GuiSynced;
@@ -9,14 +9,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class BaseGeneratorBlockEntity extends BlockEntityInventory {
+public abstract class BaseGeneratorTileEntity extends TileEntityInventory {
     public final InvSlotCharge chargeSlot;
     protected final Energy energy;
     @GuiSynced
     public int fuel;
     protected double production; // rate, convert fuel to energy
 
-    protected BaseGeneratorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, double production, int tier, int maxStorage) {
+    protected BaseGeneratorTileEntity(BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state, double production, int tier, int maxStorage) {
         super(blockEntityType, pos, state);
         this.fuel = 0;
 

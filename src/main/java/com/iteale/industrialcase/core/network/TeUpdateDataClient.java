@@ -1,7 +1,7 @@
 package com.iteale.industrialcase.core.network;
 
 
-import com.iteale.industrialcase.core.block.BlockEntityBase;
+import com.iteale.industrialcase.core.block.TileEntityBlock;
 import net.minecraft.core.BlockPos;
 
 import java.lang.reflect.Field;
@@ -26,7 +26,7 @@ class TeUpdateDataClient
             this.pos = pos;
             this.fields = new ArrayList<>(fieldCount);
         }
-        private final List<FieldData> fields; Class<? extends BlockEntityBase> teClass;
+        private final List<FieldData> fields; Class<? extends TileEntityBlock> teClass;
         public void addField(String name, Object value) {
             this.fields.add(new TeUpdateDataClient.FieldData(name, value));
         }

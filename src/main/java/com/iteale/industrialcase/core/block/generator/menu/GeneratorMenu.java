@@ -1,6 +1,6 @@
 package com.iteale.industrialcase.core.block.generator.menu;
 
-import com.iteale.industrialcase.core.block.generator.blockentity.GeneratorBlockEntity;
+import com.iteale.industrialcase.core.block.generator.blockentity.GeneratorTileEntity;
 import com.iteale.industrialcase.core.registries.MenuTypeRegistry;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -47,18 +47,18 @@ public class GeneratorMenu extends AbstractContainerMenu {
 
     // Container data
     public int getFuel() {
-        return this.data.get(GeneratorBlockEntity.GeneratorDataType.FUEL.getValue());
+        return this.data.get(GeneratorTileEntity.GeneratorDataType.FUEL.getValue());
     }
 
     public int getTotalFuel() {
-        return this.data.get(GeneratorBlockEntity.GeneratorDataType.TOTAL_FUEL.getValue());
+        return this.data.get(GeneratorTileEntity.GeneratorDataType.TOTAL_FUEL.getValue());
     }
 
     public int getStorage() {
-        return this.data.get(GeneratorBlockEntity.GeneratorDataType.STORAGE.getValue());
+        return this.data.get(GeneratorTileEntity.GeneratorDataType.STORAGE.getValue());
     }
 
     public int getCapacity() {
-        return this.data.get(GeneratorBlockEntity.GeneratorDataType.CAPACITY.getValue());
+        return this.data.get(GeneratorTileEntity.GeneratorDataType.CAPACITY.getValue());
     }
 }

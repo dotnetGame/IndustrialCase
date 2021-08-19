@@ -14,7 +14,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
+public class GeneratorTileEntity extends BaseGeneratorTileEntity {
     public final InvSlotConsumableFuel fuelSlot;
     @GuiSynced
     public int totalFuel;
@@ -23,13 +23,13 @@ public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
         @Override
         public int get(int index) {
             if (index == GeneratorDataType.FUEL.value) {
-                return GeneratorBlockEntity.this.fuel;
+                return GeneratorTileEntity.this.fuel;
             } else if (index == GeneratorDataType.STORAGE.value) {
-                return (int) GeneratorBlockEntity.this.energy.getStorage();
+                return (int) GeneratorTileEntity.this.energy.getStorage();
             } else if (index == GeneratorDataType.CAPACITY.value) {
-                return (int) GeneratorBlockEntity.this.energy.getEnergy();
+                return (int) GeneratorTileEntity.this.energy.getEnergy();
             } else if (index == GeneratorDataType.TOTAL_FUEL.value) {
-                return GeneratorBlockEntity.this.totalFuel;
+                return GeneratorTileEntity.this.totalFuel;
             } else {
                 throw new IndexOutOfBoundsException("Generator container data out of range.");
             }
@@ -38,13 +38,13 @@ public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
         @Override
         public void set(int index, int value) {
             if (index == GeneratorDataType.FUEL.value) {
-                GeneratorBlockEntity.this.fuel = value;
+                GeneratorTileEntity.this.fuel = value;
             } else if (index == GeneratorDataType.STORAGE.value) {
-                GeneratorBlockEntity.this.energy.setStorage(value);
+                GeneratorTileEntity.this.energy.setStorage(value);
             } else if (index == GeneratorDataType.CAPACITY.value) {
-                GeneratorBlockEntity.this.energy.setEnergy(value);
+                GeneratorTileEntity.this.energy.setEnergy(value);
             } else if (index == GeneratorDataType.TOTAL_FUEL.value) {
-                GeneratorBlockEntity.this.totalFuel = value;
+                GeneratorTileEntity.this.totalFuel = value;
             } else {
                 throw new IndexOutOfBoundsException("Generator container data out of range.");
             }
@@ -56,7 +56,7 @@ public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
         }
     };
 
-    public GeneratorBlockEntity(BlockPos pos, BlockState state) {
+    public GeneratorTileEntity(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.GENERATOR.get(), pos, state,
                 Math.round(10.0F * 1.0F), 1, 4000);
         this.totalFuel = 0;
@@ -118,7 +118,7 @@ public class GeneratorBlockEntity extends BaseGeneratorBlockEntity {
         return this.fuel <= 0 && this.energy.getFreeEnergy() >= this.production;
     }
 
-    public static void serverTick(Level level, BlockPos pos, BlockState state, GeneratorBlockEntity blockEntity) {
+    public static void serverTick(Level level, BlockPos pos, BlockState state, GeneratorTileEntity blockEntity) {
         blockEntity.onServerTick();
         boolean needsInvUpdate = false;
         if (blockEntity.needsFuel())
