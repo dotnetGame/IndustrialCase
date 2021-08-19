@@ -14,6 +14,7 @@ import com.iteale.industrialcase.core.util.StackUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.ContainerListener;
 import net.minecraft.world.entity.Entity;
@@ -827,7 +828,7 @@ public class NetworkManager implements INetworkManager {
     }
 
     static <T extends Collection<ServerPlayer>> T getPlayersInRange(Level world, BlockPos pos, T result) {
-        if (!(world instanceof WorldServer)) return result;
+        if (!(world instanceof ServerLevel)) return result;
 
         PlayerChunkMap playerManager = ((WorldServer) world).getPlayerChunkMap();
         PlayerChunkMapEntry instance = playerManager.getEntry(pos.getX() >> 4, pos.getZ() >> 4);

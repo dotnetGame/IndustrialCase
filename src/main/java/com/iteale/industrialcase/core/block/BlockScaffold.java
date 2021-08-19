@@ -1,19 +1,28 @@
 package com.iteale.industrialcase.core.block;
 
 
+import com.iteale.industrialcase.api.recipe.IRecipeInput;
+import com.iteale.industrialcase.api.recipe.Recipes;
 import com.iteale.industrialcase.core.block.state.IIdProvider;
+import com.iteale.industrialcase.core.block.type.IBlockSound;
+import com.iteale.industrialcase.core.block.type.IExtBlockType;
+import com.iteale.industrialcase.core.ref.BlockName;
 import com.iteale.industrialcase.core.util.StackUtil;
 import com.iteale.industrialcase.core.util.Util;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -34,6 +43,7 @@ public class BlockScaffold extends BlockBase {
         return RenderType.cutout();
     }
 
+    /*
     public Material getMaterial(BlockState state) {
         ScaffoldType type = getType(state);
         if (type == null) return super.getMaterial(state);
@@ -49,6 +59,7 @@ public class BlockScaffold extends BlockBase {
         }
         throw new IllegalStateException("Invalid scaffold type: " + type);
     }
+     */
 
     public boolean isOpaqueCube(BlockState state) {
         return false;
@@ -71,21 +82,28 @@ public class BlockScaffold extends BlockBase {
 
             double limit = 0.15D;
 
-            entity.motionX = Util.limit(entity.motionX, -limit, limit);
-            entity.motionZ = Util.limit(entity.motionZ, -limit, limit);
+            entity.setDeltaMovement(
+                    Util.limit(entity.getDeltaMovement().x, -limit, limit),
+                    entity.getDeltaMovement().y,
+                    Util.limit(entity.getDeltaMovement().z, -limit, limit));
 
-            if (entity.isSneaking() && entity instanceof Player) {
-
+            double motionY = 0.0D;
+            if (entity.isShiftKeyDown() && entity instanceof Player) {
                 if (entity.isInWater()) {
-                    entity.motionY = 0.02D;
+                    motionY = 0.02D;
                 } else {
-                    entity.motionY = 0.08D;
+                    motionY = 0.08D;
                 }
-            } else if (entity.collidedHorizontally) {
-                entity.motionY = 0.2D;
+            } else if (entity.horizontalCollision) {
+                motionY = 0.2D;
             } else {
-                entity.motionY = Math.max(entity.motionY, -0.07D);
+                motionY = Math.max(entity.getDeltaMovement().y, -0.07D);
             }
+
+            entity.setDeltaMovement(
+                    entity.getDeltaMovement().x,
+                    motionY,
+                    entity.getDeltaMovement().z);
         }
     }
 
@@ -93,21 +111,22 @@ public class BlockScaffold extends BlockBase {
         return aabb;
     }
 
-
+    /*
     public AABB getSelectedBoundingBox(BlockState state, Level worldIn, BlockPos pos) {
         return FULL_BLOCK_AABB.offset(pos);
     }
+     */
 
     public boolean isSideSolid(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
         return (side.getAxis() == Direction.Axis.Y);
     }
 
-
+    /*
     public List<ItemStack> getDrops(BlockGetter world, BlockPos pos, BlockState state, int fortune) {
         if (state.getBlock() != this) return Collections.emptyList();
 
         List<ItemStack> ret = new ArrayList<>();
-        ScaffoldType type = (ScaffoldType) state.getValue((IProperty) this.typeProperty);
+        ScaffoldType type = (ScaffoldType) state.getValue(this.typeProperty);
 
         switch (type) {
             case wood:
@@ -125,13 +144,15 @@ public class BlockScaffold extends BlockBase {
         }
         throw new IllegalStateException();
     }
+     */
 
     private static final IRecipeInput stickInput = Recipes.inputFactory.forOreDict("stickWood");
 
-    public boolean onBlockActivated(Level world, BlockPos pos, BlockState state, Player player, EnumHand hand, Direction side, float hitX, float hitY, float hitZ) {
-        if (player.isSneaking()) return false;
+    /*
+    public boolean onBlockActivated(Level world, BlockPos pos, BlockState state, Player player, InteractionHand hand, Direction side, float hitX, float hitY, float hitZ) {
+        if (player.isShiftKeyDown()) return false;
 
-        ItemStack stack = player.getHeldItem(hand);
+        ItemStack stack = player.getItemInHand(hand);
         if (StackUtil.isEmpty(stack)) return false;
 
         ScaffoldType type = getType(state);
@@ -177,13 +198,13 @@ public class BlockScaffold extends BlockBase {
     }
 
     public void onBlockClicked(Level world, BlockPos pos, Player player) {
-        EnumHand hand = EnumHand.MAIN_HAND;
-        ItemStack stack = player.getHeldItem(hand);
+        InteractionHand hand = InteractionHand.MAIN_HAND;
+        ItemStack stack = player.getItemInHand(hand);
         if (StackUtil.isEmpty(stack))
             return;
         if (StackUtil.checkItemEquality(stack, Item.getItemFromBlock(this))) {
             while (world.getBlockState(pos).getBlock() == this) {
-                pos = pos.up();
+                pos = pos.above();
             }
 
             if (canPlaceBlockAt(world, pos) && pos.getY() < IC2.getWorldHeight(world)) {
@@ -204,20 +225,20 @@ public class BlockScaffold extends BlockBase {
         return (super.canPlaceBlockAt(world, pos) && hasSupport((BlockGetter) world, pos, ScaffoldType.wood));
     }
 
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block neighborBlock, BlockPos neighborPos) {
         checkSupport(world, pos);
     }
 
 
-    public void randomTick(World world, BlockPos pos, BlockState state, Random random) {
+    public void randomTick(Level world, BlockPos pos, BlockState state, Random random) {
         if (random.nextInt(8) == 0) {
             checkSupport(world, pos);
         }
     }
 
 
-    private boolean isPillar(World world, BlockPos pos) {
-        for (; world.getBlockState(pos).getBlock() == this; pos = pos.down()) ;
+    private boolean isPillar(Level world, BlockPos pos) {
+        for (; world.getBlockState(pos).getBlock() == this; pos = pos.below()) ;
 
         return world.isBlockNormalCube(pos, false);
     }
@@ -268,8 +289,8 @@ public class BlockScaffold extends BlockBase {
             if (support.strength >= 0) {
                 continue;
             }
-            world.setBlockState(support.pos, Blocks.AIR.getDefaultState(), 2);
-            dropBlockAsItem(world, support.pos, getDefaultState().withProperty((IProperty) this.typeProperty, support.type), 0);
+            world.setBlockState(support.pos, Blocks.AIR.defaultBlockState(), 2);
+            dropBlockAsItem(world, support.pos, defaultBlockState().setValue(this.typeProperty, support.type), 0);
             droppedAny = true;
         }
 
@@ -292,7 +313,7 @@ public class BlockScaffold extends BlockBase {
         queue.add(support);
 
         while ((support = queue.poll()) != null) {
-            for (Direction dir : Direction.VALUES) {
+            for (Direction dir : Direction.values()) {
                 BlockPos pos = support.pos.offset(dir);
                 if (!results.containsKey(pos)) {
 
@@ -312,7 +333,7 @@ public class BlockScaffold extends BlockBase {
         }
         label63:
         for (BlockPos groundPos : groundSupports) {
-            BlockPos pos = groundPos.up();
+            BlockPos pos = groundPos.above();
             int propagatedStrength = 0;
             while (true) {
                 int strength;
@@ -332,7 +353,7 @@ public class BlockScaffold extends BlockBase {
                 if (support.strength < strength) {
                     support.strength = strength;
 
-                    for (Direction dir : Direction.HORIZONTALS) {
+                    for (Direction dir : Direction.Plane.HORIZONTAL) {
                         BlockPos nPos = pos.offset(dir);
                         Support nSupport = results.get(nPos);
                         if (nSupport != null && nSupport.strength < strength) {
@@ -342,7 +363,7 @@ public class BlockScaffold extends BlockBase {
                         }
                     }
                 }
-                pos = pos.up();
+                pos = pos.above();
             }
         }
 
@@ -360,6 +381,7 @@ public class BlockScaffold extends BlockBase {
         }
         return results;
     }
+     */
 
     private static final Direction[] supportedFacings = new Direction[]{Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
     private static final double border = 0.03125D;
@@ -376,8 +398,7 @@ public class BlockScaffold extends BlockBase {
         }
     }
 
-    public enum ScaffoldType
-            implements IIdProvider, IExtBlockType, IBlockSound {
+    public enum ScaffoldType implements IIdProvider, IExtBlockType, IBlockSound {
         wood(2, 0.5F, 0.12F, SoundType.WOOD),
         reinforced_wood(5, 0.6F, 0.24F, SoundType.WOOD),
         iron(5, 0.8F, 6.0F, SoundType.METAL),

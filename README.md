@@ -7,3 +7,19 @@
 **IndustrialCase**是**IndustrialCraft 2**的复刻。旨在将IC2 迁移到1.16.5及更高版本的Minecraft上来。
 
 **IndustrialCase** is a fork of **IndustrialCraft 2**. It is planned to migrate **IC2** to the 1.16.5 higher version of Minecraft.
+
+
+
+
+
+## Credits
+
+**IndustrialCraft 2 Development Team:**
+Player, Aroma1997, Estebes, Chocohead, Imer,
+ThunderDark, GregoriusT
+Alblaka, RichardG, alexthesax, Drashian, Elemtalist, Feanturi, tahu44, Lurch1985, SirusKing
+
+
+
+**IndustrialCase Development Team:**
+Jun Wang, Rikka0_0, jihuayu, Yanbing Zhao, SunnyCase
